@@ -1,0 +1,27 @@
+The RTX_Blinky project is a simple RTX Kernel based example
+for the Nuvoton 'NUC400' microcontroller using Keil 'MCBNUC4XX' 
+Evaluation Board, compliant to Cortex Microcontroller 
+Software Interface Standard (CMSIS V2.0).
+
+Example functionality:                                                   
+ - Clock Settings:
+   - XTAL  =  12 MHz
+   - CCLK  =  22 MHz (IRC22M)
+
+The simple RTX Kernel based example simulates the step-motor 
+driver. Four LEDs are blinking simulating the activation of 
+the four output driver stages:
+
+- phase A
+- phase B
+- phase C
+- phase D
+
+This example simulates Half step driver mode and
+CW rotation direction.
+
+
+The Blinky program is available in different targets:
+
+  NUC400 Flash:  configured for on-chip Flash
+                 (used for production or target debugging)

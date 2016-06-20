@@ -1,0 +1,15 @@
+
+#ifndef __CAP_SENSOR_H_
+#define __CAP_SENSOR_H_
+
+#include "NUC472_442.h"
+
+int InitOV7725_VGA_YUV422(void);
+#define OV7725SensorPolarity         (CAP_PAR_VSP_HIGH | CAP_PAR_HSP_LOW  | CAP_PAR_PCLKP_HIGH)
+#define OV7725DataFormatAndOrder (CAP_PAR_INDATORD_UYVY | CAP_PAR_INFMT_YUV422 | CAP_PAR_OUTFMT_YUV422)
+
+int InitNT99141_VGA_YUV422(void);
+#define NT99141SensorPolarity         (CAP_PAR_VSP_LOW | CAP_PAR_HSP_LOW  | CAP_PAR_PCLKP_HIGH)
+#define NT99141DataFormatAndOrder (CAP_PAR_INDATORD_YUYV | CAP_PAR_INFMT_YUV422 | CAP_PAR_OUTFMT_YUV422)
+
+#endif

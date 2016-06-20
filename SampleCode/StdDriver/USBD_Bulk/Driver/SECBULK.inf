@@ -1,0 +1,74 @@
+; Installation inf for the Unication Magpie PDA USB Driver
+;
+; (c) Copyright 2003 Unication
+;
+
+[Version]
+Signature="$CHICAGO$"
+Class=USB
+ClassGUID={36FC9E60-C465-11CF-8056-444553540000}
+provider=%UNIC%
+DriverVer=01/01/2004
+
+[SourceDisksNames]
+1="Unication Installation Disk",,,
+
+[SourceDisksFiles]
+SECBULK.sys = 1,,
+SECBULK.inf = 1,,
+
+[Manufacturer]
+%MfgName%=SystemLsi
+
+[SystemLsi]
+%USB\VID_0416&PID_3102.DeviceDesc%=SECBULK.Dev, USB\VID_0416&PID_3102
+
+;[PreCopySection]
+;HKR,,NoSetupUI,,1
+
+[DestinationDirs]
+SECBULK.Files.Ext = 10,System32\Drivers
+SECBULK.Files.Inf = 10,INF
+
+[SECBULK.Dev]
+CopyFiles=SECBULK.Files.Ext, SECBULK.Files.Inf
+AddReg=SECBULK.AddReg
+
+[SECBULK.Dev.NT]
+CopyFiles=SECBULK.Files.Ext, SECBULK.Files.Inf
+AddReg=SECBULK.AddReg
+
+[SECBULK.Dev.NT.Services]
+Addservice = SECBULK, 0x00000002, SECBULK.AddService
+
+[SECBULK.AddService]
+DisplayName    = %SECBULK.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\SECBULK.sys
+LoadOrderGroup = Base
+
+[SECBULK.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,SECBULK.sys
+HKLM,"System\Currentcontrolset\Services\SECBULK\Parameters","MaximumTransferSize",0x10001,4096
+HKLM,"System\Currentcontrolset\Services\SECBULK\Parameters","DebugLevel",0x10001,3
+HKLM,"System\Currentcontrolset\services\SECBULK\Parameters","UniUsbEnable",0x10001,0
+
+[SECBULK.Files.Ext]
+SECBULK.sys
+
+[SECBULK.Files.Inf]
+SECBULK.inf
+
+
+;---------------------------------------------------------------;
+
+[Strings]
+UNIC="purnnamu"
+MSFT="FrienlyARM Computer Tech."
+MfgName="SEC, SYSTEM LSI"
+USB\VID_0416&PID_3102.DeviceDesc="Nuvoton Zero Device"
+SECBULK.SvcDesc="SEC SOC USB driver"
+
