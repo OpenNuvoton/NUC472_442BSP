@@ -5,7 +5,7 @@ lst/
 #For IAR
 Debug/
 Release/
-setting/
+settings/
 
 #For OSX
 .DS_Store
