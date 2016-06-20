@@ -1,0 +1,49 @@
+#For Keil
+obj/
+lst/
+
+#For IAR
+Debug/
+Release/
+setting/
+
+#For OSX
+.DS_Store
+
+#Files
+*.log
+*.dep
+*.bak
+*.uvopt
+*.old
+*.bin
+!SampleCode/StdDriver/CRYPTO_SHA/IAR/dummy.bin
+!SampleCode/StdDriver/FMC_MULTI_WORD_PROG/IAR/dummy.bin
+!SampleCode/StdDriver/FMC_MULTI_WORD_PROG/Keil/obj
+!SampleCode/StdDriver/FMC_MULTI_WORD_PROG/Keil/obj/fmc_multi_word_prog.bin
+!SampleCode/StdDriver/FMC_VECTOR_REMAP/IAR/dummy.bin
+*.obj
+*.orig
+*.ok
+*~
+*.o
+*.i
+*.lst
+*.map
+*.d
+*.crf
+*.axf
+*.out
+*.pbi
+*.cout
+*.browse
+*.scc
+
+#Large stuff
+*.zip
+*.gz
+*.bz
+*.gzip
+*.7z
+*.rar
+
