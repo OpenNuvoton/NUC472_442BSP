@@ -143,7 +143,7 @@
         <option>
           <name>GBECoreSlave</name>
           <version>20</version>
-          <state>34</state>
+          <state>39</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -212,7 +212,7 @@
         </option>
         <option>
           <name>CCDiagSuppress</name>
-          <state>Pa082</state>
+          <state>Pa082,Pe550,Pe177</state>
         </option>
         <option>
           <name>CCDiagRemark</name>
