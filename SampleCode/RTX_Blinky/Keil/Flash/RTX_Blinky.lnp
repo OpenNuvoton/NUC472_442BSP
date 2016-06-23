@@ -1,5 +1,0 @@
---cpu Cortex-M4.fp ".\flash\system_nuc472_442.o" ".\flash\startup_nuc472_442.o" ".\flash\blinky.o" ".\flash\led.o" ".\flash\clk.o" ".\flash\sys.o" ".\flash\uart.o" ".\flash\retarget.o" ".\flash\rtx_conf_cm.o" C:\work_zone\nuc470\sandbox\wip\Library\CMSIS_RTX\LIB\ARM\RTX_CM4.lib 
---library_type=microlib --strict --scatter ".\Flash\RTX_Blinky.sct" 
---entry Reset_Handler --summary_stderr --info summarysizes --map --xref --callgraph --symbols 
---info sizes --info totals --info unused --info veneers 
- --list ".\Flash\RTX_Blinky.map" -o .\Flash\RTX_Blinky.axf

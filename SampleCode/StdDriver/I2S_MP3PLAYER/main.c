@@ -1,8 +1,8 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * $Revision: 7 $
- * $Date: 15/12/07 9:16a $
+ * $Revision: 8 $
+ * $Date: 15/12/08 9:41a $
  * @brief    MP3 player sample plays MP3 files stored on SD memory card
  *
  * @note
@@ -192,7 +192,7 @@ int32_t main (void)
 
     printf("rc=%d\n", (WORD)disk_initialize(0));
     disk_read(0, Buff, 2, 1);
-    f_mount(&FatFs[0], "", 0);
+    f_mount(&FatFs[0], 0, 1);
 
     /* Init I2C3 to access WAU8822 */
     I2C3_Init();

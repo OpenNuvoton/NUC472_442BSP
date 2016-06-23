@@ -1,8 +1,8 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * $Date: 15/02/26 5:14p $
- * @brief    Use PDMA channel 5 to demonstrate memory to memory transfer
+ * $Date: 16/06/07 11:17a $
+ * @brief    Use PDMA channel 5 to demonstrate memory to memory transfer 
  *           by scatter-gather mode
  *
  * @note
@@ -116,7 +116,7 @@ int main (void)
         DestArray0[i] = 0;
         DestArray1[i] = 0;
     }
-
+    
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
 
     printf("+-----------------------------------------------------------------------+ \n");
@@ -138,7 +138,6 @@ int main (void)
 
     /* Open Channel 5 */
     PDMA_Open(1 << 5);
-    /* Set transfer to Peripheral will start timeout counting, besides PDMA_MEM */
     PDMA_SetTransferMode(5, PDMA_MEM, 1, (uint32_t)&DMA_DESC[0]);
     PDMA_Trigger(5);
     while(PDMA_IS_CH_BUSY(5));

@@ -171,11 +171,16 @@ void MP3Player(void)
                 Remaining = 0;
             }
 
-            /* read the file from SDCard */
+            /* read the file */
             res = f_read(&mp3FileObject, ReadStart, ReadSize, &ReturnSize);
-            if((res != FR_OK) || f_eof(&mp3FileObject)) {
+            if(res != FR_OK) {
                 printf("Stop !(%x)\n\r", res);
                 goto stop;
+            }
+            
+            if(f_eof(&mp3FileObject)) {
+                if(ReturnSize == 0)
+                    goto stop;  
             }
 
             /* if the file is over */

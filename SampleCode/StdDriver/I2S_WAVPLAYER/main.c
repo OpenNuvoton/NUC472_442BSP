@@ -1,9 +1,9 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * $Revision: 11 $
- * $Date: 15/12/07 9:18a $
- * @brief    This is a WAV file player which plays back WAV file stored in
+ * $Revision: 12 $
+ * $Date: 15/12/08 9:47a $
+ * @brief    This is a WAV file player which plays back WAV file stored in 
  *           USB pen drive.
  *
  * @note
@@ -334,7 +334,7 @@ int32_t main (void)
     /* Configure FATFS */
     printf("rc=%d\n", (WORD)disk_initialize(0));
     disk_read(0, Buff, 2, 1);
-    f_mount(&FatFs[0], "", 0);
+    f_mount(&FatFs[0], 0, 1);
 
     /* Init I2C3 to access WAU8822 */
     I2C3_Init();

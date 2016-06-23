@@ -1,6 +1,7 @@
 #For Keil
 obj/
 lst/
+SampleCode/RTX_Blinky/Keil/Flash/
 
 #For IAR
 Debug/
@@ -42,6 +43,7 @@ settings/
 *.cout
 *.browse
 *.scc
+*.tra
 
 #Large stuff
 *.zip

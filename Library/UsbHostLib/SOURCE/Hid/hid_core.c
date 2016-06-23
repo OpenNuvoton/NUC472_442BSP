@@ -1,371 +1,743 @@
 /**************************************************************************//**
  * @file     hid_core.c
  * @version  V1.00
- * $Revision: 14 $
- * $Date: 15/04/27 3:26p $
- * @brief    NUC472/NUC442 MCU USB Host HID library core.
+ * $Revision: 16 $
+ * $Date: 16/05/17 1:27p $ 
+ * @brief    NUC400 series MCU USB Host HID library core
  *
  * @note
- * Copyright (C) 2014 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
+ * Copyright (C) 2013 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/   
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-#include "NUC472_442.h"
+#include "NUC400Series.h"
 #include "usbh_core.h"
 
 #include "usbh_hid.h"
-
-
-/** @addtogroup NUC472_442_Device_Driver NUC472/NUC442 Device Driver
-  @{
-*/
-
-/** @addtogroup NUC472_442_USBH_HID_Driver USB Host HID Driver
-  @{
-*/
-
-/** @addtogroup NUC472_442_USBH_HID_EXPORTED_FUNCTIONS USB Host HID Driver Exported Functions
-  @{
-*/
-
+#include "hid.h"
 
 /// @cond HIDDEN_SYMBOLS
 
-#define USB_TIMEOUT             100000
+#define STATIC_MEMORY
 
-extern HID_DEV_T *find_hid_deivce_by_urb(URB_T *urb);
-extern int  find_hid_device(HID_DEV_T *hdev);
-extern EP_INFO_T *hid_get_ep_info(USB_DEV_T *dev, int ifnum, uint16_t dir);
+#ifdef STATIC_MEMORY
+static HIDParser  g_hid_parser_buff;
+static int        g_hid_parser_used = 0;
+static HIDData    g_hid_data_buff;
+static int        g_hid_data_used = 0;
+static HIDInterface g_hid_intf_buff;
+static int        g_hid_intf_used = 0;
+#endif
 
 
-static int usb_snd_control_msg(HID_DEV_T *hdev, int requesttype, int request,
-                               int value, int index, char *bytes, int size, int timeout)
+
+int usb_control_msg(int dev_handle, int requesttype, int request, 
+                    int value, int index, char *bytes, int size, int timeout)
 {
-    USB_DEV_T       *udev = hdev->udev;
-
-    return USBH_SendCtrlMsg(udev, usb_sndctrlpipe(udev, 0),
-                            request, requesttype, value, index, bytes, size, timeout);
-}
-
-int usb_rcv_control_msg(HID_DEV_T *hdev, int requesttype, int request,
-                        int value, int index, char *bytes, int size, int timeout)
-{
-    USB_DEV_T       *udev = hdev->udev;
-
+    HID_DEV_T       *hid_dev;
+    USB_DEV_T       *udev;
+    
+    hid_dev = find_hid_deivce_by_handle(dev_handle);
+    if (hid_dev == NULL)
+        return -1;
+        
+    udev = hid_dev->udev;
+        
     return USBH_SendCtrlMsg(udev, usb_rcvctrlpipe(udev, 0),
-                            request, requesttype, value, index, bytes, size, timeout);
+            request, requesttype, value, index, bytes, size, timeout);
 }
 
-/// @endcond
-
-
-/**
- *  @brief  Get report descriptor request.
- *  @param[in]  hdev         HID device
- *  @param[out] desc_buf     The data buffer to store report descriptor.
- *  @param[in]  buf_max_len  The maximum length of desc_buf. This function will read more data
- *                           than buf_max_len.
- *  @return   Report descriptor length or error code.
- *  @retval   <0        Failed
- *  @retval   Otherwise  Length of report descriptor read.
- */
-int32_t  HID_HidGetReportDescriptor(HID_DEV_T *hdev, uint8_t *desc_buf, int buf_max_len)
+void hid_reset_HIDInterface(HIDInterface*   const   hidif)
 {
+    hidif->dev_handle = 0;
+    hidif->interface = -1;
+    hidif->id[0] = '\0';
+    hidif->hid_data = NULL;
+    hidif->hid_parser = NULL;
+}
+
+HIDInterface*  hid_new_HIDInterface()
+{
+#ifdef STATIC_MEMORY    
+    HIDInterface*   ret;
+    
+    if (g_hid_intf_used)
+    {
+        HID_DBGMSG("hid_new_HIDInterface mallo failed! %d\n", sizeof(HIDInterface));
+        return NULL;
+    }
+    else
+    {
+        g_hid_intf_used = 1;
+        ret = &g_hid_intf_buff;
+    }
+#else
+    HIDInterface*   ret =   (HIDInterface*)malloc(sizeof(HIDInterface));
+
+    if (!ret)   
+    {
+        HID_DBGMSG("hid_new_HIDInterface mallo failed!\n");
+        return NULL;
+    }
+#endif
+
+    hid_reset_HIDInterface(ret);
+    return ret;
+}
+
+
+void hid_delete_HIDInterface(HIDInterface** ixs)
+{
+    if (!ixs || !*ixs) 
+    {
+        return;
+    }
+#ifdef STATIC_MEMORY    
+    g_hid_intf_used = 0;
+#else
+    free(*ixs);
+#endif  
+    *ixs = 0;
+}
+
+
+int hid_is_opened(HIDInterface * hidif)
+{
+  if (!hidif) HID_DBGMSG("attempt to query open status of NULL HIDInterface.");
+  return hidif && hidif->dev_handle;
+}
+
+
+/*! TODO: This code does not seem to properly retrieve descriptors for devices
+ * with multiple interfaces. We probably need to parse each interface a little
+ * more to determine which endpoints we want to talk to with usb_control_msg
+ * (EP1IN can't be right for everything).
+ */
+static hid_return hid_prepare_hid_descriptor(HIDInterface* const hidif)
+{
+    /* TODO: BUFLEN seems to depend on the device, so we need to do something
+     * about the following.
+     */
+#define BUFLEN          9
+    uint8_t     buffer[BUFLEN];
+    int         len;
+    
+    len = usb_control_msg(hidif->dev_handle,
+            USB_ENDPOINT_IN+1,
+            USB_REQ_GET_DESCRIPTOR,
+            (USB_DT_HID << 8) + 0, hidif->interface,
+            (char*)buffer, BUFLEN,
+            USB_TIMEOUT);
+
+    if (len < 0) {
+        HID_DBGMSG("failed to get HID descriptor.\n");
+        return HID_RET_NOT_HID_DEVICE;
+    }
+
+    if (len < BUFLEN) {
+        HID_DBGMSG("HID descriptor is too short; expected: %d bytes; got: %d bytes.\n", BUFLEN, len);
+        return HID_RET_HID_DESC_SHORT;
+    }
+
+    /* TODO:
+     * the constants 7 and 8 should be exported.
+     */
+    hidif->hid_parser->ReportDescSize = buffer[7] | (buffer[8] << 8);
+
+    HID_DBGMSG("successfully initialised HID descriptor %d bytes.\n",
+            hidif->hid_parser->ReportDescSize);
+
+    return HID_RET_SUCCESS;
+}
+
+
+static hid_return hid_prepare_report_descriptor(HIDInterface* const hidif)
+{
+    int     len;
+    
+    if (hidif->hid_parser->ReportDescSize > REPORT_DSC_SIZE) 
+    {
+        HID_DBGMSG("report descriptor size exceeds maximum size: %d > %d.\n", hidif->hid_parser->ReportDescSize, REPORT_DSC_SIZE);
+        return HID_RET_REPORT_DESC_LONG;
+    }
+
+    len = usb_control_msg(hidif->dev_handle,
+            USB_ENDPOINT_IN+1,
+            USB_REQ_GET_DESCRIPTOR,
+            (USB_DT_REPORT << 8) + 0, hidif->interface,
+            (char*)hidif->hid_parser->ReportDesc, hidif->hid_parser->ReportDescSize,
+            USB_TIMEOUT);
+
+    if (len < 0) {
+        HID_DBGMSG("failed to get report descriptor\n");
+        return HID_RET_FAIL_GET_REPORT;
+    }
+
+    if (len < hidif->hid_parser->ReportDescSize) {
+        HID_DBGMSG("HID report descriptor is too short expected: %d bytes; got: %d bytes.\n", hidif->hid_parser->ReportDescSize, len);
+        return HID_RET_REPORT_DESC_SHORT;
+    }
+    HID_DBGMSG("successfully initialised report descriptor.");
+    return HID_RET_SUCCESS;
+}
+
+
+hid_return hid_init_parser(HIDInterface* const hidif)
+{
+#ifdef STATIC_MEMORY    
+
+    if (g_hid_data_used)
+    {
+        HID_DBGMSG("failed to allocate memory for HIDData %d\n", sizeof(HIDData));
+        return HID_RET_FAIL_ALLOC;
+    }
+    else
+    {
+        hidif->hid_data = &g_hid_data_buff;
+        g_hid_data_used = 1;
+    }
+
+    if (g_hid_parser_used)
+    {
+        HID_DBGMSG("failed to allocate memory for HIDParser %d\n", sizeof(HIDParser));
+        return HID_RET_FAIL_ALLOC;
+    }
+    else
+    {
+        g_hid_parser_used = 1;
+        hidif->hid_parser = &g_hid_parser_buff;
+    }
+#else
+    hidif->hid_data = (HIDData*)malloc(sizeof(HIDData));
+    if (!hidif->hid_data) 
+    {
+        HID_DBGMSG("failed to allocate memory for HIDData\n");
+        return HID_RET_FAIL_ALLOC;
+    }
+
+    hidif->hid_parser = (HIDParser*)malloc(sizeof(HIDParser));
+    if (!hidif->hid_parser) 
+    {
+        HID_DBGMSG("failed to allocate memory for HIDParser %d\n", sizeof(HIDParser));
+        return HID_RET_FAIL_ALLOC;
+    }
+#endif  
+    return HID_RET_SUCCESS;
+}
+
+
+hid_return hid_prepare_interface(HIDInterface* const hidif)
+{
+    hid_return  ret;
+    
+    ret = hid_init_parser(hidif);
+    if (ret != HID_RET_SUCCESS) 
+    {
+        USBH_HidClose((int32_t)hidif);
+        return ret;
+    }
+
+    ret = hid_prepare_hid_descriptor(hidif);
+    if (ret != HID_RET_SUCCESS) 
+    {
+        USBH_HidClose((int32_t)hidif);
+        return ret;
+    }
+
+    ret = hid_prepare_report_descriptor(hidif);
+    if (ret != HID_RET_SUCCESS) {
+    USBH_HidClose((int32_t)hidif);
+    return ret;
+    }
+
+    ret = hid_prepare_parser(hidif);
+    if (ret != HID_RET_SUCCESS) {
+    USBH_HidClose((int32_t)hidif);
+    return ret;
+    }
+    return HID_RET_SUCCESS;
+}
+
+/// @endcond HIDDEN_SYMBOLS
+
+/*!@brief Send a control message to retrieve an entire input report
+ *
+ * To use an interrupt endpoint instead of EP0, use hid_interrupt_read().
+ *
+ * @param[in] i32Hanlde  HID interface hanlde
+ * @param[in] path       Path to input item (to find Report ID)
+ * @param[in] depth      See hid_find_object()
+ * @param[out] buffer    Result is stored here
+ * @param[in] size       How many bytes to fetch
+ */
+int32_t USBH_HidGetInputReport(int32_t i32Hanlde, int path[], uint32_t depth, char* buffer, uint32_t size)
+{
+    HIDInterface * hidif = (HIDInterface *)i32Hanlde;
     int  len;
+    
+    //ASSERT(hid_is_initialised());
+    //ASSERT(hid_is_opened(hidif));
+    ///ASSERT(buffer);
 
-    if (buf_max_len < 9)
-        return HID_RET_INVALID_PARAMETER;
+    if (!buffer) return HID_RET_INVALID_PARAMETER;
 
-    len = usb_rcv_control_msg(hdev,
-                              USB_DIR_IN+1,
-                              USB_REQ_GET_DESCRIPTOR,
-                              (USB_DT_HID << 8) + 0, hdev->ifnum,
-                              (char*)desc_buf, buf_max_len,
-                              USB_TIMEOUT);
-
-    if (len < 0) {
-        HID_DBGMSG("failed to get HID descriptor.\n");
-        return HID_RET_IO_ERR;
+    if (!hid_is_opened(hidif)) {
+        HID_DBGMSG("the device has not been opened.\n");
+        return HID_RET_DEVICE_NOT_OPENED;
     }
 
-    len = desc_buf[7] | (desc_buf[8] << 8);
+    HID_DBGMSG("looking up report ID...\n");
+    hidif->hid_data->Type = ITEM_INPUT;
+    hidif->hid_data->ReportID = 0;
 
-    HID_DBGMSG("Report descriptor size is %d\n", len);
+    hid_find_object(hidif, path, depth);
 
-    if (buf_max_len < len)
-        return HID_RET_INVALID_PARAMETER;
+    HID_DBGMSG("retrieving report ID 0x%02x (length: %d)...\n", 
+                hidif->hid_data->ReportID, size);
 
-    len = usb_rcv_control_msg(hdev,
-                              USB_DIR_IN+1,
-                              USB_REQ_GET_DESCRIPTOR,
-                              (USB_DT_REPORT << 8) + 0, hdev->ifnum,
-                              (char*)desc_buf, len,
-                              USB_TIMEOUT);
+    len = usb_control_msg(hidif->dev_handle,
+            USB_ENDPOINT_IN + USB_TYPE_CLASS + USB_RECIP_INTERFACE,
+            HID_REPORT_GET,
+            hidif->hid_data->ReportID + (HID_RT_INPUT << 8),
+            hidif->interface,
+            buffer, size, USB_TIMEOUT);
 
     if (len < 0) {
-        HID_DBGMSG("failed to get HID descriptor.\n");
-        return HID_RET_IO_ERR;
+        HID_DBGMSG("failed to retrieve report!\n");
+        return HID_RET_FAIL_GET_REPORT;
     }
 
-    HID_DBGMSG("successfully initialised HID descriptor %d bytes.\n", len);
+    if (len != (signed)size) {
+        HID_DBGMSG("failed to retrieve complete report; "
+                "requested: %d bytes, got: %d bytes.\n", size, len);
+        return HID_RET_FAIL_GET_REPORT;
+    }
 
-    return len;
+    HID_DBGMSG("successfully retrieved report.\n");
+    return HID_RET_SUCCESS;
 }
 
 
-/**
- * @brief  HID class standard request Get_Report request. The Get_Report request
- *         allows the host to receive a report via the Control pipe.
+/*!@brief Send an entire output report to the device
  *
- * @param[in] hdev       HID device
- * @param[in] rtp_typ    Report type. Valid values are:
- *                       - \ref RT_INPUT
- *                       - \ref RT_OUTPUT
- *                       - \ref RT_FEATURE
- * @param[in] rtp_id     Report ID
- * @param[out] data      Buffer to store data retrieved from this report ID.
- * @param[in] len        Report length.
- * @return   Report length or error code.
- * @retval   >=0         The actual length of data obtained from this report ID.
- * @retval   Otherwise   Failed
- */
-int32_t  HID_HidGetReport(HID_DEV_T *hdev, int rtp_typ, int rtp_id,
-                          uint8_t *data, int len)
-{
-    len = usb_rcv_control_msg(hdev,
-                              USB_DIR_IN + USB_TYPE_CLASS + USB_RECIP_INTERFACE,
-                              HID_REPORT_GET,
-                              rtp_id + (rtp_typ << 8),
-                              hdev->ifnum,
-                              (char *)data, len, USB_TIMEOUT);
-
-    if (len < 0) {
-        HID_DBGMSG("failed to get report!\n");
-        return HID_RET_IO_ERR;
-    }
-    return len;
-}
-
-
-/**
- * @brief  HID class standard request Set_Report request. The Set_Report
- *         request allows the host to send a report to the device, possibly
- *         setting the state of input, output, or feature controls.
+ * This routine uses a control message to send the report. To use an interrupt
+ * endpoint, use hid_interrupt_write().
  *
- * @param[in] hdev       HID device
- * @param[in] rtp_typ    Report type. Valid values are:
- *                       - \ref RT_INPUT
- *                       - \ref RT_OUTPUT
- *                       - \ref RT_FEATURE
- * @param[in] rtp_id     Report ID
- * @param[out] data      Buffer store data to be send.
- * @param[in] len        Report length.
- * @return   Written length or error code.
- * @retval   >=0         The actual length of data written to this report ID.
- * @retval   Otherwise   Failed
+ * @param[in] i32Hanlde  HID interface handle
+ * @param[in] path       Path to an output item (to find Report ID)
+ * @param[in] depth      See hid_find_object()
+ * @param[in] buffer     Output Report
+ * @param[in] size       How many bytes to send
  */
-int32_t  HID_HidSetReport(HID_DEV_T *hdev, int rtp_typ, int rtp_id,
-                          uint8_t *data, int len)
+int32_t USBH_HidSetOutputReport(int32_t i32Hanlde, int path[],
+                                    uint32_t depth, char *buffer, uint32_t size)
 {
-    len = usb_snd_control_msg(hdev,
-                              USB_DIR_OUT + USB_TYPE_CLASS + USB_RECIP_INTERFACE,
-                              HID_REPORT_SET,
-                              rtp_id + (rtp_typ << 8),
-                              hdev->ifnum,
-                              (char *)data, len, USB_TIMEOUT);
-
-    if (len < 0) {
-        HID_DBGMSG("failed to set report!\n");
-        return HID_RET_IO_ERR;
-    }
-    return len;
-}
-
-
-/**
- * @brief  HID class standard request Get_Idle request. The Get_Idle request
- *         reads the current idle rate for a particular Input report
- *
- * @param[in] hdev       HID device
- * @param[in] rtp_id     Report ID
- * @param[out] idle_rate An one byte buffer holds the reported idle rate.
- * @return   Success or not.
- * @retval   0           Success
- * @retval   Otherwise   Failed
- */
-int32_t  HID_HidGetIdle(HID_DEV_T *hdev, int rtp_id, uint8_t *idle_rate)
-{
+    HIDInterface * hidif = (HIDInterface *)i32Hanlde;
     int   len;
+    
+    //ASSERT(hid_is_initialised());
+    //ASSERT(hid_is_opened(hidif));
+    //ASSERT(buffer);
 
-    len = usb_rcv_control_msg(hdev,
-                              USB_DIR_IN + USB_TYPE_CLASS + USB_RECIP_INTERFACE,
-                              HID_GET_IDLE,
-                              rtp_id,
-                              hdev->ifnum,
-                              (char *)idle_rate, 1, USB_TIMEOUT);
+    if (!buffer) return HID_RET_INVALID_PARAMETER;
 
-    if (len != 1) {
-        HID_DBGMSG("failed to get idle rate! %d\n", len);
-        return HID_RET_IO_ERR;
+    if (!hid_is_opened(hidif)) {
+        HID_DBGMSG("the device has not been opened.\n");
+        return HID_RET_DEVICE_NOT_OPENED;
     }
-    return HID_RET_OK;
+
+    HID_DBGMSG("looking up report ID...\n");
+    hidif->hid_data->Type = ITEM_OUTPUT;
+    hidif->hid_data->ReportID = 0;
+
+    hid_find_object(hidif, path, depth);
+
+    HID_DBGMSG("sending report ID 0x%02x (length: %d)...\n", hidif->hid_data->ReportID, size);
+
+    len = usb_control_msg(hidif->dev_handle,
+            USB_ENDPOINT_OUT + USB_TYPE_CLASS + USB_RECIP_INTERFACE,
+            HID_REPORT_SET,
+            hidif->hid_data->ReportID + (HID_RT_OUTPUT << 8),
+            hidif->interface,
+            (char*)buffer, size, USB_TIMEOUT);
+
+    if (len < 0) {
+        HID_DBGMSG("failed to send report.\n");
+        return HID_RET_FAIL_SET_REPORT;
+    }
+
+    if (len != (signed)size) 
+    {
+        HID_DBGMSG("failed to send complete report; "
+                "requested: %d bytes, sent: %d bytes.\n", size, len);
+        return HID_RET_FAIL_SET_REPORT;
+    }
+
+    HID_DBGMSG("successfully sent report.\n");
+    return HID_RET_SUCCESS;
 }
 
 
-/**
- * @brief  HID class standard request Set_Idle request. The Set_Idle request
- *         silences a particular report on the Interrupt In pipe until a
- *         new event occurs or the specified amount of time passes.
+/*!@brief Send a control message to retrieve an entire feature report
  *
- * @param[in] hdev       HID device
- * @param[in] rtp_id     Report ID
- * @param[out] idle_rate The idle rate to be set.
- * @return   Success or not.
- * @retval   0           Success
- * @retval   Otherwise   Failed
- */
-int32_t  HID_HidSetIdle(HID_DEV_T *hdev, int rtp_id, uint8_t idle_rate)
-{
-    int       ret;
-    uint16_t  wValue = idle_rate;
-
-    ret = usb_snd_control_msg(hdev,
-                              USB_DIR_OUT + USB_TYPE_CLASS + USB_RECIP_INTERFACE,
-                              HID_GET_IDLE,
-                              rtp_id + (wValue << 8),
-                              hdev->ifnum,
-                              NULL, 0, USB_TIMEOUT);
-
-    if (ret < 0) {
-        HID_DBGMSG("failed to set idle rate! %d\n", ret);
-        return HID_RET_IO_ERR;
-    }
-    return HID_RET_OK;
-}
-
-
-/**
- * @brief  HID class standard request Get_Protocol request. The Get_Protocol
- *         request reads which protocol is currently active (either the boot
- *         protocol or the report protocol.)
+ * To use an interrupt endpoint instead of EP0, use hid_interrupt_read().
  *
- * @param[in] hdev       HID device
- * @param[out] protocol  An one byte buffer holds the protocol code.
- * @return   Success or not.
- * @retval   0           Success
- * @retval   Otherwise   Failed
+ * @param[in] i32Hanlde  HID interface handle
+ * @param[in] path       Path to input item (to find Report ID)
+ * @param[in] depth      See hid_find_object()
+ * @param[out] buffer    Result is stored here
+ * @param[in] size       How many bytes to fetch
  */
-int32_t  HID_HidGetProtocol(HID_DEV_T *hdev, uint8_t *protocol)
+int32_t USBH_HidGetFeatureReport(int32_t i32Hanlde, int path[],
+                                    uint32_t depth, char *buffer, uint32_t size)
 {
+    HIDInterface * hidif = (HIDInterface *)i32Hanlde;
     int   len;
+    
+    //ASSERT(hid_is_initialised());
+    //ASSERT(hid_is_opened(hidif));
+    //ASSERT(buffer);
 
-    len = usb_rcv_control_msg(hdev,
-                              USB_DIR_IN + USB_TYPE_CLASS + USB_RECIP_INTERFACE,
-                              HID_GET_PROTOCOL,
-                              0,
-                              hdev->ifnum,
-                              (char *)protocol, 1, USB_TIMEOUT);
+    if (!buffer) return HID_RET_INVALID_PARAMETER;
 
-    if (len != 1) {
-        HID_DBGMSG("failed to get protocol! %d\n", len);
-        return HID_RET_IO_ERR;
+    if (!hid_is_opened(hidif)) {
+        HID_DBGMSG("the device has not been opened.\n");
+        return HID_RET_DEVICE_NOT_OPENED;
     }
-    return HID_RET_OK;
+
+    HID_DBGMSG("looking up report ID...\n");
+    hidif->hid_data->Type = ITEM_FEATURE;
+    hidif->hid_data->ReportID = 0;
+
+    hid_find_object(hidif, path, depth);
+
+    HID_DBGMSG("retrieving report ID 0x%02x (length: %d)...\n", hidif->hid_data->ReportID, size);
+
+    len = usb_control_msg(hidif->dev_handle,
+            USB_ENDPOINT_IN + USB_TYPE_CLASS + USB_RECIP_INTERFACE,
+            HID_REPORT_GET,
+            hidif->hid_data->ReportID + (HID_RT_FEATURE << 8),
+            hidif->interface,
+            buffer, size, USB_TIMEOUT);
+
+    if (len < 0) {
+        HID_DBGMSG("failed to retrieve report!\n");
+        return HID_RET_FAIL_GET_REPORT;
+    }
+
+    if (len != (signed)size) {
+        HID_DBGMSG("failed to retrieve complete report; "
+                "requested: %d bytes, got: %d bytes.", size, len);
+        return HID_RET_FAIL_GET_REPORT;
+    }
+
+    HID_DBGMSG("successfully retrieved report.\n");
+    return HID_RET_SUCCESS;
 }
 
 
-/**
- * @brief  HID class standard request Set_Protocol request. The Set_Protocol
- *         switches between the boot protocol and the report protocol (or
- *         vice versa).
+/*!@brief Send an entire feature report to the device
  *
- * @param[in] hdev       HID device
- * @param[in] protocol   The protocol to be set.
- * @return   Success or not.
- * @retval   0           Success
- * @retval   Otherwise   Failed
+ * This routine uses a control message to send the report. To use an interrupt
+ * endpoint, use hid_interrupt_write().
+ *
+ * @param[in] i32Hanlde  HID interface handle
+ * @param[in] path       Path to an output item (to find Report ID)
+ * @param[in] depth      See hid_find_object()
+ * @param[in] buffer     Output Report
+ * @param[in] size       How many bytes to send
  */
-int32_t  HID_HidSetProtocol(HID_DEV_T *hdev, uint8_t protocol)
+int32_t USBH_HidSetFeatureReport(int32_t i32Hanlde, int path[],
+                                    uint32_t depth, char * buffer, uint32_t size)
 {
-    int     ret;
+    HIDInterface * hidif = (HIDInterface *)i32Hanlde;
+    int   len;
+    
+    //ASSERT(hid_is_initialised());
+    //ASSERT(hid_is_opened(hidif));
+    //ASSERT(buffer);
 
-    ret = usb_snd_control_msg(hdev,
-                              USB_DIR_OUT + USB_TYPE_CLASS + USB_RECIP_INTERFACE,
-                              HID_SET_PROTOCOL,
-                              protocol,
-                              hdev->ifnum,
-                              NULL, 0, USB_TIMEOUT);
+    if (!buffer) return HID_RET_INVALID_PARAMETER;
 
-    if (ret < 0) {
-        HID_DBGMSG("failed to set protocol! %d\n", ret);
-        return HID_RET_IO_ERR;
+    if (!hid_is_opened(hidif)) {
+        HID_DBGMSG("the device has not been opened.\n");
+        return HID_RET_DEVICE_NOT_OPENED;
     }
-    return HID_RET_OK;
+
+    HID_DBGMSG("looking up report ID...\n");
+    hidif->hid_data->Type = ITEM_FEATURE;
+    hidif->hid_data->ReportID = 0;
+
+    hid_find_object(hidif, path, depth);
+
+    HID_DBGMSG("sending report ID 0x%02x (length: %d)...\n",  hidif->hid_data->ReportID, size);
+
+    len = usb_control_msg(hidif->dev_handle,
+            USB_ENDPOINT_OUT + USB_TYPE_CLASS + USB_RECIP_INTERFACE,
+            HID_REPORT_SET,
+            hidif->hid_data->ReportID + (HID_RT_FEATURE << 8),
+            hidif->interface,
+            (char*)buffer, size, USB_TIMEOUT);
+
+    if (len < 0) {
+        HID_DBGMSG("failed to send report.\n");
+        return HID_RET_FAIL_SET_REPORT;
+    }
+
+    if (len != (signed)size) {
+        HID_DBGMSG("failed to send complete report; "
+                "requested: %d bytes, sent: %d bytes.\n", size, len);
+        return HID_RET_FAIL_SET_REPORT;
+    }
+
+    HID_DBGMSG("successfully sent report.\n");
+    return HID_RET_SUCCESS;
 }
 
+
+/*!
+ * Extract data from a report stored in Buf.
+ * Use Value, Offset, Size and LogMax of pData.
+ * @return Response in pData->Value.
+ *
+ * TODO: Fix this "+8" business if there is only one report ID
+ */
+void GetValue(uint8_t *Buf, HIDData* pData)
+{
+    int     Bit = pData->Offset+8; /* First byte of report indicate report ID */
+    int     Weight = 0;
+    int     State;
+
+    pData->Value = 0;
+
+    while (Weight < pData->Size)
+    {
+        State = Buf[Bit>>3] & (1 << (Bit % 8));
+        if (State)
+        {
+            pData->Value += (1 << Weight);
+        }
+        Weight++;
+        Bit++;
+    }
+/*  if(pData->Value > pData->LogMax)
+        pData->Value=FormatValue(pData->Value, (uchar)((pData->Size-1)/8+1));
+*/
+    if (pData->Value > pData->LogMax)
+        pData->Value |= ~pData->LogMax;
+}
 
 /// @cond HIDDEN_SYMBOLS
 
-/*
- * HID INT-in complete function
- */
-static void  hid_read_irq(URB_T *urb)
+hid_return hid_extract_value(HIDInterface* hidif, uint8_t *buffer, double *value)
 {
-    HID_DEV_T   *hdev;
+    if (!hid_is_opened(hidif)) {
+        HID_DBGMSG("cannot extract value from unopened HIDinterface.\n");
+        return HID_RET_DEVICE_NOT_OPENED;
+    }
+    //ASSERT(hidif->hid_parser);
+    //ASSERT(hidif->hid_data);
 
-    //HID_DBGMSG("hid_read_irq. %d\n", urb->actual_length);
-
-    hdev = find_hid_deivce_by_urb(urb);
-    if (hdev == NULL)
-        return;
-
-    if (urb->status) {
-        HID_DBGMSG("hid_read_irq - has error: 0x%x\n", urb->status);
-        return;
+    if (!buffer) {
+        HID_DBGMSG("cannot extract value into NULL raw buffer.\n");
+        return HID_RET_INVALID_PARAMETER;
     }
 
-    if (hdev->read_func && urb->actual_length)
-        hdev->read_func(hdev, urb->transfer_buffer, urb->actual_length);
-}
-
-/*
- * HID INT-out complete function
- */
-static void  hid_write_irq(URB_T *urb)
-{
-    HID_DEV_T     *hdev;
-
-    //HID_DBGMSG("hid_write_irq. %d\n", urb->actual_length);
-
-    hdev = find_hid_deivce_by_urb(urb);
-    if (hdev == NULL)
-        return;
-
-    if (urb->status) {
-        HID_DBGMSG("hid_write_irq - has error: 0x%x\n", urb->status);
-        return;
+    if (!value) {
+        HID_DBGMSG("cannot extract value into NULL value buffer.\n");
+        return HID_RET_INVALID_PARAMETER;
     }
+    
+    /* Extract the data value */
+    GetValue(buffer, hidif->hid_data);
 
-    if (hdev->write_func)
-        hdev->write_func(hdev, (uint8_t **)&urb->transfer_buffer, &urb->transfer_buffer_length);
+    /* FIXME: unit conversion and exponent?! */
+    *value = hidif->hid_data->Value;
+    
+    return HID_RET_SUCCESS;
 }
-
 
 /// @endcond HIDDEN_SYMBOLS
 
 /**
- *  @brief  Start purge the USB interrupt in transfer.
- *  @param[in] hdev       HID device
- *  @param[in] func       The interrupt in data receiver callback function.
- *  @return   Success or not.
- *  @retval    0          Success
- *  @retval    Otherwise  Failed
+  * @brief  Get size of a report
+ *  @param[in] i32Hanlde   HID interface handle
+ *  @param[in] reportID    Report ID
+ *  @param[in] reportType  Report type
+ *  @param[out] size       the return size of report.
+ *  @retval   0:  Success; Otherwise: failed.
  */
-int32_t USBH_HidStartIntReadPipe(HID_DEV_T *hdev, HID_IR_FUNC *func)
+int32_t USBH_HidGetReportSize(int32_t i32Hanlde, uint32_t reportID, 
+                                    uint32_t reportType, uint32_t *size)
 {
+    HIDInterface * hidif = (HIDInterface *)i32Hanlde;
+
+    if (!hid_is_opened(hidif)) {
+        HID_DBGMSG("cannot get report size of unopened HIDinterface.\n");
+        return HID_RET_DEVICE_NOT_OPENED;
+    }
+    //ASSERT(hidif->hid_parser);
+    //ASSERT(hidif->hid_data);
+    
+    if (!size) {
+        HID_DBGMSG("cannot read report size into NULL size buffer.\n");
+        return HID_RET_INVALID_PARAMETER;
+    }
+    
+    /* FIXME: GetReportOffset has to be rewritten! */
+    *size = *GetReportOffset(hidif->hid_parser, reportID, reportType);
+    
+    return HID_RET_SUCCESS;
+}
+
+/*!@brief Retrieve a numeric input item
+ *
+ * @param[in] i32Hanlde  HID interface handle
+ * @param[in] path       Path to input item
+ * @param[in] depth      See hid_find_object()
+ * @param[out] value     Result from hid_extract_value()
+ *
+ * TODO: Handle exponent and unit conversion (separate library?)
+ */
+int32_t USBH_HidGetItemValue(int32_t i32Hanlde, int path[], uint32_t depth, double *value)
+{
+    HIDInterface * hidif = (HIDInterface *)i32Hanlde;
+    uint32_t    size;
+    uint8_t     buffer[32]; /* TODO: Dynamically allocate the item buffer */
+    int   len;
+    
+    //ASSERT(hid_is_initialised());
+    //ASSERT(hid_is_opened(hidif));
+
+    if (!hid_is_opened(hidif)) {
+        HID_DBGMSG("the device has not been opened.\n");
+        return HID_RET_DEVICE_NOT_OPENED;
+    }
+
+    HID_DBGMSG("retrieving report...\n");
+    hidif->hid_data->Type = ITEM_FEATURE;
+    hidif->hid_data->ReportID = 0;
+
+    /* TODO: i think this and the buffer stuff should be passed in */
+    hid_find_object(hidif, path, depth);
+    USBH_HidGetReportSize((int32_t)hidif, hidif->hid_data->ReportID,
+            hidif->hid_data->Type, &size);
+
+    //ASSERT(size <= 32); /* remove when buffer situation is fixed. */
+
+    len = usb_control_msg(hidif->dev_handle,
+            USB_ENDPOINT_IN + USB_TYPE_CLASS + USB_RECIP_INTERFACE,
+            HID_REPORT_GET,
+            hidif->hid_data->ReportID + (HID_RT_FEATURE << 8),
+            hidif->interface,
+            (char*)buffer, size, USB_TIMEOUT);
+
+    if (len < 0) {
+        HID_DBGMSG("failed to retrieve report.\n");
+        return HID_RET_FAIL_GET_REPORT;
+    }
+
+    if ((unsigned)len != size) {
+        HID_DBGMSG("failed to retrieve complete report; "
+                "requested: %d bytes, got: %d bytes.\n", size, len);
+        return HID_RET_FAIL_GET_REPORT;
+    }
+
+    if (hid_extract_value(hidif, buffer, value) != HID_RET_SUCCESS) {
+        return HID_RET_FAIL_GET_REPORT;
+    }
+
+    HID_DBGMSG("successfully retrieved report.\n");
+    return HID_RET_SUCCESS;
+}
+
+
+/*!@brief Execute a Set_Idle request on an Interrupt In pipe
+ *
+ * This is used to tell a device not to send reports unless something has
+ * changed (duration = 0), or unless a minimum time interval has passed.
+ *
+ * @param[in] i32Hanlde  HID interface handle
+ * @param[in] duration   0 for indefinite, otherwise in increments of 4 ms (to 1020 ms)
+ * @param[in] report_id  0 for all reports, otherwise a Report ID
+ */
+int32_t USBH_HidSetIdle(int32_t i32Hanlde, uint32_t duration, uint32_t report_id) 
+{
+    HIDInterface * hidif = (HIDInterface *)i32Hanlde;
+    int   len;
+    
+    if (duration > 255) {
+        HID_DBGMSG("duration must be in the range [0,255]\n");
+        return HID_RET_INVALID_PARAMETER;
+    }
+
+    if (report_id > 255) {
+        HID_DBGMSG("Report ID must be in the range [0,255]\n");
+        return HID_RET_INVALID_PARAMETER;
+    }
+
+    len = usb_control_msg(hidif->dev_handle,
+            USB_TYPE_CLASS + USB_RECIP_INTERFACE,
+            HID_SET_IDLE,
+            report_id + ((duration & 0xff) << 8),
+            hidif->interface,
+            NULL, 0, USB_TIMEOUT);
+
+    if (len != 0) {
+        HID_DBGMSG("failed to Set_Idle!\n");
+        return HID_RET_FAIL_GET_REPORT;
+    }
+
+    return HID_RET_SUCCESS;
+}
+
+
+/* 
+ * HID INT-in complete function 
+ */
+static void  hid_read_irq(URB_T *urb)
+{
+    HIDInterface  *hidif = (HIDInterface *)urb->context;
+    HID_DEV_T   *hid_dev;
+
+    //HID_DBGMSG("hid_read_irq. %d\n", urb->actual_length);
+
+    if (!hid_is_opened(hidif)) 
+    {
+        HID_DBGMSG("hid_read_irq - the device have been closed!\n");
+        return;
+    }
+
+    hid_dev = find_hid_deivce_by_handle(hidif->dev_handle);
+    if (hid_dev == NULL)
+        return;
+    
+    if (urb->status)
+    {
+        HID_DBGMSG("hid_read_irq - has error: 0x%x\n", urb->status);
+        return; 
+    }
+
+    if (hid_dev->read_func && urb->actual_length)
+        hid_dev->read_func(urb->transfer_buffer, urb->actual_length);
+}
+
+
+/**
+ * @brief  Start purge the USB interrupt in transfer.
+ *  @param[in] i32Hanlde   HID interface handle.
+ *  @param[in] endpoint    The endpoint address of interrupt in pipe.
+ *  @param[in] func        The interrupt in data receiver callback function.
+ *  @retval   0:  Success; Otherwise: failed.
+ */
+int32_t USBH_HidStartIntReadPipe(int32_t i32Hanlde, 
+                                        uint16_t endpoint, HID_INT_READ_FUNC *func)
+{
+    HIDInterface * hidif = (HIDInterface *)i32Hanlde;
+    HID_DEV_T   *hid_dev;
     EP_INFO_T   *ep_info;
     URB_T       *urb;
     uint32_t    pipe;
@@ -374,113 +746,293 @@ int32_t USBH_HidStartIntReadPipe(HID_DEV_T *hdev, HID_IR_FUNC *func)
 
     if (!func)
         return HID_RET_INVALID_PARAMETER;
-
-    udev = hdev->udev;
-
-    if (hdev->urbin)
-        return HID_RET_OUT_OF_MEMORY;
-
-    ep_info = hid_get_ep_info(udev, hdev->ifnum, USB_DIR_IN);
-    if (ep_info == NULL) {
-        HID_DBGMSG("Interrupt-in endpoint not found in this device!\n");
-        return HID_RET_NOT_SUPPORTED;
+    
+    if (!hid_is_opened(hidif)) {
+        HID_DBGMSG("the device has not been opened.\n");
+        return HID_RET_DEVICE_NOT_OPENED;
     }
-
+    
+    hid_dev = find_hid_deivce_by_handle(hidif->dev_handle);
+    if (hid_dev == NULL)
+        return HID_RET_DEVICE_NOT_FOUND;
+    udev = hid_dev->udev;
+        
+    if (hid_dev->urbin)
+        return HID_RET_OUT_OF_SPACE;
+        
+    ep_info = hid_get_ep_info(hid_dev->udev, hid_dev->ifnum, endpoint);
+    if (ep_info == NULL)
+    {
+        HID_DBGMSG("Assigned endpoint address 0x%x not found in this device!\n", endpoint);
+        return HID_RET_INVALID_PARAMETER;
+    }
+    
     urb = USBH_AllocUrb();
-    if (urb == NULL) {
+    if (urb == NULL)
+    {
         HID_DBGMSG("Failed to allocated URB!\n");
-        return HID_RET_OUT_OF_MEMORY;
-    }
-
-    pipe = usb_rcvintpipe(udev, ep_info->bEndpointAddress);
+        return HID_RET_OUT_OF_SPACE;
+    }   
+    
+    pipe = usb_rcvintpipe(udev, endpoint);
     maxp = usb_maxpacket(udev, pipe, usb_pipeout(pipe));
+    
+    HID_DBGMSG("Endpoint 0x%x maximum packet size is %d.\n", endpoint, maxp);
+    
+    FILL_INT_URB(urb, udev, pipe, &hid_dev->inbuf[0], maxp, hid_read_irq,
+                hidif, ep_info->bInterval);
 
-    HID_DBGMSG("Endpoint 0x%x maximum packet size is %d.\n", ep_info->bEndpointAddress, maxp);
-
-    FILL_INT_URB(urb, udev, pipe, &hdev->inbuf[0], maxp, hid_read_irq,
-                 hdev, ep_info->bInterval);
-
-    hdev->urbin = urb;
-    hdev->read_func = func;
+    hid_dev->urbin = urb;
+    hid_dev->read_func = func;
 
     ret = USBH_SubmitUrb(urb);
-    if (ret) {
+    if (ret) 
+    {
         HID_DBGMSG("Error - failed to submit interrupt read request (%d)", ret);
         USBH_FreeUrb(urb);
-        hdev->urbin = NULL;
+        hid_dev->urbin = NULL;
         return HID_RET_IO_ERR;
     }
+    
+    return HID_RET_SUCCESS;
+}
 
-    return HID_RET_OK;
+
+/* 
+ * HID INT-out complete function 
+ */
+static void  hid_write_irq(URB_T *urb)
+{
+    HIDInterface  *hidif = (HIDInterface *)urb->context;
+    HID_DEV_T     *hid_dev;
+
+    //HID_DBGMSG("hid_read_irq. %d\n", urb->actual_length);
+
+    if (!hid_is_opened(hidif)) 
+    {
+        HID_DBGMSG("hid_read_irq - the device have been closed, terminate it.\n");
+        return;
+    }
+
+    hid_dev = find_hid_deivce_by_handle(hidif->dev_handle);
+    if (hid_dev == NULL)
+        return;
+    
+    if (urb->status)
+    {
+        HID_DBGMSG("hid_read_irq - has error: 0x%x\n", urb->status);
+        return; 
+    }
+
+    if (hid_dev->write_func)
+        hid_dev->write_func((uint8_t **)&urb->transfer_buffer, &urb->transfer_buffer_length);
+}
+
+
+/**
+  * @brief  Start purge the USB interrupt out transfer.
+ *  @param[in] i32Hanlde   HID interface handle.
+ *  @param[in] endpoint    The endpoint address of interrupt out pipe.
+ *  @param[in] func        The interrupt in data transfer callback function.
+ *  @retval   0:  Success; Otherwise: failed.
+ */
+int32_t USBH_HidStartIntWritePipe(int32_t i32Hanlde, 
+                                        uint16_t endpoint, HID_INT_WRITE_FUNC *func)
+{
+    HIDInterface * hidif = (HIDInterface *)i32Hanlde;
+    HID_DEV_T   *hid_dev;
+    EP_INFO_T   *ep_info;
+    URB_T       *urb;
+    uint32_t    pipe;
+    USB_DEV_T   *udev;
+    int         maxp, ret;
+    
+    if (!func)
+        return HID_RET_INVALID_PARAMETER;
+    
+    if (!hid_is_opened(hidif)) {
+        HID_DBGMSG("the device has not been opened.\n");
+        return HID_RET_DEVICE_NOT_OPENED;
+    }
+    
+    hid_dev = find_hid_deivce_by_handle(hidif->dev_handle);
+    if (hid_dev == NULL)
+        return HID_RET_DEVICE_NOT_FOUND;
+    udev = hid_dev->udev;
+        
+    if (hid_dev->urbout)
+        return HID_RET_OUT_OF_SPACE;
+        
+    ep_info = hid_get_ep_info(hid_dev->udev, hid_dev->ifnum, endpoint);
+    if (ep_info == NULL)
+    {
+        HID_DBGMSG("Assigned endpoint address 0x%x not found in this device!\n", endpoint);
+        return HID_RET_INVALID_PARAMETER;
+    }
+    
+    urb = USBH_AllocUrb();
+    if (urb == NULL)
+    {
+        HID_DBGMSG("Failed to allocated URB!\n");
+        return HID_RET_OUT_OF_SPACE;
+    }   
+    
+    pipe = usb_sndintpipe(udev, endpoint);
+    maxp = usb_maxpacket(udev, pipe, usb_pipeout(pipe));
+    
+    HID_DBGMSG("Endpoint 0x%x maximum packet size is %d.\n", endpoint, maxp);
+    
+    FILL_INT_URB(urb, udev, pipe, NULL, maxp, hid_write_irq,
+                                            hidif, ep_info->bInterval);
+
+    func((uint8_t **)&urb->transfer_buffer, &urb->transfer_buffer_length);
+
+    hid_dev->urbout = urb;
+    hid_dev->write_func = func;
+
+    ret = USBH_SubmitUrb(urb);
+    if (ret) 
+    {
+        HID_DBGMSG("Error - failed to submit interrupt read request (%d)", ret);
+        USBH_FreeUrb(urb);
+        hid_dev->urbout = NULL;
+        return HID_RET_IO_ERR;
+    }
+    
+    return HID_RET_SUCCESS;
+}
+
+/// @cond HIDDEN_SYMBOLS
+
+const char *hid_strerror(hid_return ret)
+{
+    switch(ret) {
+        case HID_RET_SUCCESS:
+            return "libhid: success";
+        case HID_RET_INVALID_PARAMETER:
+            return "libhid: invalid parameter";
+        case HID_RET_NOT_INITIALISED:
+            return "libhid: not initialized; call hid_init() first";
+        case HID_RET_ALREADY_INITIALISED:
+            return "libhid: hid_init() already called";
+        case HID_RET_FAIL_FIND_BUSSES:
+            return "libhid: failed to find any USB busses";
+        case HID_RET_FAIL_FIND_DEVICES:
+            return "libhid: failed to find any USB devices";
+        case HID_RET_FAIL_OPEN_DEVICE:
+            return "libhid: failed to open device";
+        case HID_RET_DEVICE_NOT_FOUND:
+            return "libhid: device not found";
+        case HID_RET_DEVICE_NOT_OPENED:
+            return "libhid: device not yet opened";
+        case HID_RET_DEVICE_ALREADY_OPENED:
+            return "libhid: device already opened";
+        case HID_RET_FAIL_CLOSE_DEVICE:
+            return "libhid: could not close device";
+        case HID_RET_FAIL_CLAIM_IFACE:
+            return "libhid: failed to claim interface; is another driver using it?";
+        case HID_RET_FAIL_DETACH_DRIVER:
+            return "libhid: failed to detach kernel driver";
+        case HID_RET_NOT_HID_DEVICE:
+            return "libhid: not recognized as a HID device";
+        case HID_RET_HID_DESC_SHORT:
+            return "libhid: HID interface descriptor too short";
+        case HID_RET_REPORT_DESC_SHORT:
+            return "libhid: HID report descriptor too short";
+        case HID_RET_REPORT_DESC_LONG:
+            return "libhid: HID report descriptor too long";
+        case HID_RET_FAIL_ALLOC:
+            return "libhid: failed to allocate memory";
+        case HID_RET_OUT_OF_SPACE:
+            return "libhid: no space left in buffer";
+        case HID_RET_FAIL_SET_REPORT:
+            return "libhid: failed to set report";
+        case HID_RET_FAIL_GET_REPORT:
+            return "libhid: failed to get report";
+        case HID_RET_FAIL_INT_READ:
+            return "libhid: interrupt read failed";
+        case HID_RET_NOT_FOUND:
+            return "libhid: not found";
+        case HID_RET_TIMEOUT:
+            return "libhid: timeout";
+    }
+    return "libhid: unknown error";
+}
+
+/// @endcond HIDDEN_SYMBOLS
+
+
+/**
+  * @brief  Probe and open a HID device.
+ *  @param[in] interface   The interface number of HID device.
+ *  @param[in] matcher     The HID device search conditions.
+ *  @param[in] handle      The return handle of HID device if matched.
+ *  @retval   0:  Success; Otherwise: failed.
+ */
+int32_t USBH_HidOpen(int interface, HIDInterfaceMatcher *matcher, int32_t * handle)
+{
+    HIDInterface  * hidif;
+    hid_return ret;
+    
+    if (!matcher)   {
+        return HID_RET_INVALID_PARAMETER;
+    }
+
+    hidif = hid_new_HIDInterface();
+    if (hidif == NULL) {
+        return HID_RET_FAIL_ALLOC;
+    }
+
+    hidif->interface = interface;
+    
+    ret = usbh_hid_find_device(hidif, matcher);
+    if (ret != HID_RET_SUCCESS)
+    {
+        hid_delete_HIDInterface(&hidif);
+        return ret;
+    }
+
+    //HID_DBGMSG("claiming  USB device %s.", hidif->id);
+    //if (usb_claim_interface(hidif->dev_handle, interface) <   0) {
+    //  WARNING("failed to claim USB device %s.",   hidif->id);
+    //  USBH_HidClose((int32_t)hidif);
+    //  return HID_RET_FAIL_CLAIM_IFACE;
+    //}
+    //NOTICE("successfully claimed USB device   %s.",   hidif->id);
+
+    ret = hid_prepare_interface(hidif);
+    if (ret != HID_RET_SUCCESS) 
+    {
+        hid_delete_HIDInterface(&hidif);
+        return ret;
+    }
+    
+    *handle = (int32_t)hidif;
+
+    return HID_RET_SUCCESS;
 }
 
 /**
- *  @brief  Start purge the USB interrupt out transfer.
- *  @param[in] hdev       HID device
- *  @param[in] func       The interrupt in data transfer callback function.
- *  @return   Success or not.
- *  @retval   0           Success
- *  @retval   Otherwise   Failed
+ * @brief  Close a HID device. 
+ *  @retval   0:  Success; Otherwise: failed.
  */
-int32_t USBH_HidStartIntWritePipe(HID_DEV_T *hdev, HID_IW_FUNC *func)
+
+int32_t  USBH_HidClose(int32_t i32Hanlde)
 {
-    EP_INFO_T   *ep_info;
-    URB_T       *urb;
-    uint32_t    pipe;
-    USB_DEV_T   *udev;
-    int         maxp, ret;
-
-    if (!func)
-        return HID_RET_INVALID_PARAMETER;
-
-    udev = hdev->udev;
-
-    if (hdev->urbout)
-        return HID_RET_OUT_OF_MEMORY;
-
-    ep_info = hid_get_ep_info(hdev->udev, hdev->ifnum, USB_DIR_OUT);
-    if (ep_info == NULL) {
-        HID_DBGMSG("Assigned endpoint address 0x%x not found in this device!\n", ep_info->bEndpointAddress);
-        return HID_RET_INVALID_PARAMETER;
-    }
-
-    urb = USBH_AllocUrb();
-    if (urb == NULL) {
-        HID_DBGMSG("Failed to allocated URB!\n");
-        return HID_RET_OUT_OF_MEMORY;
-    }
-
-    pipe = usb_sndintpipe(udev, ep_info->bEndpointAddress);
-    maxp = usb_maxpacket(udev, pipe, usb_pipeout(pipe));
-
-    HID_DBGMSG("Endpoint 0x%x maximum packet size is %d.\n", ep_info->bEndpointAddress, maxp);
-
-    FILL_INT_URB(urb, udev, pipe, NULL, maxp, hid_write_irq,
-                 hdev, ep_info->bInterval);
-
-    func(hdev, (uint8_t **)&urb->transfer_buffer, &urb->transfer_buffer_length);
-
-    hdev->urbout = urb;
-    hdev->write_func = func;
-
-    ret = USBH_SubmitUrb(urb);
-    if (ret) {
-        HID_DBGMSG("Error - failed to submit interrupt read request (%d)", ret);
-        USBH_FreeUrb(urb);
-        hdev->urbout = NULL;
-        return HID_RET_IO_ERR;
-    }
-
-    return HID_RET_OK;
+    HIDInterface * hidif = (HIDInterface *)i32Hanlde;
+    
+    if (hidif->hid_parser) ResetParser(hidif->hid_parser);
+        
+#ifdef STATIC_MEMORY    
+    g_hid_parser_used = 0;
+    g_hid_data_used = 0;
+#else
+    if (hidif->hid_parser) free(hidif->hid_parser);
+    if (hidif->hid_data) free(hidif->hid_data);
+#endif
+        
+    hid_delete_HIDInterface(&hidif);
+    return HID_RET_SUCCESS;
 }
-
-
-/*@}*/ /* end of group NUC472_442_USBH_HID_EXPORTED_FUNCTIONS */
-
-/*@}*/ /* end of group NUC472_442_USBH_HID_Driver */
-
-/*@}*/ /* end of group NUC472_442_Device_Driver */
-
-/*** (C) COPYRIGHT 2013 Nuvoton Technology Corp. ***/
 
 

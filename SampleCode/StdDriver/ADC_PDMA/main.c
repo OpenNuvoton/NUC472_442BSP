@@ -1,8 +1,8 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * $Revision: 9 $
- * $Date: 14/10/02 7:10p $
+ * $Revision: 10 $
+ * $Date: 16/06/07 11:46a $
  * @brief    Use PDMA channel 1 to move ADC channel 0, 1, 2 converted data to SRAM.
  *
  * @note
@@ -34,8 +34,6 @@ void PDMA_IRQHandler(void)
         if (PDMA_GET_TD_STS() & 0x2)    /* channel 1 done */
             g_u32PdmaTDoneInt = 1;
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF_Msk);
-    } else if (u32Status & 0x200) { /* channel 1 timeout */
-        PDMA_CLR_TMOUT_FLAG(1);
     } else
         printf("unknown interrupt, status=0x%x!!\n", u32Status);
 }
@@ -138,10 +136,9 @@ void PDMA_INIT(void)
     PDMA_SetTransferAddr(1, u32EndSrc, PDMA_SAR_FIX, u32EndDst, PDMA_DAR_INC);
     PDMA_SetBurstType(1, PDMA_REQ_SINGLE, PDMA_BURST_128);
     PDMA->DSCT[1].CTL |= 1;
-    PDMA_SetTimeOut(1, 0, 0x5555);
     PDMA_EnableInt(1, 0);
 
-    /* Set PDMA Channel 1 for ADC, and start timeout counting */
+    /* Set PDMA Channel 1 for ADC */
     PDMA_SetTransferMode(1, PDMA_ADC, 0, 0);
 }
 

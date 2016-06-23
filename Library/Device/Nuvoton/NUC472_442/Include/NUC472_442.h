@@ -1,8 +1,8 @@
 /**************************************************************************//**
  * @file     NUC472_442.h
  * @version  V1.00
- * $Revision: 172 $
- * $Date: 15/12/01 11:31a $
+ * $Revision: 173 $
+ * $Date: 16/06/07 11:24a $
  * @brief    NUC472/NUC442 peripheral access layer header file.
  *           This file contains all the peripheral register's definitions,
  *           bits definitions and memory mapping for NuMicro NUC472/NUC442 MCU.
@@ -18367,11 +18367,6 @@ typedef struct {
      * |        |          |0 = Not finished yet.
      * |        |          |1 = PDMA channel has finished and the operation is Stop mode.
      * |        |          |Note: This field is Read only.
-     * |[8:23]  |REQTOFX   |Time-Out Status Flag For Each Channel
-     * |        |          |This flag indicates that PDMA has waited peripheral request for a period defined by TIMECNTX
-     * |        |          |0 = No time-out flag.
-     * |        |          |1 = Time-out flag.
-     * |        |          |Note: This field is Read only, but software can write 1 to clear it.
     */
     __IO uint32_t INTSTS;
 
@@ -18453,135 +18448,8 @@ typedef struct {
     */
     __IO uint32_t SCATBA;
 
-    /**
-     * TOC0_1
-     * ===================================================================================================
-     * Offset: 0x440  PDMA Time-out Period Counter Ch1 and Ch0 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0:15]  |TOC0      |Time-Out Period Counter For Channel 0
-     * |        |          |This controls the period of time-out function for channel 0.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-     * |[16:31] |TOC1      |Time-Out Period Counter For Channel 1
-     * |        |          |This controls the period of time-out function for channel 1.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-    */
-    __IO uint32_t TOC0_1;
-
-    /**
-     * TOC2_3
-     * ===================================================================================================
-     * Offset: 0x444  PDMA Time-out Period Counter Ch3 and Ch2 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0:15]  |TOC2      |Time-Out Period Counter For Channel 2
-     * |        |          |This controls the period of time-out function for channel 2.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-     * |[16:31] |TOC3      |Time-Out Period Counter For Channel 3
-     * |        |          |This controls the period of time-out function for channel 3.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-    */
-    __IO uint32_t TOC2_3;
-
-    /**
-     * TOC4_5
-     * ===================================================================================================
-     * Offset: 0x448  PDMA Time-out Period Counter Ch5 and Ch4 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0:15]  |TOC4      |Time-Out Period Counter For Channel 4
-     * |        |          |This controls the period of time-out function for channel 4.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-     * |[16:31] |TOC5      |Time-Out Period Counter For Channel 5
-     * |        |          |This controls the period of time-out function for channel 5.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-    */
-    __IO uint32_t TOC4_5;
-
-    /**
-     * TOC6_7
-     * ===================================================================================================
-     * Offset: 0x44C  PDMA Time-out Period Counter Ch7 and Ch6 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0:15]  |TOC6      |Time-Out Period Counter For Channel 6
-     * |        |          |This controls the period of time-out function for channel 6.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-     * |[16:31] |TOC7      |Time-Out Period Counter For Channel 7
-     * |        |          |This controls the period of time-out function for channel 7.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-    */
-    __IO uint32_t TOC6_7;
-
-    /**
-     * TOC8_9
-     * ===================================================================================================
-     * Offset: 0x450  PDMA Time-out Period Counter Ch9 and Ch8 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0:15]  |TOC8      |Time-Out Period Counter For Channel 8
-     * |        |          |This controls the period of time-out function for channel 8.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-     * |[16:31] |TOC9      |Time-Out Period Counter For Channel 9
-     * |        |          |This controls the period of time-out function for channel 9.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-    */
-    __IO uint32_t TOC8_9;
-
-    /**
-     * TOC10_11
-     * ===================================================================================================
-     * Offset: 0x454  PDMA Time-out Period Counter Ch11 and Ch10 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0:15]  |TOC10     |Time-Out Period Counter For Channel 10
-     * |        |          |This controls the period of time-out function for channel 10.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-     * |[16:31] |TOC11     |Time-Out Period Counter For Channel 11
-     * |        |          |This controls the period of time-out function for channel 11.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-    */
-    __IO uint32_t TOC10_11;
-
-    /**
-     * TOC12_13
-     * ===================================================================================================
-     * Offset: 0x458  PDMA Time-out Period Counter Ch13 and Ch12 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0:15]  |TOC12     |Time-Out Period Counter For Channel 12
-     * |        |          |This controls the period of time-out function for channel 12.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-     * |[16:31] |TOC13     |Time-Out Period Counter For Channel 13
-     * |        |          |This controls the period of time-out function for channel 13.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-    */
-    __IO uint32_t TOC12_13;
-
-    /**
-     * TOC14_15
-     * ===================================================================================================
-     * Offset: 0x45C  PDMA Time-out Period Counter Ch15 and Ch14 Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0:15]  |TOC14     |Time-Out Period Counter For Channel 14
-     * |        |          |This control the period of time-out function for channel 14.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-     * |[16:31] |TOC15     |Time-Out Period Counter For Channel 15
-     * |        |          |This control the period of time-out function for channel 15.
-     * |        |          |The calculation unit is based on 10 kHz clock.
-    */
-    __IO uint32_t TOC14_15;
     /// @cond HIDDEN_SYMBOLS
-    uint32_t RESERVE2[8];
+    uint32_t RESERVE2[16];
     /// @endcond //HIDDEN_SYMBOLS
 
 
@@ -18801,9 +18669,6 @@ typedef struct {
 #define PDMA_INTSTS_TEIF_Pos             (2)                                               /*!< PDMA_T::INTSTS: TEIF Position             */
 #define PDMA_INTSTS_TEIF_Msk             (0x1ul << PDMA_INTSTS_TEIF_Pos)                   /*!< PDMA_T::INTSTS: TEIF Mask                 */
 
-#define PDMA_INTSTS_REQTOFX_Pos          (8)                                               /*!< PDMA_T::INTSTS: REQTOFX Position          */
-#define PDMA_INTSTS_REQTOFX_Msk          (0xfffful << PDMA_INTSTS_REQTOFX_Pos)             /*!< PDMA_T::INTSTS: REQTOFX Mask              */
-
 #define PDMA_ABTSTS_ABTIF_Pos            (0)                                               /*!< PDMA_T::ABTSTS: ABTIF Position            */
 #define PDMA_ABTSTS_ABTIF_Msk            (0xfffful << PDMA_ABTSTS_ABTIF_Pos)               /*!< PDMA_T::ABTSTS: ABTIF Mask                */
 
@@ -18818,54 +18683,6 @@ typedef struct {
 
 #define PDMA_SCATBA_SCATBA_Pos           (16)                                              /*!< PDMA_T::SCATBA: SCATBA Position           */
 #define PDMA_SCATBA_SCATBA_Msk           (0xfffful << PDMA_SCATBA_SCATBA_Pos)              /*!< PDMA_T::SCATBA: SCATBA Mask               */
-
-#define PDMA_TOC0_1_TOC0_Pos             (0)                                               /*!< PDMA_T::TOC0_1: TOC0 Position             */
-#define PDMA_TOC0_1_TOC0_Msk             (0xfffful << PDMA_TOC0_1_TOC0_Pos)                /*!< PDMA_T::TOC0_1: TOC0 Mask                 */
-
-#define PDMA_TOC0_1_TOC1_Pos             (16)                                              /*!< PDMA_T::TOC0_1: TOC1 Position             */
-#define PDMA_TOC0_1_TOC1_Msk             (0xfffful << PDMA_TOC0_1_TOC1_Pos)                /*!< PDMA_T::TOC0_1: TOC1 Mask                 */
-
-#define PDMA_TOC2_3_TOC2_Pos             (0)                                               /*!< PDMA_T::TOC2_3: TOC2 Position             */
-#define PDMA_TOC2_3_TOC2_Msk             (0xfffful << PDMA_TOC2_3_TOC2_Pos)                /*!< PDMA_T::TOC2_3: TOC2 Mask                 */
-
-#define PDMA_TOC2_3_TOC3_Pos             (16)                                              /*!< PDMA_T::TOC2_3: TOC3 Position             */
-#define PDMA_TOC2_3_TOC3_Msk             (0xfffful << PDMA_TOC2_3_TOC3_Pos)                /*!< PDMA_T::TOC2_3: TOC3 Mask                 */
-
-#define PDMA_TOC4_5_TOC4_Pos             (0)                                               /*!< PDMA_T::TOC4_5: TOC4 Position             */
-#define PDMA_TOC4_5_TOC4_Msk             (0xfffful << PDMA_TOC4_5_TOC4_Pos)                /*!< PDMA_T::TOC4_5: TOC4 Mask                 */
-
-#define PDMA_TOC4_5_TOC5_Pos             (16)                                              /*!< PDMA_T::TOC4_5: TOC5 Position             */
-#define PDMA_TOC4_5_TOC5_Msk             (0xfffful << PDMA_TOC4_5_TOC5_Pos)                /*!< PDMA_T::TOC4_5: TOC5 Mask                 */
-
-#define PDMA_TOC6_7_TOC6_Pos             (0)                                               /*!< PDMA_T::TOC6_7: TOC6 Position             */
-#define PDMA_TOC6_7_TOC6_Msk             (0xfffful << PDMA_TOC6_7_TOC6_Pos)                /*!< PDMA_T::TOC6_7: TOC6 Mask                 */
-
-#define PDMA_TOC6_7_TOC7_Pos             (16)                                              /*!< PDMA_T::TOC6_7: TOC7 Position             */
-#define PDMA_TOC6_7_TOC7_Msk             (0xfffful << PDMA_TOC6_7_TOC7_Pos)                /*!< PDMA_T::TOC6_7: TOC7 Mask                 */
-
-#define PDMA_TOC8_9_TOC8_Pos             (0)                                               /*!< PDMA_T::TOC8_9: TOC8 Position             */
-#define PDMA_TOC8_9_TOC8_Msk             (0xfffful << PDMA_TOC8_9_TOC8_Pos)                /*!< PDMA_T::TOC8_9: TOC8 Mask                 */
-
-#define PDMA_TOC8_9_TOC9_Pos             (16)                                              /*!< PDMA_T::TOC8_9: TOC9 Position             */
-#define PDMA_TOC8_9_TOC9_Msk             (0xfffful << PDMA_TOC8_9_TOC9_Pos)                /*!< PDMA_T::TOC8_9: TOC9 Mask                 */
-
-#define PDMA_TOC10_11_TOC10_Pos          (0)                                               /*!< PDMA_T::TOC10_11: TOC10 Position          */
-#define PDMA_TOC10_11_TOC10_Msk          (0xfffful << PDMA_TOC10_11_TOC10_Pos)             /*!< PDMA_T::TOC10_11: TOC10 Mask              */
-
-#define PDMA_TOC10_11_TOC11_Pos          (16)                                              /*!< PDMA_T::TOC10_11: TOC11 Position          */
-#define PDMA_TOC10_11_TOC11_Msk          (0xfffful << PDMA_TOC10_11_TOC11_Pos)             /*!< PDMA_T::TOC10_11: TOC11 Mask              */
-
-#define PDMA_TOC12_13_TOC12_Pos          (0)                                               /*!< PDMA_T::TOC12_13: TOC12 Position          */
-#define PDMA_TOC12_13_TOC12_Msk          (0xfffful << PDMA_TOC12_13_TOC12_Pos)             /*!< PDMA_T::TOC12_13: TOC12 Mask              */
-
-#define PDMA_TOC12_13_TOC13_Pos          (16)                                              /*!< PDMA_T::TOC12_13: TOC13 Position          */
-#define PDMA_TOC12_13_TOC13_Msk          (0xfffful << PDMA_TOC12_13_TOC13_Pos)             /*!< PDMA_T::TOC12_13: TOC13 Mask              */
-
-#define PDMA_TOC14_15_TOC14_Pos          (0)                                               /*!< PDMA_T::TOC14_15: TOC14 Position          */
-#define PDMA_TOC14_15_TOC14_Msk          (0xfffful << PDMA_TOC14_15_TOC14_Pos)             /*!< PDMA_T::TOC14_15: TOC14 Mask              */
-
-#define PDMA_TOC14_15_TOC15_Pos          (16)                                              /*!< PDMA_T::TOC14_15: TOC15 Position          */
-#define PDMA_TOC14_15_TOC15_Msk          (0xfffful << PDMA_TOC14_15_TOC15_Pos)             /*!< PDMA_T::TOC14_15: TOC15 Mask              */
 
 #define PDMA_REQSEL0_3_REQSRC0_Pos       (0)                                               /*!< PDMA_T::REQSEL0_3: REQSRC0 Position       */
 #define PDMA_REQSEL0_3_REQSRC0_Msk       (0x1ful << PDMA_REQSEL0_3_REQSRC0_Pos)            /*!< PDMA_T::REQSEL0_3: REQSRC0 Mask           */

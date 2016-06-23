@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * $Date: 14/06/30 10:47a $
+ * $Date: 16/06/07 11:15a $
  * @brief    Use PDMA channel 2 to demonstrate memory to memory transfer
  *
  * @note
@@ -40,9 +40,6 @@ void PDMA_IRQHandler(void)
         if (PDMA_GET_TD_STS() & 0x4)
             u32IsTestOver = 1;
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF_Msk);
-    } else if (status & 0x400) { /* channel 2 timeout */
-        u32IsTestOver = 3;
-        PDMA_CLR_TMOUT_FLAG(2);
     } else
         printf("unknown interrupt !!\n");
 }
@@ -128,10 +125,8 @@ int main (void)
     u32EndDst = (uint32_t)DestArray + PDMA_TEST_LENGTH * 4;
     PDMA_SetTransferAddr(2, u32EndSrc, PDMA_SAR_INC, u32EndDst, PDMA_DAR_INC);
     PDMA_SetBurstType(2, PDMA_REQ_BURST, PDMA_BURST_4);
-    PDMA_SetTimeOut(2, 0, 0x5555);
     PDMA_EnableInt(2, 0);
     NVIC_EnableIRQ(PDMA_IRQn);
-    /* Set transfer to Peripheral will start timeout counting, besides PDMA_MEM */
     PDMA_SetTransferMode(2, PDMA_MEM, 0, 0);
     u32IsTestOver = 0;
     PDMA_Trigger(2);
@@ -141,8 +136,7 @@ int main (void)
         printf("test done...\n");
     else if (u32IsTestOver == 2)
         printf("target abort...\n");
-    else if (u32IsTestOver == 3)
-        printf("timeout...\n");
+
 
     PDMA_Close();
 

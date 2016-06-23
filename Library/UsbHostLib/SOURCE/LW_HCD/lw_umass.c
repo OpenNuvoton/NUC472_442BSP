@@ -1,8 +1,8 @@
 /**************************************************************************//**
  * @file     lw_umass.c
  * @version  V1.00
- * $Revision: 4 $
- * $Date: 14/10/07 4:33p $
+ * $Revision: 5 $
+ * $Date: 15/12/07 9:16a $
  * @brief    Light-weight USB mass storage class driver
  *
  * @note
@@ -307,8 +307,13 @@ DRESULT  usbh_umas_ioctl(int cmd, void *buff)
         *(uint32_t *)buff = g_sector_size;
         return RES_OK;
 
+#if (_FATFS == 82786)
     case CTRL_ERASE_SECTOR:
         return RES_OK;
+#else        
+    case CTRL_TRIM:
+        return RES_OK;
+#endif
     }
     return RES_PARERR;
 }
