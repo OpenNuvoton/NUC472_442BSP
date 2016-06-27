@@ -1,28 +1,28 @@
 /**************************************************************************//**
  * @file     pdma.c
  * @version  V1.00
- * $Revision: 10 $
- * $Date: 16/06/07 11:13a $
- * @brief    NUC400 series PDMA driver source file
+ * $Revision: 8 $
+ * $Date: 15/03/16 3:17p $
+ * @brief    NUC472/NUC442 PDMA driver source file
  *
  * @note
  * Copyright (C) 2013 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
-#include "nuc400series.h"
+#include "NUC472_442.h"
 
 
 static uint8_t u32ChSelect[PDMA_CH_MAX];
 
-/** @addtogroup NUC400_Device_Driver NUC400 Device Driver
+/** @addtogroup NUC472_442_Device_Driver NUC472/NUC442 Device Driver
   @{
 */
 
-/** @addtogroup NUC400_PDMA_Driver PDMA Driver
+/** @addtogroup NUC472_442_PDMA_Driver PDMA Driver
   @{
 */
 
 
-/** @addtogroup NUC400_PDMA_EXPORTED_FUNCTIONS PDMA Exported Functions
+/** @addtogroup NUC472_442_PDMA_EXPORTED_FUNCTIONS PDMA Exported Functions
   @{
 */
 
@@ -40,9 +40,12 @@ void PDMA_Open(uint32_t u32Mask)
     int volatile i;
 
     for (i=0; i<PDMA_CH_MAX; i++)
+    {
+        PDMA->DSCT[i].CTL = 0;
         u32ChSelect[i] = 0x1f;
+    }
 
-    PDMA->CHCON |= u32Mask;
+    PDMA->CHCTL |= u32Mask;
 }
 
 /**
@@ -56,7 +59,7 @@ void PDMA_Open(uint32_t u32Mask)
  */
 void PDMA_Close(void)
 {
-    PDMA->CHCON = 0;
+    PDMA->CHCTL = 0;
 }
 
 /**
@@ -72,8 +75,8 @@ void PDMA_Close(void)
  */
 void PDMA_SetTransferCnt(uint32_t u32Ch, uint32_t u32Width, uint32_t u32TransCount)
 {
-    PDMA->DSCT[u32Ch].CTRL &= ~(PDMA_DSCT_CTRL_TFR_CNT_Msk | PDMA_DSCT_CTRL_TWS_Msk);
-    PDMA->DSCT[u32Ch].CTRL |= (u32Width | (u32TransCount << PDMA_DSCT_CTRL_TFR_CNT_Pos));
+    PDMA->DSCT[u32Ch].CTL &= ~(PDMA_DSCT_CTL_TXCNT_Msk | PDMA_DSCT_CTL_TXWIDTH_Msk);
+    PDMA->DSCT[u32Ch].CTL |= (u32Width | ((u32TransCount-1) << PDMA_DSCT_CTL_TXCNT_Pos));
 }
 
 /**
@@ -91,10 +94,10 @@ void PDMA_SetTransferCnt(uint32_t u32Ch, uint32_t u32Width, uint32_t u32TransCou
  */
 void PDMA_SetTransferAddr(uint32_t u32Ch, uint32_t u32SrcAddr, uint32_t u32SrcCtrl, uint32_t u32DstAddr, uint32_t u32DstCtrl)
 {
-    PDMA->DSCT[u32Ch].ENDSAR = u32SrcAddr;
-    PDMA->DSCT[u32Ch].ENDDAR = u32DstAddr;
-    PDMA->DSCT[u32Ch].CTRL &= ~(PDMA_DSCT_CTRL_SAR_INC_Msk | PDMA_DSCT_CTRL_DAR_INC_Msk);
-    PDMA->DSCT[u32Ch].CTRL |= (u32SrcCtrl | u32DstCtrl);
+    PDMA->DSCT[u32Ch].ENDSA = u32SrcAddr;
+    PDMA->DSCT[u32Ch].ENDDA = u32DstAddr;
+    PDMA->DSCT[u32Ch].CTL &= ~(PDMA_DSCT_CTL_SAINC_Msk | PDMA_DSCT_CTL_DAINC_Msk);
+    PDMA->DSCT[u32Ch].CTL |= (u32SrcCtrl | u32DstCtrl);
 }
 
 /**
@@ -114,66 +117,67 @@ void PDMA_SetTransferMode(uint32_t u32Ch, uint32_t u32Peripheral, uint32_t u32Sc
     u32ChSelect[u32Ch] = u32Peripheral;
     switch (u32Ch) {
     case 0:
-        PDMA->SMSEL0 = (PDMA->SMSEL0 & ~PDMA_SMSEL0_CH0_SEL_Msk) | u32Peripheral;
+        PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC0_Msk) | u32Peripheral;
         break;
     case 1:
-        PDMA->SMSEL0 = (PDMA->SMSEL0 & ~PDMA_SMSEL0_CH1_SEL_Msk) | (u32Peripheral << PDMA_SMSEL0_CH1_SEL_Pos);
+        PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC1_Msk) | (u32Peripheral << PDMA_REQSEL0_3_REQSRC1_Pos);
         break;
     case 2:
-        PDMA->SMSEL0 = (PDMA->SMSEL0 & ~PDMA_SMSEL0_CH2_SEL_Msk) | (u32Peripheral << PDMA_SMSEL0_CH2_SEL_Pos);
+        PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC2_Msk) | (u32Peripheral << PDMA_REQSEL0_3_REQSRC2_Pos);
         break;
     case 3:
-        PDMA->SMSEL0 = (PDMA->SMSEL0 & ~PDMA_SMSEL0_CH3_SEL_Msk) | (u32Peripheral << PDMA_SMSEL0_CH3_SEL_Pos);
+        PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC3_Msk) | (u32Peripheral << PDMA_REQSEL0_3_REQSRC3_Pos);
         break;
     case 4:
-        PDMA->SMSEL1 = (PDMA->SMSEL1 & ~PDMA_SMSEL1_CH4_SEL_Msk) | u32Peripheral;
+        PDMA->REQSEL4_7 = (PDMA->REQSEL4_7 & ~PDMA_REQSEL4_7_REQSRC4_Msk) | u32Peripheral;
         break;
     case 5:
-        PDMA->SMSEL1 = (PDMA->SMSEL1 & ~PDMA_SMSEL1_CH5_SEL_Msk) | (u32Peripheral << PDMA_SMSEL1_CH5_SEL_Pos);
+        PDMA->REQSEL4_7 = (PDMA->REQSEL4_7 & ~PDMA_REQSEL4_7_REQSRC5_Msk) | (u32Peripheral << PDMA_REQSEL4_7_REQSRC5_Pos);
         break;
     case 6:
-        PDMA->SMSEL1 = (PDMA->SMSEL1 & ~PDMA_SMSEL1_CH6_SEL_Msk) | (u32Peripheral << PDMA_SMSEL1_CH6_SEL_Pos);
+        PDMA->REQSEL4_7 = (PDMA->REQSEL4_7 & ~PDMA_REQSEL4_7_REQSRC6_Msk) | (u32Peripheral << PDMA_REQSEL4_7_REQSRC6_Pos);
         break;
     case 7:
-        PDMA->SMSEL1 = (PDMA->SMSEL1 & ~PDMA_SMSEL1_CH7_SEL_Msk) | (u32Peripheral << PDMA_SMSEL1_CH7_SEL_Pos);
+        PDMA->REQSEL4_7 = (PDMA->REQSEL4_7 & ~PDMA_REQSEL4_7_REQSRC7_Msk) | (u32Peripheral << PDMA_REQSEL4_7_REQSRC7_Pos);
         break;
     case 8:
-        PDMA->SMSEL2 = (PDMA->SMSEL2 & ~PDMA_SMSEL2_CH8_SEL_Msk) | u32Peripheral;
+        PDMA->REQSEL8_11 = (PDMA->REQSEL8_11 & ~PDMA_REQSEL8_11_REQSRC8_Msk) | u32Peripheral;
         break;
     case 9:
-        PDMA->SMSEL2 = (PDMA->SMSEL2 & ~PDMA_SMSEL2_CH9_SEL_Msk) | (u32Peripheral << PDMA_SMSEL2_CH9_SEL_Pos);
+        PDMA->REQSEL8_11 = (PDMA->REQSEL8_11 & ~PDMA_REQSEL8_11_REQSRC9_Msk) | (u32Peripheral << PDMA_REQSEL8_11_REQSRC9_Pos);
         break;
     case 10:
-        PDMA->SMSEL2 = (PDMA->SMSEL2 & ~PDMA_SMSEL2_CH10_SEL_Msk) | (u32Peripheral << PDMA_SMSEL2_CH10_SEL_Pos);
+        PDMA->REQSEL8_11 = (PDMA->REQSEL8_11 & ~PDMA_REQSEL8_11_REQSRC10_Msk) | (u32Peripheral << PDMA_REQSEL8_11_REQSRC10_Pos);
         break;
     case 11:
-        PDMA->SMSEL2 = (PDMA->SMSEL2 & ~PDMA_SMSEL2_CH11_SEL_Msk) | (u32Peripheral << PDMA_SMSEL2_CH11_SEL_Pos);
+        PDMA->REQSEL8_11 = (PDMA->REQSEL8_11 & ~PDMA_REQSEL8_11_REQSRC11_Msk) | (u32Peripheral << PDMA_REQSEL8_11_REQSRC11_Pos);
         break;
     case 12:
-        PDMA->SMSEL3 = (PDMA->SMSEL3 & ~PDMA_SMSEL3_CH12_SEL_Msk) | u32Peripheral;
+        PDMA->REQSEL12_15 = (PDMA->REQSEL12_15 & ~PDMA_REQSEL12_15_REQSRC12_Msk) | u32Peripheral;
         break;
     case 13:
-        PDMA->SMSEL3 = (PDMA->SMSEL3 & ~PDMA_SMSEL3_CH13_SEL_Msk) | (u32Peripheral << PDMA_SMSEL3_CH13_SEL_Pos);
+        PDMA->REQSEL12_15 = (PDMA->REQSEL12_15 & ~PDMA_REQSEL12_15_REQSRC13_Msk) | (u32Peripheral << PDMA_REQSEL12_15_REQSRC13_Pos);
         break;
     case 14:
-        PDMA->SMSEL3 = (PDMA->SMSEL3 & ~PDMA_SMSEL3_CH14_SEL_Msk) | (u32Peripheral << PDMA_SMSEL3_CH14_SEL_Pos);
+        PDMA->REQSEL12_15 = (PDMA->REQSEL12_15 & ~PDMA_REQSEL12_15_REQSRC14_Msk) | (u32Peripheral << PDMA_REQSEL12_15_REQSRC14_Pos);
         break;
     case 15:
-        PDMA->SMSEL3 = (PDMA->SMSEL3 & ~PDMA_SMSEL3_CH15_SEL_Msk) | (u32Peripheral << PDMA_SMSEL3_CH15_SEL_Pos);
+        PDMA->REQSEL12_15 = (PDMA->REQSEL12_15 & ~PDMA_REQSEL12_15_REQSRC15_Msk) | (u32Peripheral << PDMA_REQSEL12_15_REQSRC15_Pos);
         break;
     default:
         ;
     }
 
     if (u32ScatterEn) {
-        PDMA->DSCT[u32Ch].CTRL = (PDMA->DSCT[u32Ch].CTRL & ~PDMA_DSCT_CTRL_DMA_MODE_Msk) | PDMA_OP_SCATTER;
+        PDMA->DSCT[u32Ch].CTL = (PDMA->DSCT[u32Ch].CTL & ~PDMA_DSCT_CTL_OPMODE_Msk) | PDMA_OP_SCATTER;
         PDMA->DSCT[u32Ch].NEXT = u32DescAddr - (PDMA->SCATBA);
     }
-    PDMA->DSCT[u32Ch].CTRL = (PDMA->DSCT[u32Ch].CTRL & ~PDMA_DSCT_CTRL_DMA_MODE_Msk) | PDMA_OP_BASIC;
+    else
+        PDMA->DSCT[u32Ch].CTL = (PDMA->DSCT[u32Ch].CTL & ~PDMA_DSCT_CTL_OPMODE_Msk) | PDMA_OP_BASIC;
 }
 
 /**
- * @brief       Set PDMA Transfer Address
+ * @brief       Set PDMA Burst Type
  *
  * @param[in]   u32Ch           The selected channel
  * @param[in]   u32BurstType    Burst mode or single mode
@@ -185,8 +189,8 @@ void PDMA_SetTransferMode(uint32_t u32Ch, uint32_t u32Peripheral, uint32_t u32Sc
  */
 void PDMA_SetBurstType(uint32_t u32Ch, uint32_t u32BurstType, uint32_t u32BurstSize)
 {
-    PDMA->DSCT[u32Ch].CTRL &= ~(PDMA_DSCT_CTRL_REQ_TYPE_Msk | PDMA_DSCT_CTRL_BUR_SIZE_Msk);
-    PDMA->DSCT[u32Ch].CTRL |= (u32BurstType | u32BurstSize);
+    PDMA->DSCT[u32Ch].CTL &= ~(PDMA_DSCT_CTL_TXTYPE_Msk | PDMA_DSCT_CTL_BURSIZE_Msk);
+    PDMA->DSCT[u32Ch].CTL |= (u32BurstType | u32BurstSize);
 }
 
 
@@ -217,7 +221,7 @@ void PDMA_Trigger(uint32_t u32Ch)
  */
 void PDMA_EnableInt(uint32_t u32Ch, uint32_t u32Mask)
 {
-    PDMA->IER |= (1 << u32Ch);
+    PDMA->INTEN |= (1 << u32Ch);
 }
 
 /**
@@ -232,13 +236,13 @@ void PDMA_EnableInt(uint32_t u32Ch, uint32_t u32Mask)
  */
 void PDMA_DisableInt(uint32_t u32Ch, uint32_t u32Mask)
 {
-    PDMA->IER &= ~(1 << u32Ch);
+    PDMA->INTEN &= ~(1 << u32Ch);
 }
 
-/*@}*/ /* end of group NUC400_PDMA_EXPORTED_FUNCTIONS */
+/*@}*/ /* end of group NUC472_442_PDMA_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group NUC400_PDMA_Driver */
+/*@}*/ /* end of group NUC472_442_PDMA_Driver */
 
-/*@}*/ /* end of group NUC400_Device_Driver */
+/*@}*/ /* end of group NUC472_442_Device_Driver */
 
 /*** (C) COPYRIGHT 2013 Nuvoton Technology Corp. ***/
