@@ -117,9 +117,7 @@ void PDMA_Init(void)
     //Select Single Request
     PDMA_SetBurstType(0, PDMA_REQ_SINGLE, 0);
     PDMA_SetBurstType(1, PDMA_REQ_SINGLE, 0);
-    //Set timeout
-    //PDMA_SetTimeOut(0, 0, 0x5555);
-    //PDMA_SetTimeOut(1, 0, 0x5555);
+
 
 #ifdef ENABLE_PDMA_INTERRUPT
     PDMA_EnableInt(0, 0);
@@ -177,11 +175,6 @@ void PDMA_IRQHandler(void)
             u32IsTestOver = 1;
             PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF_Msk);
         }
-    } else if (status & 0x300) { /* channel 2 timeout */
-        printf("timeout interrupt !!\n");
-        u32IsTestOver = 3;
-        PDMA_CLR_TMOUT_FLAG(0);
-        PDMA_CLR_TMOUT_FLAG(1);
     } else
         printf("unknown interrupt !!\n");
 }
@@ -227,8 +220,6 @@ void UART_PDMATest()
             printf("test done...\n");
         else if (u32IsTestOver == 2)
             printf("target abort...\n");
-        else if (u32IsTestOver == 3)
-            printf("timeout...\n");
 #else
         while( (!(PDMA_GET_TD_STS() & (1 << 0))) || (!(PDMA_GET_TD_STS() & (1 << 1))) );
 

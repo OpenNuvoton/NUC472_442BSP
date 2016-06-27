@@ -38,18 +38,6 @@ void PDMA_IRQHandler(void)
         if (PDMA_GET_TD_STS() & 0x10)   /* channel 4 done */
             u32IsTestOver += 8;
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF_Msk);
-    } else if (u32Status & 0x400) { /* channel 2 timeout */
-        u32IsTestOver = 3;
-        PDMA_CLR_TMOUT_FLAG(2);
-    } else if (u32Status & 0x200) { /* channel 1 timeout */
-        u32IsTestOver = 3;
-        PDMA_CLR_TMOUT_FLAG(1);
-    } else if (u32Status & 0x1000) { /* channel 4 timeout */
-        u32IsTestOver = 3;
-        PDMA_CLR_TMOUT_FLAG(4);
-    } else if (u32Status & 0x800) { /* channel 3 timeout */
-        u32IsTestOver = 3;
-        PDMA_CLR_TMOUT_FLAG(3);
     } else
         printf("unknown interrupt, status=0x%x!!\n", u32Status);
 }
@@ -127,7 +115,6 @@ void ConfigurePDMAChannel(void)
     u32EndDst = (uint32_t)&SPI0->TX;
     PDMA_SetTransferAddr(1, u32EndSrc, PDMA_SAR_INC, u32EndDst, PDMA_DAR_FIX);
     PDMA_SetBurstType(1, PDMA_REQ_SINGLE, PDMA_BURST_128);
-    PDMA_SetTimeOut(1, 0, 0x5555);
     PDMA_EnableInt(1, 0);
 
     /* Configure Channel 2 */
@@ -136,7 +123,6 @@ void ConfigurePDMAChannel(void)
     u32EndDst = (uint32_t)g_au32MasterDstData + PDMA_TEST_COUNT * 4;
     PDMA_SetTransferAddr(2, u32EndSrc, PDMA_SAR_FIX, u32EndDst, PDMA_DAR_INC);
     PDMA_SetBurstType(2, PDMA_REQ_SINGLE, PDMA_BURST_128);
-    PDMA_SetTimeOut(2, 0, 0x5555);
     PDMA_EnableInt(2, 0);
 
     /* Configure Channel 3 */
@@ -145,7 +131,6 @@ void ConfigurePDMAChannel(void)
     u32EndDst = (uint32_t)&SPI1->TX;
     PDMA_SetTransferAddr(3, u32EndSrc, PDMA_SAR_INC, u32EndDst, PDMA_DAR_FIX);
     PDMA_SetBurstType(3, PDMA_REQ_SINGLE, PDMA_BURST_128);
-    PDMA_SetTimeOut(3, 0, 0x5555);
     PDMA_EnableInt(3, 0);
 
     /* Configure Channel 4 */
@@ -154,7 +139,6 @@ void ConfigurePDMAChannel(void)
     u32EndDst = (uint32_t)g_au32SlaveDstData + PDMA_TEST_COUNT * 4;
     PDMA_SetTransferAddr(4, u32EndSrc, PDMA_SAR_FIX, u32EndDst, PDMA_DAR_INC);
     PDMA_SetBurstType(4, PDMA_REQ_SINGLE, PDMA_BURST_128);
-    PDMA_SetTimeOut(4, 0, 0x5555);
     PDMA_EnableInt(4, 0);
 
     /* Set Channel 1 for SPI0 TX, Channel 2 for SPI0 RX, Channel 3 for SPI1 TX, Channel 4 for SPI1 RX */

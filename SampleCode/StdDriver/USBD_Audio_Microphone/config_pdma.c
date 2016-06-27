@@ -48,8 +48,6 @@ void PDMA_IRQHandler(void)
 
     } else {    /* unknown interrupt */
         printf("unknown interrupt, status=0x%x!!\n", u32Status);
-        PDMA_CLR_TMOUT_FLAG(2);
-        PDMA_CLR_TMOUT_FLAG(1);
     }
 }
 

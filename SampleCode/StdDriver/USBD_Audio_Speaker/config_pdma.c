@@ -45,10 +45,7 @@ void PDMA_IRQHandler(void)
 
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF_Msk);
 
-    } else {    /* unknown interrupt */
-        PDMA_CLR_TMOUT_FLAG(2);
-        PDMA_CLR_TMOUT_FLAG(1);
-    }
+    } 
 }
 
 // Configure PDMA to Scatter Gather mode */

@@ -32,9 +32,6 @@ void PDMA_IRQHandler(void)
         if (PDMA_GET_TD_STS() & 0x4)
             u32IsTestOver = 1;
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF_Msk);
-    } else if (status & 0x400) { /* channel 2 timeout */
-        u32IsTestOver = 3;
-        PDMA_CLR_TMOUT_FLAG(2);
     } else
         printf("unknown interrupt, status=0x%x !!\n", status);
 }
@@ -135,7 +132,6 @@ int main(void)
     u32EndDst = (uint32_t)&SPI0->TX;
     PDMA_SetTransferAddr(1, u32EndSrc, PDMA_SAR_INC, u32EndDst, PDMA_DAR_FIX);
     PDMA_SetBurstType(1, PDMA_REQ_SINGLE, PDMA_BURST_128);
-    PDMA_SetTimeOut(1, 0, 0x5555);
     PDMA_EnableInt(1, 0);
 
     /* Configure channel 2 */
@@ -144,7 +140,6 @@ int main(void)
     u32EndDst = (uint32_t)g_au32DstData + PDMA_TEST_COUNT * 4;
     PDMA_SetTransferAddr(2, u32EndSrc, PDMA_SAR_FIX, u32EndDst, PDMA_DAR_INC);
     PDMA_SetBurstType(2, PDMA_REQ_SINGLE, PDMA_BURST_128);
-    PDMA_SetTimeOut(2, 0, 0x5555);
     PDMA_EnableInt(2, 0);
 
     /* Set Channel 1 for SPI0 TX, channel 2 for SPI0 RX, and then start timeout counting */

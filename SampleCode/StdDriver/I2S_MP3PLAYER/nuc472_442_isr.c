@@ -32,9 +32,6 @@ void PDMA_IRQHandler(void)
             u8PCMBuffer_Playing ^= 1;
         }
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF_Msk);
-    } else if(u32Status & 0x400) { /* Timeout */
-        PDMA_CLR_TMOUT_FLAG(2);
-        printf("PDMA Timeout!!\n");
     } else {
         printf("0x%x\n", u32Status);
         while(1);
