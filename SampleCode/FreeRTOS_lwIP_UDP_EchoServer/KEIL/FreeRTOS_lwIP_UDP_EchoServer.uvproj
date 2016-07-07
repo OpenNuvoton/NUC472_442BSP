@@ -139,7 +139,7 @@
             <RestoreTracepoints>0</RestoreTracepoints>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>16</TargetSelection>
+          <TargetSelection>17</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -347,7 +347,7 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <VariousControls>
-              <MiscControls></MiscControls>
+              <MiscControls>--diag_suppress=550,C4017,177</MiscControls>
               <Define>RVDS_ARMCM4_NUC4xx</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\ThirdParty\FreeRTOSV8.2.1\FreeRTOS\SOURCE\include;..\..\..\Library\Device\Nuvoton\NUC472_442\Include;..\..\..\Library\StdDriver\inc;..\..\..\ThirdParty\FreeRTOSV8.2.1\FreeRTOS\DEMO\COMMON\include;..\..\..\ThirdParty\FreeRTOSV8.2.1\FreeRTOS\SOURCE\portable\RVDS\ARM_CM4F;..\;..\..\..\ThirdParty\lwip-1.4.1\src\include;..\..\..\ThirdParty\lwip-1.4.1\src\include\ipv4;..\lwip-1.4.1\port\FreeRTOS\include;..\lwip-1.4.1\port\FreeRTOS\include\arch;..\lwip-1.4.1\port\FreeRTOS\include\lwip;..\lwip-1.4.1\port\FreeRTOS\include\netif;..\..\..\Library\CMSIS\Include</IncludePath>

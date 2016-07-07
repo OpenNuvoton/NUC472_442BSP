@@ -102,9 +102,14 @@ extern "C"
 #define CLK_CLKSEL0_USBHSEL_PLL2    (0x01UL<<CLK_CLKSEL0_USBHSEL_Pos)    /*!< Setting clock source as PLL2  \hideinitializer */
 
 #define CLK_CLKSEL0_CAPSEL_HXT     (0x00UL<<CLK_CLKSEL0_CAPSEL_Pos)    /*!< Setting clock source as external XTAL  \hideinitializer */
-#define CLK_CLKSEL0_CAPSEL_PLL2    (0x01UL<<CLK_CLKSEL0_CAPSEL_Pos)    /*!< Setting clock source as PLL2  \hideinitializer */
+#define CLK_CLKSEL0_CAPSEL_PLL     (0x01UL<<CLK_CLKSEL0_CAPSEL_Pos)    /*!< Setting clock source as PLL   \hideinitializer */
 #define CLK_CLKSEL0_CAPSEL_HCLK    (0x02UL<<CLK_CLKSEL0_CAPSEL_Pos)    /*!< Setting clock source as HCLK  \hideinitializer */
 #define CLK_CLKSEL0_CAPSEL_HIRC    (0x03UL<<CLK_CLKSEL0_CAPSEL_Pos)    /*!< Setting clock source as internal 22.1184MHz RC clock  \hideinitializer */
+
+#define CLK_CLKSEL0_ICAPSEL_HXT    (0x00UL<<CLK_CLKSEL0_CAPSEL_Pos)    /*!< Setting clock source as external XTAL  \hideinitializer */
+#define CLK_CLKSEL0_ICAPSEL_PLL    (0x01UL<<CLK_CLKSEL0_CAPSEL_Pos)    /*!< Setting clock source as PLL   \hideinitializer */
+#define CLK_CLKSEL0_ICAPSEL_HCLK   (0x02UL<<CLK_CLKSEL0_CAPSEL_Pos)    /*!< Setting clock source as HCLK  \hideinitializer */
+#define CLK_CLKSEL0_ICAPSEL_HIRC   (0x03UL<<CLK_CLKSEL0_CAPSEL_Pos)    /*!< Setting clock source as internal 22.1184MHz RC clock  \hideinitializer */
 
 #define CLK_CLKSEL0_SDHSEL_HXT    (0x00UL<<CLK_CLKSEL0_SDHSEL_Pos)    /*!< Setting clock source as external XTAL  \hideinitializer */
 #define CLK_CLKSEL0_SDHSEL_PLL    (0x01UL<<CLK_CLKSEL0_SDHSEL_Pos)    /*!< Setting clock source as PLL2  \hideinitializer */
@@ -114,6 +119,7 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /*  CLKSEL1 constant definitions.                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
+#define CLK_CLKSEL1_WDTSEL_HXT       (0x0UL<<CLK_CLKSEL1_WDTSEL_Pos)       /*!< Setting WDT clock source as external XTAL \hideinitializer */
 #define CLK_CLKSEL1_WDTSEL_LXT       (0x1UL<<CLK_CLKSEL1_WDTSEL_Pos)       /*!< Setting WDT clock source as external XTAL 32.768KHz \hideinitializer */
 #define CLK_CLKSEL1_WDTSEL_HCLK_DIV2048  (0x2UL<<CLK_CLKSEL1_WDTSEL_Pos)       /*!< Setting WDT clock source as HCLK/2048  \hideinitializer */
 #define CLK_CLKSEL1_WDTSEL_LIRC        (0x3UL<<CLK_CLKSEL1_WDTSEL_Pos)       /*!< Setting WDT clock source as internal 10KHz RC clock  \hideinitializer */
@@ -122,6 +128,11 @@ extern "C"
 #define CLK_CLKSEL1_ADCSEL_PLL           (0x1UL<<CLK_CLKSEL1_ADCSEL_Pos)       /*!< Setting ADC clock source as PLL  \hideinitializer */
 #define CLK_CLKSEL1_ADCSEL_PCLK          (0x2UL<<CLK_CLKSEL1_ADCSEL_Pos)       /*!< Setting ADC clock source as PCLK  \hideinitializer */
 #define CLK_CLKSEL1_ADCSEL_HIRC        (0x3UL<<CLK_CLKSEL1_ADCSEL_Pos)       /*!< Setting ADC clock source as internal 22.1184MHz RC clock  \hideinitializer */
+
+#define CLK_CLKSEL1_EADCSEL_HXT          (0x0UL<<CLK_CLKSEL1_ADCSEL_Pos)       /*!< Setting EADC clock source as external XTAL  \hideinitializer */
+#define CLK_CLKSEL1_EADCSEL_PLL           (0x1UL<<CLK_CLKSEL1_ADCSEL_Pos)       /*!< Setting EADC clock source as PLL  \hideinitializer */
+#define CLK_CLKSEL1_EADCSEL_PCLK          (0x2UL<<CLK_CLKSEL1_ADCSEL_Pos)       /*!< Setting EADC clock source as PCLK  \hideinitializer */
+#define CLK_CLKSEL1_EADCSEL_HIRC        (0x3UL<<CLK_CLKSEL1_ADCSEL_Pos)       /*!< Setting EADC clock source as internal 22.1184MHz RC clock  \hideinitializer */
 
 #define CLK_CLKSEL1_SPI0SEL_PLL          (0x0UL<<CLK_CLKSEL1_SPI0SEL_Pos)       /*!< Setting SPI0 clock source as PLL  \hideinitializer */
 #define CLK_CLKSEL1_SPI0SEL_PCLK         (0x1UL<<CLK_CLKSEL1_SPI0SEL_Pos)       /*!< Setting SPI0 clock source as PCLK  \hideinitializer */
@@ -285,7 +296,7 @@ extern "C"
 /*  CLKDIV3 constant definitions.                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
 #define CLK_CLKDIV3_CAP(x)      (((x)-1) << CLK_CLKDIV3_CAPDIV_Pos) /*!< CLKDIV Setting for CAP Engine clock divider. It could be 1~256  \hideinitializer */
-#define CLK_CLKDIV3_VASENSOR(x)   (((x)-1) << CLK_CLKDIV3_VSENSEDIV_Pos) /*!< CLKDIV Setting for Video Pixel clock divider. It could be 1~256  \hideinitializer */
+#define CLK_CLKDIV3_VSENSE(x)   (((x)-1) << CLK_CLKDIV3_VSENSEDIV_Pos) /*!< CLKDIV Setting for Video Pixel clock divider. It could be 1~256  \hideinitializer */
 #define CLK_CLKDIV3_EMAC(x)  (((x)-1) << CLK_CLKDIV3_EMACDIV_Pos) /*!< CLKDIV Setting for EMAC_MDCLK clock divider. It could be 1~256  \hideinitializer */
 
 

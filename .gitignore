@@ -22,6 +22,9 @@ settings/
 !SampleCode/StdDriver/FMC_MULTI_WORD_PROG/IAR/dummy.bin
 !SampleCode/StdDriver/FMC_MULTI_WORD_PROG/Keil/obj/
 !SampleCode/StdDriver/FMC_MULTI_WORD_PROG/Keil/obj/fmc_multi_word_prog.bin
+!SampleCode/StdDriver/FMC_VECTOR_REMAP/Keil/obj/
+!SampleCode/StdDriver/FMC_VECTOR_REMAP/Keil/obj/fmc_isp.bin
+!SampleCode/StdDriver/FMC_VECTOR_REMAP/Keil/obj/fmc_ld_boot.bin
 !SampleCode/StdDriver/FMC_VECTOR_REMAP/IAR/Release/
 !SampleCode/StdDriver/FMC_VECTOR_REMAP/IAR/Release/Exe/
 !SampleCode/StdDriver/FMC_VECTOR_REMAP/IAR/Release/Exe/fmc_isp.bin
