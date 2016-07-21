@@ -1,7 +1,8 @@
 /* ----------------------------------------------------------------------    
-* Copyright (C) 2010 ARM Limited. All rights reserved.    
+* Copyright (C) 2010-2014 ARM Limited. All rights reserved.    
 *    
-* $Date: 13/10/11 2:55p $Revision: 	V1.1.0  
+* $Date:        19. March 2015
+* $Revision: 	V.1.4.5
 *    
 * Project: 	    CMSIS DSP Library    
 * Title:	    arm_fir_sparse_q7.c    
@@ -10,26 +11,31 @@
 *    
 * Target Processor: Cortex-M4/Cortex-M3/Cortex-M0
 *  
-* Version 1.1.0 2012/02/15 
-*    Updated with more optimizations, bug fixes and minor API changes.  
-*   
-* Version 1.0.10 2011/7/15  
-*    Big Endian support added and Merged M0 and M3/M4 Source code.   
-*    
-* Version 1.0.3 2010/11/29   
-*    Re-organized the CMSIS folders and updated documentation.    
-*     
-* Version 1.0.2 2010/11/11    
-*    Documentation updated.     
-*    
-* Version 1.0.1 2010/10/05     
-*    Production release and review comments incorporated.    
-*    
-* Version 1.0.0 2010/09/20     
-*    Production release and review comments incorporated    
-*    
-* Version 0.0.7  2010/06/10     
-*    Misra-C changes done    
+* Redistribution and use in source and binary forms, with or without 
+* modification, are permitted provided that the following conditions
+* are met:
+*   - Redistributions of source code must retain the above copyright
+*     notice, this list of conditions and the following disclaimer.
+*   - Redistributions in binary form must reproduce the above copyright
+*     notice, this list of conditions and the following disclaimer in
+*     the documentation and/or other materials provided with the 
+*     distribution.
+*   - Neither the name of ARM LIMITED nor the names of its contributors
+*     may be used to endorse or promote products derived from this
+*     software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+* COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+* BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+* LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+* ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+* POSSIBILITY OF SUCH DAMAGE.   
 * ------------------------------------------------------------------- */
 #include "arm_math.h"
 
@@ -89,7 +95,7 @@ void arm_fir_sparse_q7(
   q31_t in;
 
 
-#ifndef ARM_MATH_CM0
+#ifndef ARM_MATH_CM0_FAMILY
 
   /* Run the below code for Cortex-M4 and Cortex-M3 */
 
@@ -168,7 +174,7 @@ void arm_fir_sparse_q7(
   }
 
   /* Loop over the number of taps. */
-  tapCnt = (uint32_t) numTaps - 1u;
+  tapCnt = (uint32_t) numTaps - 2u;
 
   while(tapCnt > 0u)
   {
@@ -236,6 +242,55 @@ void arm_fir_sparse_q7(
     /* Decrement the tap loop counter */
     tapCnt--;
   }
+	
+	/* Compute last tap without the final read of pTapDelay */	
+	
+	/* Working pointer for state buffer is updated */
+	py = pState;
+
+	/* blockSize samples are read from the state buffer */
+	arm_circularRead_q7(py, (int32_t) delaySize, &readIndex, 1, pb, pb,
+											(int32_t) blockSize, 1, blockSize);
+
+	/* Working pointer for the scratch buffer of state values */
+	px = pb;
+
+	/* Working pointer for scratch buffer of output values */
+	pScratchOut = pScr2;
+
+	/* Loop over the blockSize. Unroll by a factor of 4.    
+	 * Compute 4 MACS at a time. */
+	blkCnt = blockSize >> 2;
+
+	while(blkCnt > 0u)
+	{
+		/* Perform Multiply-Accumulate */
+		in = *pScratchOut + ((q31_t) * px++ * coeff);
+		*pScratchOut++ = in;
+		in = *pScratchOut + ((q31_t) * px++ * coeff);
+		*pScratchOut++ = in;
+		in = *pScratchOut + ((q31_t) * px++ * coeff);
+		*pScratchOut++ = in;
+		in = *pScratchOut + ((q31_t) * px++ * coeff);
+		*pScratchOut++ = in;
+
+		/* Decrement the loop counter */
+		blkCnt--;
+	}
+
+	/* If the blockSize is not a multiple of 4,    
+	 * compute the remaining samples */
+	blkCnt = blockSize % 0x4u;
+
+	while(blkCnt > 0u)
+	{
+		/* Perform Multiply-Accumulate */
+		in = *pScratchOut + ((q31_t) * px++ * coeff);
+		*pScratchOut++ = in;
+
+		/* Decrement the loop counter */
+		blkCnt--;
+	}
 
   /* All the output values are in pScratchOut buffer.    
      Convert them into 1.15 format, saturate and store in the destination buffer. */
@@ -327,7 +382,7 @@ void arm_fir_sparse_q7(
   }
 
   /* Loop over the number of taps. */
-  tapCnt = (uint32_t) numTaps - 1u;
+  tapCnt = (uint32_t) numTaps - 2u;
 
   while(tapCnt > 0u)
   {
@@ -374,6 +429,34 @@ void arm_fir_sparse_q7(
     /* Decrement the tap loop counter */
     tapCnt--;
   }
+	
+	/* Compute last tap without the final read of pTapDelay */	
+	
+	/* Working pointer for state buffer is updated */
+	py = pState;
+
+	/* blockSize samples are read from the state buffer */
+	arm_circularRead_q7(py, (int32_t) delaySize, &readIndex, 1, pb, pb,
+											(int32_t) blockSize, 1, blockSize);
+
+	/* Working pointer for the scratch buffer of state values */
+	px = pb;
+
+	/* Working pointer for scratch buffer of output values */
+	pScratchOut = pScr2;
+
+	/* Loop over the blockSize */
+	blkCnt = blockSize;
+
+	while(blkCnt > 0u)
+	{
+		/* Perform Multiply-Accumulate */
+		in = *pScratchOut + ((q31_t) * px++ * coeff);
+		*pScratchOut++ = in;
+
+		/* Decrement the loop counter */
+		blkCnt--;
+	}
 
   /* All the output values are in pScratchOut buffer.       
      Convert them into 1.15 format, saturate and store in the destination buffer. */
@@ -388,7 +471,7 @@ void arm_fir_sparse_q7(
     blkCnt--;
   }
 
-#endif /*   #ifndef ARM_MATH_CM0 */
+#endif /*   #ifndef ARM_MATH_CM0_FAMILY */
 
 }
 

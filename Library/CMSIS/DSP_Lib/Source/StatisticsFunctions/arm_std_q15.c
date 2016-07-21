@@ -1,7 +1,8 @@
 /* ----------------------------------------------------------------------    
-* Copyright (C) 2010 ARM Limited. All rights reserved.    
+* Copyright (C) 2010-2014 ARM Limited. All rights reserved.    
 *    
-* $Date: 13/10/11 2:55p $Revision: 	V1.1.0  
+* $Date:        19. March 2015
+* $Revision: 	V.1.4.5  
 *    
 * Project: 	    CMSIS DSP Library    
 * Title:		arm_std_q15.c    
@@ -10,23 +11,31 @@
 *    
 * Target Processor: Cortex-M4/Cortex-M3/Cortex-M0
 *  
-* Version 1.1.0 2012/02/15 
-*    Updated with more optimizations, bug fixes and minor API changes.  
-*   
-* Version 1.0.10 2011/7/15  
-*    Big Endian support added and Merged M0 and M3/M4 Source code.   
-*    
-* Version 1.0.3 2010/11/29   
-*    Re-organized the CMSIS folders and updated documentation.    
-*     
-* Version 1.0.2 2010/11/11    
-*    Documentation updated.     
-*    
-* Version 1.0.1 2010/10/05     
-*    Production release and review comments incorporated.    
-*    
-* Version 1.0.0 2010/09/20     
-*    Production release and review comments incorporated.    
+* Redistribution and use in source and binary forms, with or without 
+* modification, are permitted provided that the following conditions
+* are met:
+*   - Redistributions of source code must retain the above copyright
+*     notice, this list of conditions and the following disclaimer.
+*   - Redistributions in binary form must reproduce the above copyright
+*     notice, this list of conditions and the following disclaimer in
+*     the documentation and/or other materials provided with the 
+*     distribution.
+*   - Neither the name of ARM LIMITED nor the names of its contributors
+*     may be used to endorse or promote products derived from this
+*     software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+* COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+* BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+* LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+* ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+* POSSIBILITY OF SUCH DAMAGE.  
 * -------------------------------------------------------------------- */
 
 #include "arm_math.h"
@@ -68,17 +77,21 @@ void arm_std_q15(
 {
   q31_t sum = 0;                                 /* Accumulator */
   q31_t meanOfSquares, squareOfMean;             /* square of mean and mean of square */
-  q15_t mean;                                    /* mean */
   uint32_t blkCnt;                               /* loop counter */
-  q15_t t;                                       /* Temporary variable */
   q63_t sumOfSquares = 0;                        /* Accumulator */
-
-#ifndef ARM_MATH_CM0
+   
+#ifndef ARM_MATH_CM0_FAMILY
 
   /* Run the below code for Cortex-M4 and Cortex-M3 */
 
   q31_t in;                                      /* input value */
   q15_t in1;                                     /* input value */
+
+	if(blockSize == 1)
+	{
+		*pResult = 0;
+		return;
+	}
 
   /*loop Unrolling */
   blkCnt = blockSize >> 2u;
@@ -122,29 +135,25 @@ void arm_std_q15(
 
   /* Compute Mean of squares of the input samples    
    * and then store the result in a temporary variable, meanOfSquares. */
-  t = (q15_t) ((1.0 / (blockSize - 1)) * 16384LL);
-  sumOfSquares = __SSAT((sumOfSquares >> 15u), 16u);
-
-  meanOfSquares = (q31_t) ((sumOfSquares * t) >> 14u);
-
-  /* Compute mean of all input values */
-  t = (q15_t) ((1.0 / (blockSize * (blockSize - 1))) * 32768LL);
-  mean = (q15_t) __SSAT(sum, 16u);
+  meanOfSquares = (q31_t)(sumOfSquares / (q63_t)(blockSize - 1));
 
   /* Compute square of mean */
-  squareOfMean = ((q31_t) mean * mean) >> 15;
-  squareOfMean = (q31_t) (((q63_t) squareOfMean * t) >> 15);
+  squareOfMean = (q31_t) ((q63_t)sum * sum / (q63_t)(blockSize * (blockSize - 1)));
 
   /* mean of the squares minus the square of the mean. */
-  in1 = (q15_t) (meanOfSquares - squareOfMean);
-
   /* Compute standard deviation and store the result to the destination */
-  arm_sqrt_q15(in1, pResult);
+  arm_sqrt_q15(__SSAT((meanOfSquares - squareOfMean) >> 15, 16u), pResult);
 
 #else
 
   /* Run the below code for Cortex-M0 */
   q15_t in;                                      /* input value */
+
+	if(blockSize == 1)
+	{
+		*pResult = 0;
+		return;
+	}
 
   /* Loop over blockSize number of values */
   blkCnt = blockSize;
@@ -167,26 +176,16 @@ void arm_std_q15(
 
   /* Compute Mean of squares of the input samples     
    * and then store the result in a temporary variable, meanOfSquares. */
-  t = (q15_t) ((1.0 / (blockSize - 1)) * 16384LL);
-  sumOfSquares = __SSAT((sumOfSquares >> 15u), 16u);
-  meanOfSquares = (q31_t) ((sumOfSquares * t) >> 14u);
+  meanOfSquares = (q31_t)(sumOfSquares / (q63_t)(blockSize - 1));
 
-  /* Compute mean of all input values */
-  mean = (q15_t) __SSAT(sum, 16u);
-
-  /* Compute square of mean of the input samples   
-   * and then store the result in a temporary variable, squareOfMean.*/
-  t = (q15_t) ((1.0 / (blockSize * (blockSize - 1))) * 32768LL);
-  squareOfMean = ((q31_t) mean * mean) >> 15;
-  squareOfMean = (q31_t) (((q63_t) squareOfMean * t) >> 15);
+  /* Compute square of mean */
+  squareOfMean = (q31_t) ((q63_t)sum * sum / (q63_t)(blockSize * (blockSize - 1)));
 
   /* mean of the squares minus the square of the mean. */
-  in = (q15_t) (meanOfSquares - squareOfMean);
-
   /* Compute standard deviation and store the result to the destination */
-  arm_sqrt_q15(in, pResult);
+  arm_sqrt_q15(__SSAT((meanOfSquares - squareOfMean) >> 15, 16u), pResult);
 
-#endif /* #ifndef ARM_MATH_CM0 */
+#endif /* #ifndef ARM_MATH_CM0_FAMILY */
 
 
 }

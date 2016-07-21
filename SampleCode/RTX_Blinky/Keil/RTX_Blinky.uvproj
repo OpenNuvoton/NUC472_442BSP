@@ -10,6 +10,7 @@
       <TargetName>RTX_Blinky</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pCCUsed>5040049::V5.04 update 1 (build 49)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>NUC472HI8AE</Device>
@@ -44,14 +45,14 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
-          <OutputDirectory>.\Flash\</OutputDirectory>
+          <OutputDirectory>.\obj\</OutputDirectory>
           <OutputName>RTX_Blinky</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
-          <ListingPath>.\Flash\</ListingPath>
+          <ListingPath>.\lst\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
           <CreateBatchFile>0</CreateBatchFile>
@@ -82,6 +83,8 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopA1X>0</nStopA1X>
+            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -143,7 +146,6 @@
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>0</RestoreTracepoints>
             <RestoreSysVw>1</RestoreSysVw>
-            <UsePdscDebugDescription>1</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>15</TargetSelection>
@@ -226,6 +228,7 @@
             <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
+            <nSecure>0</nSecure>
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
@@ -360,11 +363,15 @@
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
             <useXO>0</useXO>
+            <v6Lang>1</v6Lang>
+            <v6LangP>1</v6LangP>
+            <vShortEn>1</vShortEn>
+            <vShortWch>1</vShortWch>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\Library\CMSIS\Include;..\..\..\Library\Device\Nuvoton\NUC472_442\Include;..\..\..\Library\StdDriver\inc;..\..\..\Library\CMSIS_RTX\INC</IncludePath>
+              <IncludePath>..\..\..\Library\CMSIS\Include;..\..\..\Library\Device\Nuvoton\NUC472_442\Include;..\..\..\Library\StdDriver\inc;..\..\..\Library\CMSIS\RTOS\RTX\INC</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -470,7 +477,7 @@
             <File>
               <FileName>RTX_CM4.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\Library\CMSIS_RTX\LIB\ARM\RTX_CM4.lib</FilePath>
+              <FilePath>..\..\..\Library\CMSIS\RTOS\RTX\LIB\ARM\RTX_CM4.lib</FilePath>
             </File>
           </Files>
         </Group>

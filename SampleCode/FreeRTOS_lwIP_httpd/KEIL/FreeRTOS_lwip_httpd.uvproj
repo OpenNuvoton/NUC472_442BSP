@@ -10,6 +10,7 @@
       <TargetName>FreeRTOS_lwip_httpd</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pCCUsed>5040049::V5.04 update 1 (build 49)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>NUC472HI8AE</Device>
@@ -79,6 +80,8 @@
             <UserProg2Name>fromelf --text -c ".\obj\@L.axf" --output ".\obj\@L.txt"</UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopA1X>0</nStopA1X>
+            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -137,6 +140,7 @@
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>0</RestoreTracepoints>
+            <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>17</TargetSelection>
@@ -214,6 +218,7 @@
             <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
+            <nSecure>0</nSecure>
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
@@ -346,8 +351,14 @@
             <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
+            <uC99>0</uC99>
+            <useXO>0</useXO>
+            <v6Lang>1</v6Lang>
+            <v6LangP>1</v6LangP>
+            <vShortEn>1</vShortEn>
+            <vShortWch>1</vShortWch>
             <VariousControls>
-              <MiscControls>--diag_suppress=550,C4017,177</MiscControls>
+              <MiscControls>--diag_suppress=550,177,C4017</MiscControls>
               <Define>RVDS_ARMCM4_NUC4xx</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\ThirdParty\FreeRTOSV8.2.1\FreeRTOS\SOURCE\include;..\..\..\Library\Device\Nuvoton\NUC472_442\Include;..\..\..\Library\StdDriver\inc;..\..\..\ThirdParty\FreeRTOSV8.2.1\FreeRTOS\DEMO\COMMON\include;..\..\..\ThirdParty\FreeRTOSV8.2.1\FreeRTOS\SOURCE\portable\RVDS\ARM_CM4F;..\;..\..\..\ThirdParty\lwip-1.4.1\src\include;..\..\..\ThirdParty\lwip-1.4.1\src\include\ipv4;..\lwip-1.4.1\port\FreeRTOS\include;..\lwip-1.4.1\port\FreeRTOS\include\arch;..\lwip-1.4.1\port\FreeRTOS\include\lwip;..\lwip-1.4.1\port\FreeRTOS\include\netif;..\..\..\Library\CMSIS\Include</IncludePath>
