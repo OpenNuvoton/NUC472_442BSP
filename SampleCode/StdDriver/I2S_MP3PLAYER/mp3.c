@@ -177,10 +177,10 @@ void MP3Player(void)
                 printf("Stop !(%x)\n\r", res);
                 goto stop;
             }
-            
+
             if(f_eof(&mp3FileObject)) {
                 if(ReturnSize == 0)
-                    goto stop;  
+                    goto stop;
             }
 
             /* if the file is over */

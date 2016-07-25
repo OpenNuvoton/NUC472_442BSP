@@ -2,7 +2,7 @@
  * @file     main.c
  * @version  V1.00
  * $Date: 16/06/07 11:17a $
- * @brief    Use PDMA channel 5 to demonstrate memory to memory transfer 
+ * @brief    Use PDMA channel 5 to demonstrate memory to memory transfer
  *           by scatter-gather mode
  *
  * @note
@@ -116,7 +116,7 @@ int main (void)
         DestArray0[i] = 0;
         DestArray1[i] = 0;
     }
-    
+
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
 
     printf("+-----------------------------------------------------------------------+ \n");

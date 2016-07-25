@@ -86,10 +86,10 @@ void CLK_Idle(void)
 {
     /* Set the processor uses sleep as its low power mode */
     SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
-  
+
     /* Set chip in idle mode because of WFI command */
     CLK->PWRCTL &= ~(CLK_PWRCTL_PDEN_Msk );
-  
+
     /* Chip enter idle mode after CPU run WFI instruction */
     __WFI();
 }

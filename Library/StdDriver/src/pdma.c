@@ -39,8 +39,7 @@ void PDMA_Open(uint32_t u32Mask)
 {
     int volatile i;
 
-    for (i=0; i<PDMA_CH_MAX; i++)
-    {
+    for (i=0; i<PDMA_CH_MAX; i++) {
         PDMA->DSCT[i].CTL = 0;
         u32ChSelect[i] = 0x1f;
     }
@@ -171,8 +170,7 @@ void PDMA_SetTransferMode(uint32_t u32Ch, uint32_t u32Peripheral, uint32_t u32Sc
     if (u32ScatterEn) {
         PDMA->DSCT[u32Ch].CTL = (PDMA->DSCT[u32Ch].CTL & ~PDMA_DSCT_CTL_OPMODE_Msk) | PDMA_OP_SCATTER;
         PDMA->DSCT[u32Ch].NEXT = u32DescAddr - (PDMA->SCATBA);
-    }
-    else
+    } else
         PDMA->DSCT[u32Ch].CTL = (PDMA->DSCT[u32Ch].CTL & ~PDMA_DSCT_CTL_OPMODE_Msk) | PDMA_OP_BASIC;
 }
 

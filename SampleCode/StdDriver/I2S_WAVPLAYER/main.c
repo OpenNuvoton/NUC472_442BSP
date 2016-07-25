@@ -3,7 +3,7 @@
  * @version  V1.00
  * $Revision: 12 $
  * $Date: 15/12/08 9:47a $
- * @brief    This is a WAV file player which plays back WAV file stored in 
+ * @brief    This is a WAV file player which plays back WAV file stored in
  *           USB pen drive.
  *
  * @note

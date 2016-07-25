@@ -21,8 +21,8 @@
 #define HCLK_HZ             PLL_CLOCK
 
 
-#define POWER_UP_DELAY      20            /* 200 ms delay after port power on       */  
-#define ISP_DETECT_TIME     200           /* 1000 ms to detect any USB pen drive    */ 
+#define POWER_UP_DELAY      20            /* 200 ms delay after port power on       */
+#define ISP_DETECT_TIME     200           /* 1000 ms to detect any USB pen drive    */
 
 #define FIRMWARE_FILE_NAME  "AP.BIN"
 #define DATA_FILE_NAME      "data.bin"
@@ -46,29 +46,29 @@ __align(32) BYTE _Buff[FMC_FLASH_PAGE_SIZE];    /* Working buffer */
 
 static volatile int  g_tick_cnt = 0;
 
-void SysTick_Handler(void) 
-{  	
-	g_tick_cnt++;
+void SysTick_Handler(void)
+{
+    g_tick_cnt++;
 }
 
 uint32_t get_sys_ticks(void)
 {
-	return g_tick_cnt;
+    return g_tick_cnt;
 }
 
 void enable_sys_ticks(int ticks_per_second)
 {
-	uint32_t  systick_load;
-	/*
-	 *  Configure system tick to be 0.1 second count
-	 */
-	systick_load = ((HCLK_HZ/(2 * ticks_per_second)) & SysTick_LOAD_RELOAD_Msk) - 1;
-	/* system tick from HCLK/2 */
-    CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_STCLKSEL_Msk) | (3 << CLK_CLKSEL0_STCLKSEL_Pos	);	
-	SysTick->LOAD  = systick_load; 
-  	NVIC_SetPriority (SysTick_IRQn, (1<<__NVIC_PRIO_BITS) - 1);  /* set Priority for Cortex-M0 System Interrupts */
+    uint32_t  systick_load;
+    /*
+     *  Configure system tick to be 0.1 second count
+     */
+    systick_load = ((HCLK_HZ/(2 * ticks_per_second)) & SysTick_LOAD_RELOAD_Msk) - 1;
+    /* system tick from HCLK/2 */
+    CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_STCLKSEL_Msk) | (3 << CLK_CLKSEL0_STCLKSEL_Pos  );
+    SysTick->LOAD  = systick_load;
+    NVIC_SetPriority (SysTick_IRQn, (1<<__NVIC_PRIO_BITS) - 1);  /* set Priority for Cortex-M0 System Interrupts */
     SysTick->VAL = 0;
-   	SysTick->CTRL = SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk;
+    SysTick->CTRL = SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk;
 }
 
 
@@ -189,20 +189,16 @@ void  do_dir()
     UINT s1, s2;
 
     if (f_opendir(&dir, dir_path))
-    	return;
+        return;
 
     p1 = s1 = s2 = 0;
-    for (; ;) 
-    {
-    	res = f_readdir(&dir, &Finfo);
+    for (; ;) {
+        res = f_readdir(&dir, &Finfo);
         if ((res != FR_OK) || !Finfo.fname[0]) break;
-        if (Finfo.fattrib & AM_DIR) 
-        {
-        	s2++;
-        } 
-        else 
-        {
-        	s1++;
+        if (Finfo.fattrib & AM_DIR) {
+            s2++;
+        } else {
+            s1++;
             p1 += Finfo.fsize;
         }
         printf("%c%c%c%c%c %u/%02u/%02u %02u:%02u %9lu  %s",
@@ -215,132 +211,114 @@ void  do_dir()
                (Finfo.ftime >> 11), (Finfo.ftime >> 5) & 63, Finfo.fsize, Finfo.fname);
 #if _USE_LFN
         for (p2 = strlen(Finfo.fname); p2 < 14; p2++)
-             putchar(' ');
+            putchar(' ');
         printf("%s\n", Lfname);
 #else
         putchar('\n');
 #endif
-	}
+    }
     printf("%4u File(s),%10lu bytes total\n%4u Dir(s)", s1, p1, s2);
 }
 
 
 int  program_flash_page(uint32_t page_addr, uint32_t *buff, int count)
 {
-	uint32_t  addr;
-	uint32_t  *p;
-	
-	printf("Program page 0x%x, count=%d\n", page_addr, count);
-	
-	p = buff;
-	FMC_Erase(page_addr);
-	for (addr = page_addr; addr < page_addr+count; addr += 4, p++)
-	{
-		FMC_Write(addr, *p);
-	}
+    uint32_t  addr;
+    uint32_t  *p;
 
-	p = buff;
-	for (addr = page_addr; addr < page_addr+count; addr += 4, p++)
-	{
-		if (FMC_Read(addr) != *p)
-		{
-			printf("Verify failed at 0x%x, read:0x%x, epect:0x%x\n", addr, FMC_Read(addr), *p);
-			return -1;
-		}
-	}
-	return 0;
+    printf("Program page 0x%x, count=%d\n", page_addr, count);
+
+    p = buff;
+    FMC_Erase(page_addr);
+    for (addr = page_addr; addr < page_addr+count; addr += 4, p++) {
+        FMC_Write(addr, *p);
+    }
+
+    p = buff;
+    for (addr = page_addr; addr < page_addr+count; addr += 4, p++) {
+        if (FMC_Read(addr) != *p) {
+            printf("Verify failed at 0x%x, read:0x%x, epect:0x%x\n", addr, FMC_Read(addr), *p);
+            return -1;
+        }
+    }
+    return 0;
 }
 
 
 int isp_update_by_usb()
 {
-	uint32_t   addr, dfba;
-	UINT       cnt;
-	FRESULT    res;
-	
+    uint32_t   addr, dfba;
+    UINT       cnt;
+    FRESULT    res;
+
     printf("rc=%d\n", (WORD)disk_initialize(0));
 #if (_FATFS == 82786)
     f_mount(0, &FatFs[0]);
 #else
     f_mount(&FatFs[0], "", 0);
 #endif
-	do_dir();
-	
-    if (f_open(&file1, FIRMWARE_FILE_NAME, FA_OPEN_EXISTING | FA_READ))
-    {
-    	printf("Firmware %s file not found.\n", FIRMWARE_FILE_NAME); 
-    }
-    else
-    {
-    	printf("Firmare file found, start update firmware...\n");
-    	/*
-    	 *  Update APROM
-    	 */
-		for (addr = 0; ; addr += FMC_FLASH_PAGE_SIZE)
-		{
-			cnt = FMC_FLASH_PAGE_SIZE;    	
-        	res = f_read(&file1, _Buff, cnt, &cnt);
-            if ((res == FR_OK) && cnt)
-            {
-            	if (program_flash_page(addr, (uint32_t *)_Buff, cnt) != 0)
-            	{
-            		f_close(&file1);
-            		return 0;
-            	}
-        	}
-        	else
-        		break;
-        }
-        
-        if (f_eof(&file1))
-        	printf("Success.\n");
-        else
-        	printf("Update failed!\n");
+    do_dir();
 
-		f_close(&file1);
-	}
-	
-	if (FMC_Read(0x300000) & 0x1)
-	{
-		printf("Data flash is not enabled.\n");
-		return 0;
-	}
-	
-	dfba = FMC_ReadDataFlashBaseAddr();
-	
-    if (f_open(&file1, DATA_FILE_NAME, FA_OPEN_EXISTING | FA_READ))
-    {
-    	printf("Data file %s not found.\n", DATA_FILE_NAME); 
-    }
-    else
-    {
-    	/*
-    	 *  Update Data Flash
-    	 */
-		for (addr = dfba; ; addr += FMC_FLASH_PAGE_SIZE)
-		{
-			cnt = FMC_FLASH_PAGE_SIZE;    	
-        	res = f_read(&file1, _Buff, cnt, &cnt);
-            if ((res == FR_OK) && cnt)
-            {
-            	if (program_flash_page(addr, (uint32_t *)_Buff, cnt) != 0)
-            	{
-            		f_close(&file1);
-            		return 0;
-            	}
-        	}
-        	else
-        		break;
+    if (f_open(&file1, FIRMWARE_FILE_NAME, FA_OPEN_EXISTING | FA_READ)) {
+        printf("Firmware %s file not found.\n", FIRMWARE_FILE_NAME);
+    } else {
+        printf("Firmare file found, start update firmware...\n");
+        /*
+         *  Update APROM
+         */
+        for (addr = 0; ; addr += FMC_FLASH_PAGE_SIZE) {
+            cnt = FMC_FLASH_PAGE_SIZE;
+            res = f_read(&file1, _Buff, cnt, &cnt);
+            if ((res == FR_OK) && cnt) {
+                if (program_flash_page(addr, (uint32_t *)_Buff, cnt) != 0) {
+                    f_close(&file1);
+                    return 0;
+                }
+            } else
+                break;
         }
-        
-        if (f_eof(&file1))
-        	printf("Success.\n");
-        else
-        	printf("Update failed!\n");
 
-	    f_close(&file1);
-	}
-	return 0;
+        if (f_eof(&file1))
+            printf("Success.\n");
+        else
+            printf("Update failed!\n");
+
+        f_close(&file1);
+    }
+
+    if (FMC_Read(0x300000) & 0x1) {
+        printf("Data flash is not enabled.\n");
+        return 0;
+    }
+
+    dfba = FMC_ReadDataFlashBaseAddr();
+
+    if (f_open(&file1, DATA_FILE_NAME, FA_OPEN_EXISTING | FA_READ)) {
+        printf("Data file %s not found.\n", DATA_FILE_NAME);
+    } else {
+        /*
+         *  Update Data Flash
+         */
+        for (addr = dfba; ; addr += FMC_FLASH_PAGE_SIZE) {
+            cnt = FMC_FLASH_PAGE_SIZE;
+            res = f_read(&file1, _Buff, cnt, &cnt);
+            if ((res == FR_OK) && cnt) {
+                if (program_flash_page(addr, (uint32_t *)_Buff, cnt) != 0) {
+                    f_close(&file1);
+                    return 0;
+                }
+            } else
+                break;
+        }
+
+        if (f_eof(&file1))
+            printf("Success.\n");
+        else
+            printf("Update failed!\n");
+
+        f_close(&file1);
+    }
+    return 0;
 }
 
 
@@ -350,8 +328,8 @@ int isp_update_by_usb()
  *----------------------------------------------------------------------------*/
 int32_t main(void)
 {
-	int   t0;
-	
+    int   t0;
+
     /* Lock protected registers */
     if(SYS->REGLCTL == 1) // In end of main function, program issued CPU reset and write-protection will be disabled.
         SYS_LockReg();
@@ -369,47 +347,43 @@ int32_t main(void)
     /* Enable FMC ISP function */
     SYS_UnlockReg();
     FMC_Open();
-	FMC_ENABLE_AP_UPDATE();
-	
-	enable_sys_ticks(100);
-	
-	if ((FMC_Read(FMC_CONFIG_BASE) & 0xc0) != 0x40)
-	{
-		printf("CONFIG0 = 0x%x\n", FMC_Read(FMC_CONFIG_BASE));
-		printf("This program must be running under \"Boot from LDROM without IAP\" mode!\n");
-		printf("Please modify User Configuration...\n");
-		while (1);
-	}
-	
-	usbh_init();
-	
-	t0 = get_sys_ticks();
-	
-	while (get_sys_ticks() - t0 < POWER_UP_DELAY) ;
-	
-	printf("Detecting USB disk...\n");
-	
-	/*
-	 *  Detecting USB mass storage device...
-	 */ 
-	t0 = get_sys_ticks();
-	while (get_sys_ticks() - t0 < ISP_DETECT_TIME)
-	{
-	    if ((usbh_probe_port(1) == 0) || (usbh_probe_port(0) == 0))
-	    {
-		    if (usbh_probe_umass() == 0)
-		    {
-			    isp_update_by_usb();
-			    break;
-	        } 
-	    }
+    FMC_ENABLE_AP_UPDATE();
+
+    enable_sys_ticks(100);
+
+    if ((FMC_Read(FMC_CONFIG_BASE) & 0xc0) != 0x40) {
+        printf("CONFIG0 = 0x%x\n", FMC_Read(FMC_CONFIG_BASE));
+        printf("This program must be running under \"Boot from LDROM without IAP\" mode!\n");
+        printf("Please modify User Configuration...\n");
+        while (1);
     }
-    
+
+    usbh_init();
+
+    t0 = get_sys_ticks();
+
+    while (get_sys_ticks() - t0 < POWER_UP_DELAY) ;
+
+    printf("Detecting USB disk...\n");
+
+    /*
+     *  Detecting USB mass storage device...
+     */
+    t0 = get_sys_ticks();
+    while (get_sys_ticks() - t0 < ISP_DETECT_TIME) {
+        if ((usbh_probe_port(1) == 0) || (usbh_probe_port(0) == 0)) {
+            if (usbh_probe_umass() == 0) {
+                isp_update_by_usb();
+                break;
+            }
+        }
+    }
+
     if (get_sys_ticks() - t0 >= ISP_DETECT_TIME)
         printf("\n\nUSB disk not found. ");
-    
+
     printf("Will branch to user application...\n");
-    
+
     // reboot from APROM...
     FMC_SET_APROM_BOOT();
     SYS->IPRST0 = SYS_IPRST0_CPURST_Msk;

@@ -37,10 +37,9 @@ DSTATUS disk_initialize (
 
 #ifdef SUPPORT_USBH
     case DRV_USBH :
-		if ((usbh_probe_port(0) == 0) || (usbh_probe_port(1) == 0))
-		{
-			usbh_probe_umass();
-		}
+        if ((usbh_probe_port(0) == 0) || (usbh_probe_port(1) == 0)) {
+            usbh_probe_umass();
+        }
         // translate the result code here
         return RES_OK;
 #endif

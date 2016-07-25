@@ -310,7 +310,7 @@ DRESULT  usbh_umas_ioctl(int cmd, void *buff)
 #if (_FATFS == 82786)
     case CTRL_ERASE_SECTOR:
         return RES_OK;
-#else        
+#else
     case CTRL_TRIM:
         return RES_OK;
 #endif
