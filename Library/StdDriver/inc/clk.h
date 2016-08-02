@@ -98,8 +98,8 @@ extern "C"
 #define CLK_CLKSEL0_PCLKSEL_HCLK   (0x00UL<<CLK_CLKSEL0_PCLKSEL_Pos)    /*!< Setting clock source as HCLK  \hideinitializer */
 #define CLK_CLKSEL0_PCLKSEL_HCLK_DIV2  (0x01UL<<CLK_CLKSEL0_PCLKSEL_Pos)    /*!< Setting clock source as HCLK/2  \hideinitializer */
 
-#define CLK_CLKSEL0_USBHSEL_PLL   (0x00UL<<CLK_CLKSEL0_USBHSEL_Pos)    /*!< Setting clock source as PLL   \hideinitializer */
-#define CLK_CLKSEL0_USBHSEL_PLL2    (0x01UL<<CLK_CLKSEL0_USBHSEL_Pos)    /*!< Setting clock source as PLL2  \hideinitializer */
+#define CLK_CLKSEL0_USBHSEL_PLL   (0x01UL<<CLK_CLKSEL0_USBHSEL_Pos)    /*!< Setting clock source as PLL   \hideinitializer */
+#define CLK_CLKSEL0_USBHSEL_PLL2    (0x00UL<<CLK_CLKSEL0_USBHSEL_Pos)    /*!< Setting clock source as PLL2  \hideinitializer */
 
 #define CLK_CLKSEL0_CAPSEL_HXT     (0x00UL<<CLK_CLKSEL0_CAPSEL_Pos)    /*!< Setting clock source as external XTAL  \hideinitializer */
 #define CLK_CLKSEL0_CAPSEL_PLL     (0x01UL<<CLK_CLKSEL0_CAPSEL_Pos)    /*!< Setting clock source as PLL   \hideinitializer */
