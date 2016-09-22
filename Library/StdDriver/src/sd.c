@@ -547,7 +547,6 @@ int SD_SelectCardType(SD_INFO_T *pSD)
 
 void SD_Get_SD_info(SD_INFO_T *pSD, DISK_DATA_T *_info)
 {
-    unsigned int i;
     unsigned int R_LEN, C_Size, MULT, size;
     unsigned int Buffer[4];
     unsigned char *ptr;
@@ -603,17 +602,6 @@ void SD_Get_SD_info(SD_INFO_T *pSD, DISK_DATA_T *_info)
     }
 
     _info->sectorSize = 512;
-
-    SD_SDCmdAndRsp2(pSD, 10, pSD->RCA, Buffer);
-
-    _info->vendor[0] = (Buffer[0] & 0xff000000) >> 24;
-    ptr = (unsigned char *)Buffer;
-    ptr = ptr + 4;
-    for (i=0; i<5; i++)
-        _info->product[i] = *ptr++;
-    ptr = ptr + 10;
-    for (i=0; i<4; i++)
-        _info->serial[i] = *ptr++;
 }
 
 int SD_ChipErase(SD_INFO_T *pSD, DISK_DATA_T *_info)
