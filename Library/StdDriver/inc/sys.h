@@ -689,7 +689,7 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 
 //GPE_MFPH_PE9MFP
 #define SYS_GPE_MFPH_PE9MFP_GPIO            (0x0UL<<SYS_GPE_MFPH_PE9MFP_Pos)           /*!< GPE_MFPH PE9 setting for GPIO     \hideinitializer */
-#define SYS_GPE_MFPH_PE9MFP_ADC0_9          (0x1UL<<SYS_GPE_MFPH_PE8MFP_Pos)           /*!< GPE_MFPH PE8 setting for ADC0_9     \hideinitializer */
+#define SYS_GPE_MFPH_PE9MFP_ADC0_9          (0x1UL<<SYS_GPE_MFPH_PE9MFP_Pos)           /*!< GPE_MFPH PE9 setting for ADC0_9     \hideinitializer */
 #define SYS_GPE_MFPH_PE9MFP_ADC1_1          (0x1UL<<SYS_GPE_MFPH_PE9MFP_Pos)           /*!< GPE_MFPH PE9 setting for ADC1_1     \hideinitializer */
 #define SYS_GPE_MFPH_PE9MFP_ACMP1_P0        (0x2UL<<SYS_GPE_MFPH_PE9MFP_Pos)           /*!< GPE_MFPH PE9 setting for ACMP1_P0     \hideinitializer */
 #define SYS_GPE_MFPH_PE9MFP_SD0_DAT2        (0x4UL<<SYS_GPE_MFPH_PE9MFP_Pos)           /*!< GPE_MFPH PE9 setting for SD0_DAT2     \hideinitializer */
@@ -697,16 +697,16 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 
 //GPE_MFPH_PE10MFP
 #define SYS_GPE_MFPH_PE10MFP_GPIO           (0x0UL<<SYS_GPE_MFPH_PE10MFP_Pos)           /*!< GPE_MFPH PE10 setting for GPIO   \hideinitializer */
-#define SYS_GPE_MFPH_PE10MFP_ADC0_10        (0x1UL<<SYS_GPE_MFPH_PE8MFP_Pos)            /*!< GPE_MFPH PE8 setting for ADC0_10     \hideinitializer */
+#define SYS_GPE_MFPH_PE10MFP_ADC0_10        (0x1UL<<SYS_GPE_MFPH_PE10MFP_Pos)           /*!< GPE_MFPH PE10 setting for ADC0_10     \hideinitializer */
 #define SYS_GPE_MFPH_PE10MFP_ADC1_2         (0x1UL<<SYS_GPE_MFPH_PE10MFP_Pos)           /*!< GPE_MFPH PE10 setting for ADC1_2   \hideinitializer */
 #define SYS_GPE_MFPH_PE10MFP_ACMP1_P1       (0x2UL<<SYS_GPE_MFPH_PE10MFP_Pos)           /*!< GPE_MFPH PE10 setting for ACMP1_P1   \hideinitializer */
 #define SYS_GPE_MFPH_PE10MFP_SPI0_MISO1     (0x3UL<<SYS_GPE_MFPH_PE10MFP_Pos)           /*!< GPE_MFPH PE10 setting for SPI0_MISO1   \hideinitializer */
-#define SYS_GPE_MFPH_PE9MFP_SD0_DAT1        (0x4UL<<SYS_GPE_MFPH_PE10MFP_Pos)           /*!< GPE_MFPH PE9 setting for SD0_DAT1     \hideinitializer */
+#define SYS_GPE_MFPH_PE10MFP_SD0_DAT1       (0x4UL<<SYS_GPE_MFPH_PE10MFP_Pos)           /*!< GPE_MFPH PE10 setting for SD0_DAT1     \hideinitializer */
 #define SYS_GPE_MFPH_PE10MFP_EBI_nWRL       (0x7UL<<SYS_GPE_MFPH_PE10MFP_Pos)           /*!< GPE_MFPH PE10 setting for EBI_nWRL   \hideinitializer */
 
 //GPE_MFPH_PE11MFP
 #define SYS_GPE_MFPH_PE11MFP_GPIO           (0x0UL<<SYS_GPE_MFPH_PE11MFP_Pos)           /*!< GPE_MFPH PE11 setting for GPIO   \hideinitializer */
-#define SYS_GPE_MFPH_PE11MFP_ADC0_11        (0x1UL<<SYS_GPE_MFPH_PE8MFP_Pos)            /*!< GPE_MFPH PE8 setting for ADC0_11     \hideinitializer */
+#define SYS_GPE_MFPH_PE11MFP_ADC0_11        (0x1UL<<SYS_GPE_MFPH_PE11MFP_Pos)           /*!< GPE_MFPH PE11 setting for ADC0_11     \hideinitializer */
 #define SYS_GPE_MFPH_PE11MFP_ADC1_3         (0x1UL<<SYS_GPE_MFPH_PE11MFP_Pos)           /*!< GPE_MFPH PE11 setting for ADC1_3   \hideinitializer */
 #define SYS_GPE_MFPH_PE11MFP_ACMP1_P2       (0x2UL<<SYS_GPE_MFPH_PE11MFP_Pos)           /*!< GPE_MFPH PE11 setting for ACMP1_P2   \hideinitializer */
 #define SYS_GPE_MFPH_PE11MFP_SPI0_MOSI1     (0x3UL<<SYS_GPE_MFPH_PE11MFP_Pos)           /*!< GPE_MFPH PE11 setting for SPI0_MOSI1   \hideinitializer */
