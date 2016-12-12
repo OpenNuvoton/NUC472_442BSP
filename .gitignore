@@ -16,6 +16,7 @@ settings/
 *.dep
 *.bak
 *.uvopt
+*.uvgui.*
 *.old
 *.bin
 !SampleCode/StdDriver/CRYPTO_SHA/IAR/dummy.bin
