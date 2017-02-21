@@ -379,8 +379,8 @@ extern "C"
 #define PWM0CH23_MODULE  ((2UL<<30)|(2<<28)|(7<<25)           |( 4<<20)|(0<<18)|(MODULE_NoMsk<<10)|( 0<<5)|CLK_APBCLK1_PWM0CH23CKEN_Pos) /*!< PWM0CH23 Module  \hideinitializer */
 #define PWM0CH45_MODULE  ((2UL<<30)|(2<<28)|(7<<25)           |( 8<<20)|(0<<18)|(MODULE_NoMsk<<10)|( 0<<5)|CLK_APBCLK1_PWM0CH45CKEN_Pos) /*!< PWM0CH45 Module  \hideinitializer */
 #define PWM1CH01_MODULE  ((2UL<<30)|(2<<28)|(7<<25)           |(12<<20)|(0<<18)|(MODULE_NoMsk<<10)|( 0<<5)|CLK_APBCLK1_PWM1CH01CKEN_Pos) /*!< PWM1CH01 Module  \hideinitializer */
-#define PWM1CH23_MODULE  ((2UL<<30)|(2<<28)|(7<<25)           |(16<<20)|(0<<18)|(MODULE_NoMsk<<10)|( 0<<5)|CLK_APBCLK1_PWM1CH23CKEN_Pos) /*!< PWM1CH23 Module  \hideinitializer */
-#define PWM1CH45_MODULE  ((2UL<<30)|(2<<28)|(7<<25)           |(20<<20)|(0<<18)|(MODULE_NoMsk<<10)|( 0<<5)|CLK_APBCLK1_PWM1CH45CKEN_Pos) /*!< PWM1CH45 Module  \hideinitializer */
+#define PWM1CH23_MODULE  ((2UL<<30)|(2<<28)|(7<<25)           |(16<<20)|(0<<18)|(MODULE_NoMsk<<10)|( 0<<5)|CLK_APBCLK1_PWM1CH2345CKEN_Pos) /*!< PWM1CH23 Module  \hideinitializer */
+#define PWM1CH45_MODULE  ((2UL<<30)|(2<<28)|(7<<25)           |(20<<20)|(0<<18)|(MODULE_NoMsk<<10)|( 0<<5)|CLK_APBCLK1_PWM1CH2345CKEN_Pos) /*!< PWM1CH45 Module  \hideinitializer */
 #define QEI0_MODULE      ((2UL<<30)|(0<<28)|(MODULE_NoMsk<<25)|( 0<<20)|(0<<18)|(MODULE_NoMsk<<10)|( 0<<5)|CLK_APBCLK1_QEI0CKEN_Pos)   /*!< QEI0 Module  \hideinitializer */
 #define QEI1_MODULE      ((2UL<<30)|(0<<28)|(MODULE_NoMsk<<25)|( 0<<20)|(0<<18)|(MODULE_NoMsk<<10)|( 0<<5)|CLK_APBCLK1_QEI1CKEN_Pos)   /*!< QEI1 Module  \hideinitializer */
 #define ECAP0_MODULE     ((2UL<<30)|(0<<28)|(MODULE_NoMsk<<25)|( 0<<20)|(0<<18)|(MODULE_NoMsk<<10)|( 0<<5)|CLK_APBCLK1_ECAP0CKEN_Pos)  /*!< ECAP0 Module  \hideinitializer */
