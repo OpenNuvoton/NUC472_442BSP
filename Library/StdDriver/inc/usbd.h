@@ -183,7 +183,7 @@ extern S_USBD_CMD_T gUsbCmd;
 
 #define USBD_ENABLE_USB()               ((uint32_t)(USBD->PHYCTL |= (USBD_PHYCTL_PHYEN_Msk|USBD_PHYCTL_DPPUEN_Msk))) /*!<Enable USB  \hideinitializer */
 #define USBD_DISABLE_USB()              ((uint32_t)(USBD->PHYCTL &= ~USBD_PHYCTL_DPPUEN_Msk)) /*!<Disable USB  \hideinitializer */
-#define USBD_ENABLE_PHY()               ((uint32_t)(USBD->PHYCTL |= USBD_PHYCTL_PHYEN_Msk)) /*!<Enable PHY  \hideinitializer */
+#define USBD_ENABLE_PHY()               ((uint32_t)(USBD->PHYCTL |= (USBD_PHYCTL_PHYEN_Msk|USBD_PHYCTL_DPPUEN_Msk))) /*!<Enable PHY  \hideinitializer */
 #define USBD_DISABLE_PHY()              ((uint32_t)(USBD->PHYCTL &= ~USBD_PHYCTL_PHYEN_Msk)) /*!<Disable PHY  \hideinitializer */
 #define USBD_SET_SE0()                  ((uint32_t)(USBD->PHYCTL &= ~USBD_PHYCTL_DPPUEN_Msk)) /*!<Enable SE0, Force USB PHY Transceiver to Drive SE0  \hideinitializer */
 #define USBD_CLR_SE0()                  ((uint32_t)(USBD->PHYCTL |= USBD_PHYCTL_DPPUEN_Msk)) /*!<Disable SE0  \hideinitializer */
