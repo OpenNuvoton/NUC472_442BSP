@@ -47,7 +47,7 @@
 #define DEV_MAX_NUM             8       /*!< Maximum number of connected devices \hideinitializer       */
 #define URB_MAX_NUM             12      /*!< Maximum number of URBs in memory pool \hideinitializer     */
 #define ED_MAX_NUM              12      /*!< Maximum number of OHCI EDs in memory pool \hideinitializer */
-#define TD_MAX_NUM              32      /*!< Maximum number of OHCI TDs in memory pool \hideinitializer */
+#define TD_MAX_NUM              64      /*!< Maximum number of OHCI TDs in memory pool \hideinitializer */
 
 #define MAX_ENDPOINTS           16      /*!< Maximum number of endpoints per device \hideinitializer    */
 #define MAX_DRIVER_PER_DEV      3       /*!< Maximum number of drivers for a device \hideinitializer    */
@@ -55,7 +55,7 @@
 #define MAX_HUB_DEVICE          2       /*!< Maximum number of connected Hub devices \hideinitializer   */
 
 
-#define ISO_FRAME_COUNT         4       /*!< Transfer frames per Isohronous TD \hideinitializer     */
+#define ISO_FRAME_COUNT         1       /*!< Transfer frames per Isohronous TD. (Must be 1 for isochronous out.) \hideinitializer     */
 #define OHCI_ISO_DELAY          8       /*!< Delay isochronous transfer frame time \hideinitializer     */
 
 /*
