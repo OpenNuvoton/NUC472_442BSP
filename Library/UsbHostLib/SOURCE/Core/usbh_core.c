@@ -958,7 +958,7 @@ static int  usbh_settle_configuration(USB_DEV_T *dev)
     uint32_t    cfgno, length;
     uint8_t     *buffer;
     USB_CONFIG_DESC_T *desc;
-    uint32_t    stack_buff[256];
+    uint32_t    stack_buff[384];
 
     if (dev->descriptor.bNumConfigurations > USB_MAXCONFIG) {
         USB_warning("Too many configurations\n");
@@ -990,9 +990,9 @@ static int  usbh_settle_configuration(USB_DEV_T *dev)
         /* Get the full buffer */
         length = desc->wTotalLength;
 
-        if (length > 256) {
-            length = 256;
-            USB_error("Config descriptor is too large. Read 256 bytes only. This may cause lost of information!\n");
+        if (length > 384) {
+            length = 384;
+            USB_error("Config descriptor is too large. Read 384 bytes only. This may cause lost of information!\n");
         }
 
         /* Now that we know the length, get the whole thing */

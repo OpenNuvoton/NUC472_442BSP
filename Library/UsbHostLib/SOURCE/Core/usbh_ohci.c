@@ -397,7 +397,8 @@ static int  sohci_submit_urb(URB_T * urb)
     if (!urb->dev || !urb->dev->bus)
         return USB_ERR_NODEV;
 
-    if (usb_endpoint_halted(urb->dev, usb_pipeendpoint (pipe), usb_pipeout (pipe)))
+    if  ((usb_pipeendpoint(pipe) != 0) &&
+         (usb_endpoint_halted(urb->dev, usb_pipeendpoint (pipe), usb_pipeout (pipe))))
         return USB_ERR_PIPE;
 
 #ifdef USB_VERBOSE_DEBUG

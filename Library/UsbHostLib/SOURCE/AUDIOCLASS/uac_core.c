@@ -191,6 +191,12 @@ int32_t  UAC_SamplingRateControl(UAC_DEV_T *audev, uint8_t target, uint8_t req, 
     if (ep == NULL)
         return UAC_RET_DEV_NOT_SUPPORTED;
 
+	if (target == UAC_SPEAKER)
+    	USBH_SetInterface(audev->udev, uac_info->ifd_play->bInterfaceNumber, uac_info->ifd_play->bAlternateSetting);
+	
+	if (target == UAC_MICROPHONE)
+		USBH_SetInterface(audev->udev, uac_info->ifd_rec->bInterfaceNumber, uac_info->ifd_rec->bAlternateSetting);
+
     tSampleFreq[0] = *srate & 0xff;
     tSampleFreq[1] = (*srate >> 8) & 0xff;
     tSampleFreq[2] = (*srate >> 16) & 0xff;

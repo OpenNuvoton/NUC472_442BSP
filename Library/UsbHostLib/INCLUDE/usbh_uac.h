@@ -17,11 +17,11 @@
 
 
 #define CONFIG_AU_MAX_DEV            1      /*!< Maximum number of Audio Class device.  \hideinitializer */
-#define MAX_CFG_DESC_SIZE            256    /*!< The acceptable maximum size of Audio Class device configuration descriptor.  \hideinitializer */
+#define MAX_CFG_DESC_SIZE            336    /*!< The acceptable maximum size of Audio Class device configuration descriptor.  \hideinitializer */
 #define MAX_FEATURE_UNIT             8      /*!< The acceptable maximum number of feature units.  \hideinitializer */
 #define ISO_IN_URB_CNT               2      /*!< Number of USB transfer blocks used by audio in stream  \hideinitializer */
 #define ISO_OUT_URB_CNT              2      /*!< Number of USB transfer blocks used by audio out stream  \hideinitializer */
-#define AU_IN_MAX_PKTSZ              128    /*!< Audio in maximum packet size supported   \hideinitializer */
+#define AU_IN_MAX_PKTSZ              256    /*!< Audio in maximum packet size supported   \hideinitializer */
 #define AU_OUT_MAX_PKTSZ             256    /*!< Audio in maximum packet size supported   \hideinitializer */
 #define UAC_REQ_TIMEOUT              10000  /*!< UAC control request timeout value in miniseconds.   \hideinitializer */
 
