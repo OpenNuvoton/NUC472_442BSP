@@ -76,13 +76,13 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set GPG multi-function pins for UART0 RXD and TXD */
-    SYS->GPG_MFPL = SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
+    SYS->GPG_MFPL |= SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
 
     /* Set GPG multi-function pins for CKO */
-    SYS->GPC_MFPL = (SYS->GPC_MFPL & ~SYS_GPC_MFPL_PC5MFP_Msk) | SYS_GPC_MFPL_PC5MFP_CLK_O ;
+    SYS->GPC_MFPL |= (SYS->GPC_MFPL & ~SYS_GPC_MFPL_PC5MFP_Msk) | SYS_GPC_MFPL_PC5MFP_CLK_O ;
 
     /* Configure analog input pins ADC0~ADC2 (GPE0~GPE2) */
-    SYS->GPE_MFPL = SYS_GPE_MFPL_PE0MFP_ADC0_0 | SYS_GPE_MFPL_PE1MFP_ADC0_1 | SYS_GPE_MFPL_PE2MFP_ADC0_2;
+    SYS->GPE_MFPL |= SYS_GPE_MFPL_PE0MFP_ADC0_0 | SYS_GPE_MFPL_PE1MFP_ADC0_1 | SYS_GPE_MFPL_PE2MFP_ADC0_2;
 
     /* Disable the digital input path */
     PE->DINOFF = PE->DINOFF | (GPIO_DINOFF_DINOFF0_Msk|GPIO_DINOFF_DINOFF1_Msk|GPIO_DINOFF_DINOFF2_Msk);

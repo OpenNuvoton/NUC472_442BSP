@@ -285,7 +285,7 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set GPG multi-function pins for UART0 RXD and TXD */
-    SYS->GPG_MFPL = SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
+    SYS->GPG_MFPL |= SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
 
     /* SPI3: GPI3=SS0, GPI4=CLK, GPI5=MISO0, GPI6=MOSI0 */
     SYS->GPI_MFPL = (SYS->GPI_MFPL & ~(SYS_GPI_MFPL_PI3MFP_Msk | SYS_GPI_MFPL_PI4MFP_Msk | SYS_GPI_MFPL_PI5MFP_Msk | SYS_GPI_MFPL_PI6MFP_Msk)) |

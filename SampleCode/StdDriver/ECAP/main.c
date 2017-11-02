@@ -81,10 +81,10 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set GPG multi-function pins for UART0 RXD and TXD */
-    SYS->GPG_MFPL = SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
+    SYS->GPG_MFPL |= SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
 
     /* Set GPG multi-function pins for CKO */
-    SYS->GPC_MFPL = SYS_GPC_MFPL_PC5MFP_CLK_O ;
+    SYS->GPC_MFPL |= SYS_GPC_MFPL_PC5MFP_CLK_O ;
 
     /* Set PC5 as ECAMP0 input0, ECAP0_IC0, MFP8 */
     SYS->GPC_MFPL &= ~SYS_GPC_MFPL_PC5MFP_Msk;

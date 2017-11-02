@@ -73,13 +73,13 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set PE.6 multi-function pin for ACMP0 positive input pin */
-    SYS->GPE_MFPL = SYS_GPE_MFPL_PE6MFP_ACMP0_P0;
+    SYS->GPE_MFPL |= SYS_GPE_MFPL_PE6MFP_ACMP0_P0;
 
     /* Disable digital input path of analog pin ACMP0_P to prevent leakage */
     GPIO_DISABLE_DIGITAL_PATH(PE, (1 << 6));
 
     /* Set GPG multi-function pins for UART0 RXD and TXD */
-    SYS->GPG_MFPL = SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
+    SYS->GPG_MFPL |= SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
 
     /* Register write-protection enabled */
     SYS_LockReg();

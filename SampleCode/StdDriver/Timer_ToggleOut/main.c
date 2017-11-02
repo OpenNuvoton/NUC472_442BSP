@@ -58,10 +58,10 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set GPG multi-function pins for UART0 RXD and TXD */
-    SYS->GPG_MFPL = SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
+    SYS->GPG_MFPL |= SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
 
     /* Set Timer event counting pin */
-    SYS->GPB_MFPL = SYS_GPB_MFPL_PB4MFP_TM0_CNT_OUT;
+    SYS->GPB_MFPL |= SYS_GPB_MFPL_PB4MFP_TM0_CNT_OUT;
 
     /* Lock protected registers */
     SYS_LockReg();

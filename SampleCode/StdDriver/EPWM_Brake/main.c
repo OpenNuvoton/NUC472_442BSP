@@ -73,17 +73,17 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set GPG multi-function pins for UART0 RXD and TXD */
-    SYS->GPG_MFPL = SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
+    SYS->GPG_MFPL |= SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
 
     /* Set GPG multi-function pins for CKO */
-    SYS->GPC_MFPL = SYS_GPC_MFPL_PC5MFP_CLK_O ;
+    SYS->GPC_MFPL |= SYS_GPC_MFPL_PC5MFP_CLK_O ;
 
     /* Set A12 A11 A10 A9 A8 A7 multi-function pins for EPWM0 Channel 0~5  */
-    SYS->GPA_MFPH =  SYS_GPA_MFPH_PA12MFP_EPWM0_CH0 | SYS_GPA_MFPH_PA11MFP_EPWM0_CH1 | SYS_GPA_MFPH_PA10MFP_EPWM0_CH2
+    SYS->GPA_MFPH |=  SYS_GPA_MFPH_PA12MFP_EPWM0_CH0 | SYS_GPA_MFPH_PA11MFP_EPWM0_CH1 | SYS_GPA_MFPH_PA10MFP_EPWM0_CH2
                      | SYS_GPA_MFPH_PA9MFP_EPWM0_CH3 | SYS_GPA_MFPH_PA8MFP_EPWM0_CH4;
-    SYS->GPA_MFPL =  SYS_GPA_MFPL_PA7MFP_EPWM0_CH5;
+    SYS->GPA_MFPL |=  SYS_GPA_MFPL_PA7MFP_EPWM0_CH5;
     /* Set B7 multi-function pin for EPWM0 brake pin 0 */
-    SYS->GPB_MFPL =  SYS_GPB_MFPL_PB7MFP_BRAKE00;
+    SYS->GPB_MFPL |=  SYS_GPB_MFPL_PB7MFP_BRAKE00;
 
     /* Lock protected registers */
     SYS_LockReg();

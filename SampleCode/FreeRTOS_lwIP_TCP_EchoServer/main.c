@@ -286,9 +286,9 @@ static void prvSetupHardware( void )
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set GPG multi-function pins for UART0 RXD and TXD */
-    SYS->GPG_MFPL = SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
+    SYS->GPG_MFPL |= SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
     // Configure RMII pins
-    SYS->GPC_MFPL = SYS_GPC_MFPL_PC0MFP_EMAC_REFCLK |
+    SYS->GPC_MFPL |= SYS_GPC_MFPL_PC0MFP_EMAC_REFCLK |
                     SYS_GPC_MFPL_PC1MFP_EMAC_MII_RXERR |
                     SYS_GPC_MFPL_PC2MFP_EMAC_MII_RXDV |
                     SYS_GPC_MFPL_PC3MFP_EMAC_MII_RXD1 |
@@ -297,12 +297,12 @@ static void prvSetupHardware( void )
                     SYS_GPC_MFPL_PC7MFP_EMAC_MII_TXD1;
 
 
-    SYS->GPC_MFPH = SYS_GPC_MFPH_PC8MFP_EMAC_MII_TXEN;
+    SYS->GPC_MFPH |= SYS_GPC_MFPH_PC8MFP_EMAC_MII_TXEN;
     // Enable high slew rate on all RMII pins
     PC->SLEWCTL |= 0x1DF;
 
     // Configure MDC, MDIO at PB14 & PB15
-    SYS->GPB_MFPH = SYS_GPB_MFPH_PB14MFP_EMAC_MII_MDC | SYS_GPB_MFPH_PB15MFP_EMAC_MII_MDIO;
+    SYS->GPB_MFPH |= SYS_GPB_MFPH_PB14MFP_EMAC_MII_MDC | SYS_GPB_MFPH_PB15MFP_EMAC_MII_MDIO;
 
     /* Lock protected registers */
     SYS_LockReg();

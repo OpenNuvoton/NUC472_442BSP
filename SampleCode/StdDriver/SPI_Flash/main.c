@@ -271,11 +271,11 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set GPG multi-function pins for UART0 RXD and TXD */
-    SYS->GPG_MFPL = SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
+    SYS->GPG_MFPL |= SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
 
     /* SPI2: SS0=GPH_5, MOSI0=GPH_8, MISO0=GPH_7, CLK=GPH_6, MISO1=GPH_9, MOSI11=GPH10 */
-    SYS->GPH_MFPL = (SYS_GPH_MFPL_PH5MFP_SPI2_SS0 | SYS_GPH_MFPL_PH6MFP_SPI2_CLK | SYS_GPH_MFPL_PH7MFP_SPI2_MISO0);
-    SYS->GPH_MFPH = (SYS_GPH_MFPH_PH8MFP_SPI2_MOSI0 | SYS_GPH_MFPH_PH9MFP_SPI2_MISO1 | SYS_GPH_MFPH_PH10MFP_SPI2_MOSI1);
+    SYS->GPH_MFPL |= (SYS_GPH_MFPL_PH5MFP_SPI2_SS0 | SYS_GPH_MFPL_PH6MFP_SPI2_CLK | SYS_GPH_MFPL_PH7MFP_SPI2_MISO0);
+    SYS->GPH_MFPH |= (SYS_GPH_MFPH_PH8MFP_SPI2_MOSI0 | SYS_GPH_MFPH_PH9MFP_SPI2_MISO1 | SYS_GPH_MFPH_PH10MFP_SPI2_MOSI1);
 
     /* Lock protected registers */
     SYS_LockReg();

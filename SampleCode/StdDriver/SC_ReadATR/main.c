@@ -75,10 +75,10 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set GPG multi-function pins for UART0 RXD and TXD */
-    SYS->GPG_MFPL = SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
-    SYS->GPI_MFPL = SYS_GPI_MFPL_PI0MFP_SC5_RST | SYS_GPI_MFPL_PI1MFP_SC5_PWR | SYS_GPI_MFPL_PI2MFP_SC5_DAT;
-    SYS->GPH_MFPH = SYS_GPH_MFPH_PH15MFP_SC5_CLK;
-    SYS->GPA_MFPL = SYS_GPA_MFPL_PA1MFP_SC5_CD;
+    SYS->GPG_MFPL |= SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
+    SYS->GPI_MFPL |= SYS_GPI_MFPL_PI0MFP_SC5_RST | SYS_GPI_MFPL_PI1MFP_SC5_PWR | SYS_GPI_MFPL_PI2MFP_SC5_DAT;
+    SYS->GPH_MFPH |= SYS_GPH_MFPH_PH15MFP_SC5_CLK;
+    SYS->GPA_MFPL |= SYS_GPA_MFPL_PA1MFP_SC5_CD;
     /* Lock protected registers */
     SYS_LockReg();
 }
