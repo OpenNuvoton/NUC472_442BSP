@@ -19,10 +19,11 @@
 uint32_t PllClock         = PLL_CLOCK;
 
 
-uint8_t au8MyTDESKey[3][8] = {
-    0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
-    0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22,
-    0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33
+/* TDES Key:  1e4678a17f2c8a33 800e15ac47891a4c a011453291c23340 */
+uint32_t au8MyTDESKey[3][2] = {
+    { 0x1e4678a1, 0x7f2c8a33 },
+    { 0x800e15ac, 0x47891a4c },
+    { 0xa0114532, 0x91c23340 }
 };
 
 uint32_t au32MyTDESIV[2] = {  0x00000000, 0x00000000 };
@@ -173,7 +174,7 @@ int32_t main (void)
      *  TDES CBC mode encrypt
      *---------------------------------------*/
     //TDES_Open(0, 1, TDES_MODE_CBC, TDES_IN_OUT_SWAP);
-    TDES_Open(0, 1, TDES_MODE_CBC, TDES_IN_OUT_WHL_SWAP);
+    TDES_Open(0, 1, 1, 1, TDES_MODE_CBC, TDES_IN_OUT_WHL_SWAP);
     TDES_SetKey(0, au8MyTDESKey);
     TDES_SetInitVect(0, au32MyTDESIV[0], au32MyTDESIV[1]);
     TDES_SetDMATransfer(0, (uint32_t)au8InputData, (uint32_t)au8OutputData, sizeof(au8InputData));
@@ -188,7 +189,7 @@ int32_t main (void)
     /*---------------------------------------
      *  TDES CBC mode decrypt
      *---------------------------------------*/
-    TDES_Open(0, 0, TDES_MODE_CBC, TDES_IN_OUT_WHL_SWAP);
+    TDES_Open(0, 0, 1, 1, TDES_MODE_CBC, TDES_IN_OUT_WHL_SWAP);
     TDES_SetKey(0, au8MyTDESKey);
     TDES_SetInitVect(0, au32MyTDESIV[0], au32MyTDESIV[1]);
     TDES_SetDMATransfer(0, (uint32_t)au8OutputData, (uint32_t)au8InputData, sizeof(au8InputData));
