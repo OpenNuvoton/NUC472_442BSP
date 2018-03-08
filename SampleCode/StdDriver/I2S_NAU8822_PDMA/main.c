@@ -19,7 +19,6 @@
 
 uint32_t PcmRxBuff[2][BUFF_LEN] = {0};
 uint32_t PcmTxBuff[2][BUFF_LEN] = {0};
-uint32_t volatile u32BuffPos = 0;
 DMA_DESC_T DMA_TXDESC[2], DMA_RXDESC[2];
 
 void Delay(int count)

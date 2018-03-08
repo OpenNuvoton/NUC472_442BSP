@@ -22,7 +22,7 @@
 uint8_t gu8DeviceDescriptor[] =
 {
 #else
-__align(4) uint8_t gu8DeviceDescriptor[] =
+uint8_t gu8DeviceDescriptor[] __attribute__((aligned(4))) =
 {
 #endif
     LEN_DEVICE,     /* bLength */
@@ -51,7 +51,7 @@ __align(4) uint8_t gu8DeviceDescriptor[] =
 uint8_t gu8QualifierDescriptor[] =
 {
 #else
-__align(4) uint8_t gu8QualifierDescriptor[] =
+uint8_t gu8QualifierDescriptor[] __attribute__((aligned(4))) =
 {
 #endif
     LEN_QUALIFIER,  /* bLength */
@@ -71,7 +71,7 @@ __align(4) uint8_t gu8QualifierDescriptor[] =
 uint8_t gu8ConfigDescriptor[] =
 {
 #else
-__align(4) uint8_t gu8ConfigDescriptor[] =
+uint8_t gu8ConfigDescriptor[] __attribute__((aligned(4))) =
 {
 #endif
     LEN_CONFIG,     /* bLength */
@@ -122,7 +122,7 @@ __align(4) uint8_t gu8ConfigDescriptor[] =
 uint8_t gu8OtherConfigDescriptor[] =
 {
 #else
-__align(4) uint8_t gu8OtherConfigDescriptor[] =
+uint8_t gu8OtherConfigDescriptor[] __attribute__((aligned(4))) =
 {
 #endif
     LEN_CONFIG,     /* bLength */
@@ -174,7 +174,7 @@ __align(4) uint8_t gu8OtherConfigDescriptor[] =
 uint8_t gu8StringLang[4] =
 {
 #else
-__align(4) uint8_t gu8StringLang[4] =
+uint8_t gu8StringLang[4] __attribute__((aligned(4))) =
 {
 #endif
     4,              /* bLength */
@@ -188,7 +188,7 @@ __align(4) uint8_t gu8StringLang[4] =
 uint8_t gu8VendorStringDesc[] =
 {
 #else
-__align(4) uint8_t gu8VendorStringDesc[] =
+uint8_t gu8VendorStringDesc[] __attribute__((aligned(4))) =
 {
 #endif
     16,
@@ -202,7 +202,7 @@ __align(4) uint8_t gu8VendorStringDesc[] =
 uint8_t gu8ProductStringDesc[] =
 {
 #else
-__align(4) uint8_t gu8ProductStringDesc[] =
+uint8_t gu8ProductStringDesc[] __attribute__((aligned(4))) =
 {
 #endif
     22,             /* bLength          */

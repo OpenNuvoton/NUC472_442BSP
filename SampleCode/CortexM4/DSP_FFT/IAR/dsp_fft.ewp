@@ -29,7 +29,7 @@
         </option>
         <option>
           <name>Variant</name>
-          <version>21</version>
+          <version>20</version>
           <state>39</state>
         </option>
         <option>
@@ -60,7 +60,7 @@
         </option>
         <option>
           <name>FPU</name>
-          <version>3</version>
+          <version>2</version>
           <state>5</state>
         </option>
         <option>
@@ -87,7 +87,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.30.3.8061</state>
+          <state>6.70.2.6303</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -137,12 +137,12 @@
         </option>
         <option>
           <name>GFPUCoreSlave</name>
-          <version>21</version>
+          <version>20</version>
           <state>39</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>21</version>
+          <version>20</version>
           <state>39</state>
         </option>
         <option>
@@ -163,7 +163,7 @@
       <name>ICCARM</name>
       <archiveVersion>2</archiveVersion>
       <data>
-        <version>31</version>
+        <version>29</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -172,8 +172,7 @@
         </option>
         <option>
           <name>CCDefines</name>
-          <state>ARM_MATH_CM4=1</state>
-          <state>__FPU_PRESENT=1</state>
+          <state>ARM_MATH_CM4=1UL</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -213,7 +212,7 @@
         </option>
         <option>
           <name>CCDiagSuppress</name>
-          <state>Pa082,Pa093</state>
+          <state>Pa082, Pa093</state>
         </option>
         <option>
           <name>CCDiagRemark</name>
@@ -234,7 +233,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>00000000</state>
+          <state>1111111</state>
         </option>
         <option>
           <name>CCDebugInfo</name>
@@ -324,7 +323,7 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>1</state>
+          <state>3</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
@@ -333,7 +332,7 @@
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>1</state>
+          <state>3</state>
         </option>
         <option>
           <name>CompilerMisraRules98</name>
@@ -400,15 +399,6 @@
         <option>
           <name>CCNoLiteralPool</name>
           <state>0</state>
-        </option>
-        <option>
-          <name>CCOptStrategySlave</name>
-          <version>0</version>
-          <state>0</state>
-        </option>
-        <option>
-          <name>CCGuardCalls</name>
-          <state>1</state>
         </option>
       </data>
     </settings>
@@ -614,7 +604,6 @@
       <data>
         <extensions></extensions>
         <cmdline></cmdline>
-        <hasPrio>0</hasPrio>
       </data>
     </settings>
     <settings>
@@ -763,7 +752,7 @@
         </option>
         <option>
           <name>IlinkAdditionalLibs</name>
-          <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Lib\ARM\arm_cortexM4lf_math.lib</state>
+          <state></state>
         </option>
         <option>
           <name>IlinkOverrideProgramEntryLabel</name>
@@ -977,7 +966,7 @@
   <group>
     <name>User</name>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Library\CMSIS\DSP_Lib\Examples\arm_fft_bin_example\ARM\arm_fft_bin_data.c</name>
+      <name>$PROJ_DIR$\..\arm_fft_bin_data.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\main.c</name>

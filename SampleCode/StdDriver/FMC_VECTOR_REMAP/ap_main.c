@@ -262,5 +262,3 @@ static int  load_image_to_flash(uint32_t image_base, uint32_t image_limit, uint3
     printf("OK.\n");
     return 0;
 }
-
-

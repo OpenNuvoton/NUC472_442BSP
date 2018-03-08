@@ -34,10 +34,12 @@
 
 /// @cond HIDDEN_SYMBOLS
 
-
+#ifdef __GNUC__
+#define umass_dbg_msg(...)
+#else
 #define umass_dbg_msg       printf
 //#define umass_dbg_msg(...)
-
+#endif
 
 static int       iface_num;
 static uint16_t  bulk_in_ep_addr, bulk_out_ep_addr;
@@ -46,18 +48,16 @@ static uint8_t   bulk_in_toggle, bulk_out_toggle;
 int    g_disk_lun, g_max_lun;
 
 #ifdef __ICCARM__
+
 #pragma data_alignment=4
 static struct bulk_cb_wrap   g_cb;
-#endif
 
-#ifdef __ICCARM__
 #pragma data_alignment=4
 static struct bulk_cs_wrap   g_cs;
-#endif
 
-#ifdef __ARMCC_VERSION
-static __align(4) struct bulk_cb_wrap   g_cb;
-static __align(4) struct bulk_cs_wrap   g_cs;
+#else
+static struct bulk_cb_wrap   g_cb __attribute__((aligned(4)));
+static struct bulk_cs_wrap   g_cs __attribute__((aligned(4)));
 #endif
 
 

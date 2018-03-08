@@ -118,7 +118,7 @@ void UART0_Init()
 void EADC_FunctionTest()
 {
     uint8_t  u32SAMPLECount = 0;
-    int32_t  i32ConversionData[6] = {0};
+    int32_t  i32ConversionData[8] = {0};
 
     printf("\n");
     printf("+----------------------------------------------------------------------+\n");

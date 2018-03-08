@@ -26,8 +26,8 @@
 uint32_t PllClock         = PLL_CLOCK;
 
 
-static UINT blen = 16*1024;
-volatile UINT Timer = 0;        /* Performance timer (1kHz increment) */
+
+static UINT blen = 4096;
 DWORD acc_size;             /* Work register for fs command */
 WORD acc_files, acc_dirs;
 FILINFO Finfo;
@@ -39,11 +39,9 @@ char Lfname[512];
 
 #ifdef __ICCARM__
 #pragma data_alignment=32
-BYTE Buff[1024] ;       /* Working buffer */
-#endif
-
-#ifdef __ARMCC_VERSION
-__align(32) BYTE Buff[1024] ;       /* Working buffer */
+BYTE Buff[4096] ;       /* Working buffer */
+#else
+BYTE Buff[4096] __attribute__((aligned(32)));       /* Working buffer */
 #endif
 
 void Delay(uint32_t delayCnt)
@@ -53,6 +51,26 @@ void Delay(uint32_t delayCnt)
         __NOP();
         __NOP();
     }
+}
+
+void timer_init()
+{
+    /*
+     *  Configure Timer A, clock source from XTL_12M. Prescale 120
+     *  Give 1 seconds counter => 100000
+     */
+    CLK->CLKSEL1 &= ~CLK_CLKSEL1_TMR0SEL_Msk;   /* TIMER0 clock from HXT */
+    CLK->APBCLK0 |= CLK_APBCLK0_TMR0CKEN_Msk;
+    TIMER0->CTL = 0;                    /* disable timer */
+    TIMER0->INTSTS = 0x3;                 /* write 1 to clear for safty */
+    TIMER0->CTL = (119 << TIMER_CTL_PSC_Pos) |  // pre-scale = 120
+                  (0x3 << TIMER_CTL_OPMODE_Pos) |         // continuous mode
+                  TIMER_CTL_CNTEN_Msk;
+}
+
+uint32_t get_timer_value()
+{
+    return TIMER0->CNT;
 }
 
 uint8_t bIsBdevice=0, bIsAdevice=0;
@@ -663,7 +681,7 @@ int USBH_Process()
             case 'r' :  /* fr <len> - read file */
                 if (!xatoi(&ptr, &p1)) break;
                 p2 = 0;
-                Timer = 0;
+                timer_init();
                 while (p1)
                 {
                     if ((UINT)p1 >= blen)
@@ -685,14 +703,16 @@ int USBH_Process()
                     p2 += s2;
                     if (cnt != s2) break;
                 }
-                printf("%lu bytes read with %lu kB/sec.\n", p2, p2 / Timer);
+                p1 = get_timer_value()/1000;
+                if (p1)
+                    printf("%lu bytes read with %lu kB/sec.\n", p2, ((p2 * 100) / p1)/1024);
                 break;
 
             case 'w' :  /* fw <len> <val> - write file */
                 if (!xatoi(&ptr, &p1) || !xatoi(&ptr, &p2)) break;
                 memset(Buff, (BYTE)p2, blen);
                 p2 = 0;
-                Timer = 0;
+                timer_init();
                 while (p1)
                 {
                     if ((UINT)p1 >= blen)
@@ -714,7 +734,9 @@ int USBH_Process()
                     p2 += s2;
                     if (cnt != s2) break;
                 }
-                printf("%lu bytes written with %lu kB/sec.\n", p2, p2 / Timer);
+                p1 = get_timer_value()/1000;
+                if (p1)
+                    printf("%lu bytes written with %lu kB/sec.\n", p2, ((p2 * 100) / p1)/1024);
                 break;
 
             case 'n' :  /* fn <old_name> <new_name> - Change file/dir name */

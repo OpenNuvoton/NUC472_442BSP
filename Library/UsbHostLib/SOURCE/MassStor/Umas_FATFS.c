@@ -520,4 +520,3 @@ int32_t  USBH_MassRawWrite(mass_disk_t *disk, uint32_t sectorN, int32_t scnt, ui
 /*@}*/ /* end of group NUC472_442_Device_Driver */
 
 /*** (C) COPYRIGHT 2013 Nuvoton Technology Corp. ***/
-

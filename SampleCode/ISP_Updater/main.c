@@ -34,13 +34,12 @@ FATFS FatFs[_VOLUMES];      /* File system object for logical drive */
 
 static FIL file1;
 
+
 #ifdef __ICCARM__
 #pragma data_alignment=32
 BYTE _Buff[FMC_FLASH_PAGE_SIZE];                /* Working buffer */
-#endif
-
-#ifdef __ARMCC_VERSION
-__align(32) BYTE _Buff[FMC_FLASH_PAGE_SIZE];    /* Working buffer */
+#else
+BYTE _Buff[FMC_FLASH_PAGE_SIZE] __attribute__((aligned(32)));    /* Working buffer */
 #endif
 
 

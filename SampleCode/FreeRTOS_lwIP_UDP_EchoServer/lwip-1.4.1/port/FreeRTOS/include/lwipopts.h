@@ -415,8 +415,12 @@
 
 
 /* Misc */
+#ifdef __GNUC__
+#define LWIP_TIMEVAL_PRIVATE            0
+#else
+#define LWIP_TIMEVAL_PRIVATE            1
+#endif
 
-#define LWIP_TIMEVAL_PRIVATE    1
 #define LWIP_RAND       1
 
 #define TIME_STAMPING   1

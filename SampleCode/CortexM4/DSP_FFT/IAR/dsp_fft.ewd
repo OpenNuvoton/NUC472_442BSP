@@ -12,7 +12,7 @@
       <name>C-SPY</name>
       <archiveVersion>2</archiveVersion>
       <data>
-        <version>26</version>
+        <version>25</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -45,7 +45,7 @@
         </option>
         <option>
           <name>MemFile</name>
-          <state>$TOOLKIT_DIR$\CONFIG\debugger\Nuvoton\ionuc400ae.ddf</state>
+          <state></state>
         </option>
         <option>
           <name>RunToEnable</name>
@@ -77,7 +77,7 @@
         </option>
         <option>
           <name>OCDownloadVerifyAll</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OCProductVersion</name>
@@ -89,7 +89,7 @@
         </option>
         <option>
           <name>OCLastSavedByProductVersion</name>
-          <state>7.30.3.8061</state>
+          <state>6.70.2.6303</state>
         </option>
         <option>
           <name>OCDownloadAttachToProgram</name>
@@ -117,7 +117,7 @@
         </option>
         <option>
           <name>FlashLoadersV3</name>
-          <state>$TOOLKIT_DIR$\config\flashloader\Nuvoton\NUC400_APROM.board</state>
+          <state>$TOOLKIT_DIR$\config\flashloader\Nuvoton\M481_APROM.board</state>
         </option>
         <option>
           <name>OCImagesSuppressCheck1</name>
@@ -145,7 +145,7 @@
         </option>
         <option>
           <name>OverrideDefFlashBoard</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>OCImagesOffset1</name>
@@ -182,30 +182,6 @@
         <option>
           <name>OCAllMTBOptions</name>
           <state>1</state>
-        </option>
-        <option>
-          <name>OCMulticoreNrOfCores</name>
-          <state>1</state>
-        </option>
-        <option>
-          <name>OCMulticoreMaster</name>
-          <state>0</state>
-        </option>
-        <option>
-          <name>OCMulticorePort</name>
-          <state>53461</state>
-        </option>
-        <option>
-          <name>OCMulticoreWorkspace</name>
-          <state></state>
-        </option>
-        <option>
-          <name>OCMulticoreSlaveProject</name>
-          <state></state>
-        </option>
-        <option>
-          <name>OCMulticoreSlaveConfiguration</name>
-          <state></state>
         </option>
       </data>
     </settings>
@@ -281,7 +257,7 @@
       <name>CMSISDAP_ID</name>
       <archiveVersion>2</archiveVersion>
       <data>
-        <version>2</version>
+        <version>1</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -442,10 +418,6 @@
           <name>ICpuName</name>
           <state></state>
         </option>
-        <option>
-          <name>OCJetEmuParams</name>
-          <state>1</state>
-        </option>
       </data>
     </settings>
     <settings>
@@ -520,7 +492,7 @@
       <name>IJET_ID</name>
       <archiveVersion>2</archiveVersion>
       <data>
-        <version>5</version>
+        <version>2</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -713,24 +685,6 @@
         <option>
           <name>ICpuName</name>
           <state></state>
-        </option>
-        <option>
-          <name>OCJetEmuParams</name>
-          <state>1</state>
-        </option>
-        <option>
-          <name>IjetPreferETB</name>
-          <state>1</state>
-        </option>
-        <option>
-          <name>IjetTraceSettingsList</name>
-          <version>0</version>
-          <state>0</state>
-        </option>
-        <option>
-          <name>IjetTraceSizeList</name>
-          <version>0</version>
-          <state>2</state>
         </option>
       </data>
     </settings>
@@ -1273,7 +1227,7 @@
         </option>
         <option>
           <name>CCXds100InterfaceList</name>
-          <version>2</version>
+          <version>1</version>
           <state>0</state>
         </option>
         <option>
@@ -1320,7 +1274,11 @@
         <loadFlag>0</loadFlag>
       </plugin>
       <plugin>
-        <file>$TOOLKIT_DIR$\plugins\rtos\Quadros\Quadros_EWB7_Plugin.ewplugin</file>
+        <file>$TOOLKIT_DIR$\plugins\rtos\PowerPac\PowerPacRTOS.ewplugin</file>
+        <loadFlag>0</loadFlag>
+      </plugin>
+      <plugin>
+        <file>$TOOLKIT_DIR$\plugins\rtos\Quadros\Quadros_EWB6_Plugin.ewplugin</file>
         <loadFlag>0</loadFlag>
       </plugin>
       <plugin>

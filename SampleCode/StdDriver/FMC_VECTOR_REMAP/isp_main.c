@@ -104,6 +104,7 @@ int32_t main (void)
     int             u8Item;
     FUNC_PTR        *func;
     volatile int    loop;
+    uint32_t        u32Data;
 
     /* Lock protected registers */
     if (SYS->REGLCTL == 1) // In end of main function, program issued CPU reset and write-protection will be disabled.
@@ -137,22 +138,33 @@ int32_t main (void)
         switch (u8Item)
         {
         case '0':
-            FMC_SetVectorPageAddr(LD_BOOT_CODE_ENTRY);
-            func =  (FUNC_PTR *)(*(uint32_t *)(LD_BOOT_CODE_ENTRY+4));
+            u32Data = FMC_Read(LD_BOOT_CODE_ENTRY);
+            func =  (FUNC_PTR *)FMC_Read(LD_BOOT_CODE_ENTRY+4);
             printf("branch_to address 0x%x\n", (int)func);
             printf("\n\nChange VECMAP and branch to ld boot code...\n");
-            while (!UART_IS_TX_EMPTY(UART0));
-            __set_SP(*(uint32_t *)LD_BOOT_CODE_ENTRY);
+
+            FMC_SetVectorPageAddr(LD_BOOT_CODE_ENTRY);
+#ifdef __GNUC__                        /* for GNU C compiler */
+            asm("msr msp, %0" : : "r" (u32Data));
+#else
+           __set_SP(u32Data);
+#endif
             func();
             break;
 
         case '1':
-            FMC_SetVectorPageAddr(USER_AP_ENTRY);
-            func =  (FUNC_PTR *)(*(uint32_t *)(USER_AP_ENTRY+4));
+            u32Data = FMC_Read(USER_AP_ENTRY);
+            func =  (FUNC_PTR *)FMC_Read(USER_AP_ENTRY+4);
             printf("branch_to address 0x%x\n", (int)func);
             printf("\n\nChange VECMAP and branch to user application...\n");
             while (!UART_IS_TX_EMPTY(UART0));
-            __set_SP(*(uint32_t *)USER_AP_ENTRY);
+
+            FMC_SetVectorPageAddr(USER_AP_ENTRY);
+#ifdef __GNUC__                        /* for GNU C compiler */
+            asm("msr msp, %0" : : "r" (u32Data));
+#else
+           __set_SP(u32Data);
+#endif
             func();
             break;
 

@@ -11,6 +11,9 @@
 #include <stdio.h>
 #include "NUC472_442.h"
 
+# if defined (__GNUC__)
+extern void initialise_monitor_handles(void);
+#endif
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -37,6 +40,10 @@ int main()
     int8_t item;
 
     SYS_Init();
+
+# if defined (__GNUC__)
+    initialise_monitor_handles();
+#endif
 
     printf("\n Start SEMIHOST test: \n");
 

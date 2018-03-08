@@ -28,11 +28,14 @@
  */
 void GPA_IRQHandler(void)
 {
-    PA->INTSRC = PA->INTSRC;
+    uint32_t volatile reg;
+    reg = PA->INTSRC;
+    PA->INTSRC = reg;
 }
 
 void GPB_IRQHandler(void)
 {
+    uint32_t volatile reg;
     /* To check if PB2 interrupt occurred */
     if (PB->INTSRC & BIT2)
     {
@@ -44,13 +47,15 @@ void GPB_IRQHandler(void)
     else
     {
         /* Un-expected interrupt. Just clear all PORTB interrupts */
-        PB->INTSRC = PB->INTSRC;
+        reg = PB->INTSRC;
+        PB->INTSRC = reg;
         printf("Un-expected interrupts. \n");
     }
 }
 
 void GPC_IRQHandler(void)
 {
+    uint32_t volatile reg;
     /* To check if PC5 interrupt occurred */
     if (PC->INTSRC & BIT5)
     {
@@ -60,39 +65,52 @@ void GPC_IRQHandler(void)
     }
     else
     {
-        PC->INTSRC = PC->INTSRC;
+        reg = PC->INTSRC;
+        PC->INTSRC = reg;
         printf("Un-expected interrupts. \n");
     }
 }
 
 void GPD_IRQHandler(void)
 {
-    PD->INTSRC = PD->INTSRC;
+    uint32_t volatile reg;
+    reg = PD->INTSRC;
+    PD->INTSRC = reg;
 }
 
 void GPE_IRQHandler(void)
 {
-    PE->INTSRC = PE->INTSRC;
+    uint32_t volatile reg;
+    reg = PE->INTSRC;
+    PE->INTSRC = reg;
 }
 
 void GPF_IRQHandler(void)
 {
-    PF->INTSRC = PF->INTSRC;
+    uint32_t volatile reg;
+    reg = PF->INTSRC;
+    PF->INTSRC = reg;
 }
 
 void GPG_IRQHandler(void)
 {
-    PG->INTSRC = PG->INTSRC;
+    uint32_t volatile reg;
+    reg = PG->INTSRC;
+    PG->INTSRC = reg;
 }
 
 void GPH_IRQHandler(void)
 {
-    PH->INTSRC = PH->INTSRC;
+    uint32_t volatile reg;
+    reg = PH->INTSRC;
+    PH->INTSRC = reg;
 }
 
 void GPI_IRQHandler(void)
 {
-    GPI->INTSRC = GPI->INTSRC;
+    uint32_t volatile reg;
+    reg = GPI->INTSRC;
+    GPI->INTSRC = reg;
 }
 
 /**
@@ -302,13 +320,13 @@ int main (void)
     NVIC_EnableIRQ(GPC_IRQn);
 
     /* Configure PA0 as EINT0 pin and enable interrupt by falling edge trigger */
-    SYS->GPA_MFPL = SYS->GPA_MFPL & ~SYS_GPA_MFPL_PA0MFP_Msk | SYS_GPA_MFPL_PA0MFP_INT0;
+    SYS->GPA_MFPL = (SYS->GPA_MFPL & ~SYS_GPA_MFPL_PA0MFP_Msk) | SYS_GPA_MFPL_PA0MFP_INT0;
     GPIO_SetMode(PA, BIT0, GPIO_MODE_INPUT);
     GPIO_EnableEINT0(PA, 0, GPIO_INT_FALLING);
     NVIC_EnableIRQ(EINT0_IRQn);
 
     /* Configure PF0 as EINT5 pin and enable interrupt by rising and falling edge trigger */
-    SYS->GPF_MFPL = SYS->GPF_MFPL & ~SYS_GPF_MFPL_PF0MFP_Msk | SYS_GPF_MFPL_PF0MFP_INT5;
+    SYS->GPF_MFPL = (SYS->GPF_MFPL & ~SYS_GPF_MFPL_PF0MFP_Msk) | SYS_GPF_MFPL_PF0MFP_INT5;
     GPIO_SetMode(PF, BIT0, GPIO_MODE_INPUT);
     GPIO_EnableEINT(PF, 0, GPIO_INT_BOTH_EDGE);
     NVIC_EnableIRQ(EINT5_IRQn);
@@ -324,5 +342,3 @@ int main (void)
     while (1);
 
 }
-
-

@@ -168,6 +168,7 @@
 
 
 /*!< device descriptor structure  \hideinitializer   */
+#ifdef __ICCARM__
 typedef struct
 {
     __packed uint8_t  requesttype;      /*!< Characteristics of request \hideinitializer  */
@@ -176,7 +177,17 @@ typedef struct
     __packed uint16_t index;            /*!< Word-sized field that varies according to request; typically used to pass an index or offset \hideinitializer */
     __packed uint16_t length;           /*!< Number of bytes to transfer if there is a Data stage \hideinitializer */
 } DEV_REQ_T;
-
+#else
+typedef struct __attribute__((__packed__))
+{
+    uint8_t  requesttype;               /*!< Characteristics of request \hideinitializer  */
+    uint8_t  request;                   /*!< Specific request \hideinitializer            */
+    uint16_t value;                     /*!< Word-sized field that varies according to request \hideinitializer */
+    uint16_t index;                     /*!< Word-sized field that varies according to request; typically used to pass an index or offset \hideinitializer */
+    uint16_t length;                    /*!< Number of bytes to transfer if there is a Data stage \hideinitializer */
+}
+DEV_REQ_T;
+#endif
 
 /*
  * This is a USB device descriptor.
@@ -193,11 +204,19 @@ typedef struct
 #define USB_MAXENDPOINTS        32
 
 /* All standard descriptors have these 2 fields in common */
+#ifdef __ICCARM__
 typedef struct usb_descriptor_header
 {
     __packed uint8_t  bLength;
     __packed uint8_t  bDescriptorType;
 } USB_DESC_HDR_T;
+#else
+typedef struct __attribute__((__packed__)) usb_descriptor_header
+{
+    uint8_t  bLength;
+    uint8_t  bDescriptorType;
+} USB_DESC_HDR_T;
+#endif
 
 /// @endcond HIDDEN_SYMBOLS
 
@@ -212,6 +231,7 @@ struct urb_t;
  *  USB device descriptor
  */
 /*!< Device descriptor structure \hideinitializer           */
+#ifdef __ICCARM__
 typedef struct usb_device_descriptor
 {
     __packed uint8_t  bLength;          /*!< Length of device descriptor \hideinitializer           */
@@ -229,12 +249,31 @@ typedef struct usb_device_descriptor
     __packed uint8_t  iSerialNumber;    /*!< Serial number description string ID \hideinitializer   */
     __packed uint8_t  bNumConfigurations; /*!< Total number of configurations \hideinitializer      */
 } USB_DEV_DESC_T;                       /*!< Device descriptor structure \hideinitializer           */
-
+#else
+typedef struct __attribute__((__packed__)) usb_device_descriptor
+{
+    uint8_t  bLength;                   /*!< Length of device descriptor \hideinitializer           */
+    uint8_t  bDescriptorType;           /*!< Device descriptor type \hideinitializer                */
+    uint16_t bcdUSB;                    /*!< USB version number \hideinitializer                    */
+    uint8_t  bDeviceClass;              /*!< Device class code \hideinitializer                     */
+    uint8_t  bDeviceSubClass;           /*!< Device subclass code \hideinitializer                  */
+    uint8_t  bDeviceProtocol;           /*!< Device protocol code \hideinitializer                  */
+    uint8_t  bMaxPacketSize0;           /*!< Maximum packet size of control endpoint \hideinitializer */
+    uint16_t idVendor;                  /*!< Vendor ID \hideinitializer                             */
+    uint16_t idProduct;                 /*!< Product ID \hideinitializer                            */
+    uint16_t bcdDevice;                 /*!< Device ID \hideinitializer                             */
+    uint8_t  iManufacturer;             /*!< Manufacture description string ID \hideinitializer     */
+    uint8_t  iProduct;                  /*!< Product description string ID \hideinitializer         */
+    uint8_t  iSerialNumber;             /*!< Serial number description string ID \hideinitializer   */
+    uint8_t  bNumConfigurations;        /*!< Total number of configurations \hideinitializer      */
+} USB_DEV_DESC_T;                       /*!< Device descriptor structure \hideinitializer           */
+#endif
 
 /*-----------------------------------------------------------------------------------
  *  USB endpoint descriptor
  */
 /*! Endpoint descriptor structure \hideinitializer         */
+#ifdef __ICCARM__
 typedef struct usb_endpoint_descriptor
 {
     __packed uint8_t  bLength;          /*!< Length of endpoint descriptor \hideinitializer         */
@@ -246,12 +285,26 @@ typedef struct usb_endpoint_descriptor
     __packed uint8_t  bRefresh;         /*!< Refresh \hideinitializer                               */
     __packed uint8_t  bSynchAddress;    /*!< Sync address \hideinitializer                          */
 } USB_EP_DESC_T;                        /*! Endpoint descriptor structure \hideinitializer         */
+#else
+typedef struct __attribute__((__packed__)) usb_endpoint_descriptor
+{
+    uint8_t  bLength;                   /*!< Length of endpoint descriptor \hideinitializer         */
+    uint8_t  bDescriptorType;           /*!< Descriptor type \hideinitializer                       */
+    uint8_t  bEndpointAddress;          /*!< Endpoint address \hideinitializer                      */
+    uint8_t  bmAttributes;              /*!< Endpoint attribute \hideinitializer                    */
+    uint16_t wMaxPacketSize;            /*!< Maximum packet size \hideinitializer                   */
+    uint8_t  bInterval;                 /*!< Synchronous transfer interval \hideinitializer         */
+    uint8_t  bRefresh;                  /*!< Refresh \hideinitializer                               */
+    uint8_t  bSynchAddress;             /*!< Sync address \hideinitializer                          */
+} USB_EP_DESC_T;                        /*! Endpoint descriptor structure \hideinitializer         */
+#endif
 
 
 /*-----------------------------------------------------------------------------------
  *  USB interface descriptor
  */
 /*! Interface descriptor structure \hideinitializer        */
+#ifdef __ICCARM__
 typedef struct usb_interface_descriptor
 {
     __packed uint8_t  bLength;          /*!< Length of interface descriptor \hideinitializer        */
@@ -265,12 +318,28 @@ typedef struct usb_interface_descriptor
     __packed uint8_t  iInterface;       /*!< Interface ID \hideinitializer                          */
     USB_EP_DESC_T *endpoint;            /*!< Endpoint descriptor \hideinitializer                   */
 } USB_IF_DESC_T;                        /*! Interface descriptor structure \hideinitializer        */
+#else
+typedef struct __attribute__((__packed__)) usb_interface_descriptor
+{
+    uint8_t  bLength;                   /*!< Length of interface descriptor \hideinitializer        */
+    uint8_t  bDescriptorType;           /*!< Descriptor type \hideinitializer                       */
+    uint8_t  bInterfaceNumber;          /*!< Interface number \hideinitializer                      */
+    uint8_t  bAlternateSetting;         /*!< Alternate setting number \hideinitializer              */
+    uint8_t  bNumEndpoints;             /*!< Number of endpoints \hideinitializer                   */
+    uint8_t  bInterfaceClass;           /*!< Interface class code \hideinitializer                  */
+    uint8_t  bInterfaceSubClass;        /*!< Interface subclass code \hideinitializer               */
+    uint8_t  bInterfaceProtocol;        /*!< Interface protocol code \hideinitializer               */
+    uint8_t  iInterface;                /*!< Interface ID \hideinitializer                          */
+    USB_EP_DESC_T *endpoint;            /*!< Endpoint descriptor \hideinitializer                   */
+} USB_IF_DESC_T;                        /*! Interface descriptor structure \hideinitializer         */
+#endif
 
 
 /*-----------------------------------------------------------------------------------
  *  Configuration descriptor
  */
 /*! Configuration descriptor structure \hideinitializer    */
+#ifdef __ICCARM__
 typedef struct usb_config_descriptor
 {
     __packed uint8_t   bLength;         /*!< Length of configuration descriptor \hideinitializer    */
@@ -282,17 +351,39 @@ typedef struct usb_config_descriptor
     __packed uint8_t   bmAttributes;    /*!< Configuration characteristics \hideinitializer         */
     __packed uint8_t   MaxPower;        /*!< Maximum power consumption \hideinitializer             */
 } USB_CONFIG_DESC_T;                    /*! Configuration descriptor structure \hideinitializer    */
+#else
+typedef struct __attribute__((__packed__)) usb_config_descriptor
+{
+    uint8_t   bLength;                  /*!< Length of configuration descriptor \hideinitializer    */
+    uint8_t   bDescriptorType;          /*!< Descriptor type \hideinitializer                       */
+    uint16_t  wTotalLength;             /*!< Total length of this configuration \hideinitializer    */
+    uint8_t   bNumInterfaces;           /*!< Total number of interfaces \hideinitializer            */
+    uint8_t   bConfigurationValue;      /*!< Configuration descriptor number \hideinitializer   */
+    uint8_t   iConfiguration;           /*!< String descriptor ID \hideinitializer                  */
+    uint8_t   bmAttributes;             /*!< Configuration characteristics \hideinitializer         */
+    uint8_t   MaxPower;                 /*!< Maximum power consumption \hideinitializer             */
+} USB_CONFIG_DESC_T;                    /*! Configuration descriptor structure \hideinitializer    */
+#endif
 
 
 /// @cond HIDDEN_SYMBOLS
 
 /* String descriptor */
+#ifdef __ICCARM__
 typedef struct usb_string_descriptor
 {
     __packed uint8_t  bLength;
     __packed uint8_t  bDescriptorType;
     __packed uint16_t wData[1];
 } USB_STR_DESC_T;
+#else
+typedef struct __attribute__((__packed__)) usb_string_descriptor
+{
+    uint8_t  bLength;
+    uint8_t  bDescriptorType;
+    uint16_t wData[1];
+} USB_STR_DESC_T;
+#endif
 
 
 /*

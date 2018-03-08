@@ -25,7 +25,7 @@ static char  _pi8LineBuff[20*1024];
 #pragma data_alignment=4
 uint8_t     _au8ShaKey[8192] ;
 #else
-__align(4) uint8_t   _au8ShaKey[8192] ;
+uint8_t   _au8ShaKey[8192] __attribute__((aligned(4)));
 #endif
 
 uint8_t     _au8ShaDigest[64];

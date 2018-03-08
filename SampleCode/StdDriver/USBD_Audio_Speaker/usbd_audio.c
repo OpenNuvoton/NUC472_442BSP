@@ -41,8 +41,8 @@ volatile uint8_t g_usbd_rxflag=0;
 uint32_t PcmPlayBuff[PDMA_TXBUFFER_CNT][BUFF_LEN] = {0};
 uint32_t PcmPlayBuffLen[PDMA_TXBUFFER_CNT] = {0};
 #else
-__align(4) uint32_t PcmPlayBuff[PDMA_TXBUFFER_CNT][BUFF_LEN] = {0};
-__align(4) uint32_t PcmPlayBuffLen[PDMA_TXBUFFER_CNT] = {0};
+uint32_t PcmPlayBuff[PDMA_TXBUFFER_CNT][BUFF_LEN] __attribute__((aligned(4))) = {0};
+uint32_t PcmPlayBuffLen[PDMA_TXBUFFER_CNT] __attribute__((aligned(4))) = {0};
 #endif
 
 /* Player Buffer and its pointer */

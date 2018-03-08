@@ -32,11 +32,11 @@ uint32_t volatile u32BuffPos = 0;
 FATFS FatFs[_VOLUMES];      /* File system object for logical drive */
 #ifdef __ICCARM__
 #pragma data_alignment=32
-BYTE Buff[1024] ;       /* Working buffer */
-#endif
-
-#ifdef __ARMCC_VERSION
-__align(32) BYTE Buff[1024] ;       /* Working buffer */
+BYTE Buff[1024] ;                   /* Working buffer */
+DMA_DESC_T DMA_DESC[2];
+#else
+BYTE Buff[1024] __attribute__((aligned(32)));       /* Working buffer */
+DMA_DESC_T DMA_DESC[2] __attribute__((aligned(32)));
 #endif
 
 uint8_t bAudioPlaying = 0;

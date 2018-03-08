@@ -21,8 +21,6 @@
 static LBKDEV_T  g_lbk_dev;
 
 
-extern int _td_cnt, _ed_cnt;
-
 /*
  *  If a USB device is connected, USB core library will enable it and read descriptors
  *  from it. If the USB device vendor ID and product ID matches with LBK device,
@@ -467,7 +465,7 @@ void LBK_InstallIntOutFunc(LBK_CB_FUN *func)
  *  @retval   0           Success
  *  @retval   Otherwise   failed
  */
-int32_t LBK_StartIntOutPipe()
+int LBK_StartIntOutPipe()
 {
     USB_DEV_T  *dev;
     EP_INFO_T  *ep_info;
@@ -576,7 +574,7 @@ static void  iso_in_irq(URB_T *urb)
  *  @retval   0           Success
  *  @retval   Otherwise   failed
  */
-int32_t LBK_StartIsoInPipe()
+int LBK_StartIsoInPipe()
 {
     USB_DEV_T  *dev;
     EP_INFO_T  *ep_info;
@@ -709,7 +707,7 @@ static void  iso_out_irq(URB_T *urb)
  *  @retval   0           Success
  *  @retval   Otherwise   failed
  */
-int32_t LBK_StartIsoOutPipe()
+int LBK_StartIsoOutPipe()
 {
     USB_DEV_T  *dev;
     EP_INFO_T  *ep_info;

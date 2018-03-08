@@ -44,7 +44,7 @@ typedef struct
 #pragma data_alignment=4
 uint8_t SCATTER_DATA_BUFFER[16*1024];
 #else
-__align(4) uint8_t SCATTER_DATA_BUFFER[16*1024];
+uint8_t SCATTER_DATA_BUFFER[16*1024]  __attribute__((aligned(4)));
 #endif
 
 SCATTER_GATHER scater_gather_array[8];

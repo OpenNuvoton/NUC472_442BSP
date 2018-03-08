@@ -481,6 +481,7 @@ void HID_VendorRequest(void)
 
 #define PAGE_SIZE        512
 
+#ifdef __ICCARM__
 typedef __packed struct
 {
     uint8_t u8Cmd;
@@ -491,6 +492,19 @@ typedef __packed struct
     uint32_t u32Checksum;
 } CMD_T;
 
+#else
+typedef struct __attribute__((__packed__))
+{
+    uint8_t u8Cmd;
+    uint8_t u8Size;
+    uint32_t u32Arg1;
+    uint32_t u32Arg2;
+    uint32_t u32Signature;
+    uint32_t u32Checksum;
+}
+CMD_T;
+#endif
+
 CMD_T gCmd;
 
 #ifdef __ICCARM__
@@ -499,9 +513,9 @@ static uint8_t  g_u8PageBuff[PAGE_SIZE] = {0};    /* Page buffer to upload/downl
 static uint32_t g_u32BytesInPageBuf = 0;          /* The bytes of data in g_u8PageBuff */
 uint8_t  g_u8OutBuff[EPB_MAX_PKT_SIZE] = {0};
 #else
-__align(4) static uint8_t  g_u8PageBuff[PAGE_SIZE] = {0};    /* Page buffer to upload/download through HID report */
-__align(4) static uint32_t g_u32BytesInPageBuf = 0;          /* The bytes of data in g_u8PageBuff */
-__align(4) uint8_t  g_u8OutBuff[EPB_MAX_PKT_SIZE] = {0};
+static uint8_t  g_u8PageBuff[PAGE_SIZE]  __attribute__((aligned(4))) = {0};    /* Page buffer to upload/download through HID report */
+static uint32_t g_u32BytesInPageBuf  __attribute__((aligned(4))) = 0;          /* The bytes of data in g_u8PageBuff */
+uint8_t  g_u8OutBuff[EPB_MAX_PKT_SIZE]  __attribute__((aligned(4))) = {0};
 #endif
 
 
@@ -786,7 +800,3 @@ void HID_SetInReport(void)
     gCmd.u32Signature = u32PageCnt;
 
 }
-
-
-
-

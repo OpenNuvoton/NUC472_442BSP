@@ -26,6 +26,48 @@ __asm __set_SP(uint32_t _sp)
 }
 #endif
 
+/**
+  * @brief  Read a char from debug console.
+  * @param  None
+  * @return Received character from debug console
+  * @note   This API waits until UART debug port or semihost input a character
+  */
+static char GetChar(void)
+{
+    while (1)
+    {
+        if ((UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0 )
+        {
+            return (UART0->DAT);
+
+        }
+    }
+}
+
+/**
+  * @brief  Write a char to UART.
+  * @param  ch The character sent to UART.
+  * @return None
+  */
+static void SendChar_ToUART(int ch)
+{
+    while ((UART0->FIFOSTS & UART_FIFOSTS_TXFULL_Msk)); //waits for TXFULL bit is clear
+    UART0->DAT = ch;
+    if (ch == '\n')
+    {
+        while((UART0->FIFOSTS & UART_FIFOSTS_TXFULL_Msk)); //waits for TXFULL bit is clear
+        UART0->DAT = '\r';
+    }
+}
+
+static void PutString(char *str)
+{
+    while (*str != '\0')
+    {
+        SendChar_ToUART(*str++);
+    }
+}
+
 
 void SYS_Init(void)
 {
@@ -102,6 +144,7 @@ int32_t main (void)
     int             u8Item;
     FUNC_PTR        *func;
     volatile int    loop;
+    uint32_t        u32Data;
 
     /* Lock protected registers */
     if (SYS->REGLCTL == 1) // In end of main function, program issued CPU reset and write-protection will be disabled.
@@ -119,40 +162,64 @@ int32_t main (void)
 
     do
     {
-        printf("\n\n\n");
-        printf("+----------------------------------------------+\n");
-        printf("|       LD boot program running on LDROM       |\n");
-        printf("+----------------------------------------------+\n");
-        printf("|               Program Select                 |\n");
-        printf("+----------------------------------------------|\n");
+        PutString("\n\n\n");
+        PutString("+----------------------------------------------+\n");
+        PutString("|       LD boot program running on LDROM       |\n");
+        PutString("+----------------------------------------------+\n");
+        PutString("|               Program Select                 |\n");
+        PutString("+----------------------------------------------|\n");
+#ifdef __GNUC__
+        PutString("| [0] Run ISP program at APROM                 |\n");
+#else
         printf("| [0] Run ISP program (at APROM %dK)           |\n", USER_AP_MAX_SIZE/1024);
-        printf("| [1] Branch and run APROM program             |\n");
-        printf("+----------------------------------------------+\n");
-        printf("Please select...");
-        u8Item = getchar();
-        printf("%c\n", u8Item);
+#endif
+        PutString("| [1] Branch and run APROM program             |\n");
+        PutString("+----------------------------------------------+\n");
+        PutString("Please select...");
+        u8Item = GetChar();
 
         switch (u8Item)
         {
         case '0':
-            FMC_SetVectorPageAddr(ISP_CODE_BASE);
-            func =  (FUNC_PTR *)(*(uint32_t *)(ISP_CODE_ENTRY+4));
+            u32Data = FMC_Read(ISP_CODE_ENTRY);
+            func =  (FUNC_PTR *)FMC_Read(ISP_CODE_ENTRY+4);
+#ifdef __GNUC__
+            PutString("branch_to ISP program in APROM.\n");
+            PutString("Please make sure isp.bin is in APROM.\n");
+#else
             printf("branch_to address 0x%x\n", (int)func);
             printf("Please make sure isp.bin is in APROM address 0x%x.\n", ISP_CODE_ENTRY);
-            printf("If not, please run \"[1] Branch and run APROM program\"\n");
-            printf("\nChange VECMAP and branch to ISP code...\n");
+#endif
+            PutString("If not, please run \"[1] Branch and run APROM program\"\n");
+            PutString("\nChange VECMAP and branch to ISP code...\n");
             while (!UART_IS_TX_EMPTY(UART0));
-            __set_SP(*(uint32_t *)ISP_CODE_BASE);
+
+            FMC_SetVectorPageAddr(ISP_CODE_BASE);
+#ifdef __GNUC__                        /* for GNU C compiler */
+            asm("msr msp, %0" : : "r" (u32Data));
+#else
+           __set_SP(u32Data);
+#endif
             func();
             break;
 
         case '1':
-            FMC_SetVectorPageAddr(USER_AP_ENTRY);
-            func =  (FUNC_PTR *)(*(uint32_t *)(USER_AP_ENTRY+4));
+            u32Data = FMC_Read(USER_AP_ENTRY);
+            func =  (FUNC_PTR *)FMC_Read(USER_AP_ENTRY+4);
+#ifdef __GNUC__
+            PutString("branch_to APROM main program.\n");
+#else
             printf("branch_to address 0x%x\n", (int)func);
-            printf("\n\nChange VECMAP and branch to user application...\n");
+#endif
+            PutString("\n\nChange VECMAP and branch to user application...\n");
             while (!UART_IS_TX_EMPTY(UART0));
-            __set_SP(*(uint32_t *)USER_AP_ENTRY);
+
+            FMC_SetVectorPageAddr(USER_AP_ENTRY);
+#ifdef __GNUC__                        /* for GNU C compiler */
+            asm("msr msp, %0" : : "r" (u32Data));
+#else
+           __set_SP(u32Data);
+#endif
             func();
             break;
 
@@ -163,6 +230,3 @@ int32_t main (void)
     while (1);
 
 }
-
-
-

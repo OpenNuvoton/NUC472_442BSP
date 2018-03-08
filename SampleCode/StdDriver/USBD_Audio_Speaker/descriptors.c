@@ -16,11 +16,10 @@
 #ifdef __ICCARM__
 #pragma data_alignment=4
 uint8_t gu8DeviceDescriptor[] =
-{
 #else
-__align(4) uint8_t gu8DeviceDescriptor[] =
-{
+uint8_t gu8DeviceDescriptor[] __attribute__((aligned(4))) =
 #endif
+{
     LEN_DEVICE,     /* bLength */
     DESC_DEVICE,    /* bDescriptorType */
     0x00, 0x02,     /* bcdUSB */
@@ -45,11 +44,10 @@ __align(4) uint8_t gu8DeviceDescriptor[] =
 #ifdef __ICCARM__
 #pragma data_alignment=4
 uint8_t gu8QualifierDescriptor[] =
-{
 #else
-__align(4) uint8_t gu8QualifierDescriptor[] =
-{
+uint8_t gu8QualifierDescriptor[] __attribute__((aligned(4))) =
 #endif
+{
     LEN_QUALIFIER,  /* bLength */
     DESC_QUALIFIER, /* bDescriptorType */
     0x00, 0x02,     /* bcdUSB */
@@ -65,12 +63,10 @@ __align(4) uint8_t gu8QualifierDescriptor[] =
 #ifdef __ICCARM__
 #pragma data_alignment=4
 uint8_t gu8ConfigDescriptor[] =
-{
 #else
-__align(4) uint8_t gu8ConfigDescriptor[] =
-{
+uint8_t gu8ConfigDescriptor[] __attribute__((aligned(4))) =
 #endif
-
+{
     LEN_CONFIG,     /* bLength */
     DESC_CONFIG,    /* bDescriptorType */
     0x6E,0x00,      /* wTotalLength */
@@ -203,11 +199,10 @@ __align(4) uint8_t gu8ConfigDescriptor[] =
 #ifdef __ICCARM__
 #pragma data_alignment=4
 uint8_t gu8OtherConfigDescriptor[] =
-{
 #else
-__align(4) uint8_t gu8OtherConfigDescriptor[] =
-{
+uint8_t gu8OtherConfigDescriptor[] __attribute__((aligned(4))) =
 #endif
+{
     LEN_CONFIG,     /* bLength */
     DESC_OTHERSPEED,/* bDescriptorType */
     0x6E,0x00,      /* wTotalLength */
@@ -341,11 +336,10 @@ __align(4) uint8_t gu8OtherConfigDescriptor[] =
 #ifdef __ICCARM__
 #pragma data_alignment=4
 uint8_t gu8StringLang[4] =
-{
 #else
-__align(4) uint8_t gu8StringLang[4] =
-{
+uint8_t gu8StringLang[4] __attribute__((aligned(4))) =
 #endif
+{
     4,              /* bLength */
     DESC_STRING,    /* bDescriptorType */
     0x09, 0x04
@@ -355,11 +349,10 @@ __align(4) uint8_t gu8StringLang[4] =
 #ifdef __ICCARM__
 #pragma data_alignment=4
 uint8_t gu8VendorStringDesc[] =
-{
 #else
-__align(4) uint8_t gu8VendorStringDesc[] =
-{
+uint8_t gu8VendorStringDesc[] __attribute__((aligned(4))) =
 #endif
+{
     16,
     DESC_STRING,
     'N', 0, 'u', 0, 'v', 0, 'o', 0, 't', 0, 'o', 0, 'n', 0
@@ -369,11 +362,10 @@ __align(4) uint8_t gu8VendorStringDesc[] =
 #ifdef __ICCARM__
 #pragma data_alignment=4
 uint8_t gu8ProductStringDesc[] =
-{
 #else
-__align(4) uint8_t gu8ProductStringDesc[] =
-{
+uint8_t gu8ProductStringDesc[] __attribute__((aligned(4))) =
 #endif
+{
     20,
     DESC_STRING,
     'U', 0, 'S', 0, 'B', 0, ' ', 0, 'A', 0, 'u', 0, 'd', 0, 'i', 0, 'o', 0
@@ -411,4 +403,3 @@ S_USBD_INFO_T gsInfo =
     gu8UsbHidReport,
     gu32UsbHidReportLen,
 };
-

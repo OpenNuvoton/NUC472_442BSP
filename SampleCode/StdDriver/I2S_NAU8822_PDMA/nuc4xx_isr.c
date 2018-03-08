@@ -18,8 +18,6 @@ extern uint32_t PcmRxBuff[2][BUFF_LEN];
 extern uint32_t PcmTxBuff[2][BUFF_LEN];
 volatile uint8_t u8TxIdx=0, u8RxIdx=0;
 
-extern uint32_t volatile u32BuffPos;
-
 void PDMA_IRQHandler(void)
 {
     uint32_t u32Status = PDMA_GET_INT_STATUS();

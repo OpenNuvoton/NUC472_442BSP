@@ -35,7 +35,7 @@ uint32_t au32MyTDESIV[2] = {  0x00000000, 0x00000000 };
 uint8_t au8InputData[] =
 {
 #else
-__align(4) uint8_t au8InputData[] =
+uint8_t au8InputData[] __attribute__((aligned(4))) =
 {
 #endif
     0x12, 0x34, 0x56, 0x78, 0xAB, 0xCD, 0xEF
@@ -46,7 +46,7 @@ __align(4) uint8_t au8InputData[] =
 #pragma data_alignment=4
 uint8_t au8OutputData[1024];
 #else
-__align(4) uint8_t au8OutputData[1024];
+uint8_t au8OutputData[1024] __attribute__((aligned(4)));
 #endif
 
 static volatile int  g_TDES_done;
@@ -209,6 +209,3 @@ int32_t main (void)
 
     while (1);
 }
-
-
-

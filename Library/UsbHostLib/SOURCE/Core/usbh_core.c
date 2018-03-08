@@ -75,7 +75,7 @@ LIST_HEAD(_UsbBusList);
   * @retval    0  Success
   * @retval    otherwise  Failed
   */
-int USBH_RegisterDriver(USB_DRIVER_T *new_driver)
+int32_t USBH_RegisterDriver(USB_DRIVER_T *new_driver)
 {
     /* Add it to the list of known drivers */
     list_add_tail(&new_driver->driver_list, &_UsbDriverList);
@@ -215,7 +215,7 @@ static int  usb_find_interface_driver(USB_DEV_T *dev, USB_IF_DESC_T *intf)
   * @retval    0  Success
   * @retval    otherwise  Failed
   */
-int  USBH_SubmitUrb(URB_T *urb)
+int32_t  USBH_SubmitUrb(URB_T *urb)
 {
     if (urb && urb->dev)
         return urb->dev->bus->op->submit_urb(urb);
@@ -233,7 +233,7 @@ int  USBH_SubmitUrb(URB_T *urb)
   * @retval    0  Success
   * @retval    otherwise  Failed
   */
-int  USBH_UnlinkUrb(URB_T *urb)
+int32_t  USBH_UnlinkUrb(URB_T *urb)
 {
     if (urb && urb->dev)
         return urb->dev->bus->op->unlink_urb(urb);
@@ -375,9 +375,9 @@ static int  usb_internal_control_msg(USB_DEV_T *usb_dev, uint32_t pipe,
  *  bottom half handler.  If you need a asynchronous message, or need to send
  *  a message from within interrupt context, use USBH_SubmitUrb()
  */
-int  USBH_SendCtrlMsg(USB_DEV_T *dev, uint32_t pipe, uint8_t request,
-                      uint8_t requesttype,  uint16_t value, uint16_t index, void *data,
-                      uint16_t size, int timeout)
+int32_t  USBH_SendCtrlMsg(USB_DEV_T *dev, uint32_t pipe, uint8_t request,
+                          uint8_t requesttype,  uint16_t value, uint16_t index, void *data,
+                          uint16_t size, int timeout)
 {
     DEV_REQ_T   dr;
 
@@ -413,8 +413,8 @@ int  USBH_SendCtrlMsg(USB_DEV_T *dev, uint32_t pipe, uint8_t request,
  *  bottom half handler.  If you need a asynchronous message, or need to
  *  send a message from within interrupt context, use USBH_SubmitUrb()
  */
-int  USBH_SendBulkMsg(USB_DEV_T *usb_dev, uint32_t pipe,
-                      void *data, int len, int *actual_length, int timeout)
+int32_t  USBH_SendBulkMsg(USB_DEV_T *usb_dev, uint32_t pipe,
+                          void *data, int len, int *actual_length, int timeout)
 {
     URB_T  urb;
 
@@ -819,8 +819,8 @@ int  usbh_set_address(USB_DEV_T *dev)
  *  @retval   >=0  Length of the descriptor.
  *  @retval   Otherwise  Failed
   */
-int  USBH_GetDescriptor(USB_DEV_T *dev, uint8_t type, uint8_t index,
-                        void *buf, int size)
+int32_t  USBH_GetDescriptor(USB_DEV_T *dev, uint8_t type, uint8_t index,
+                            void *buf, int size)
 {
     int    i = 5;
     int    result = 0;
@@ -897,7 +897,7 @@ int  usbh_set_idle(USB_DEV_T *dev, int ifnum, int duration, int report_id)
   * @retval   0    Success
   * @retval   Otherwise   Failed
   */
-int USBH_ClearHalt(USB_DEV_T *dev, int pipe)
+int32_t USBH_ClearHalt(USB_DEV_T *dev, int pipe)
 {
     int         result;
     uint16_t    status;
@@ -945,7 +945,7 @@ int USBH_ClearHalt(USB_DEV_T *dev, int pipe)
   * @retval   0  Success
   * @retval   Otherwise  Failed
   */
-int USBH_SetInterface(USB_DEV_T *dev, char interface, char alternate)
+int32_t USBH_SetInterface(USB_DEV_T *dev, char interface, char alternate)
 {
     int       ret;
 
@@ -970,7 +970,7 @@ int USBH_SetInterface(USB_DEV_T *dev, char interface, char alternate)
   * @retval  0   Success
   * @retval  Otherwise   Failed
   */
-int  USBH_SetConfiguration(USB_DEV_T *dev, int configuration)
+int32_t  USBH_SetConfiguration(USB_DEV_T *dev, int configuration)
 {
     int     ret;
 
@@ -1267,7 +1267,7 @@ int  usbh_settle_new_device(USB_DEV_T *dev)
   * @retval   0   Success
   * @retval   Otherwise  Failed
   */
-int USBH_Open(void)
+int32_t USBH_Open(void)
 {
     volatile int  loop;
 

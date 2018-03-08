@@ -90,7 +90,7 @@ int32_t main (void)
     /* Init UART to 115200-8n1 for print message */
     UART_Open(UART0, 115200);
 
-    printf("NUC472/NUC442 USB HID\n");
+    printf("NUC472/NUC442 USB Vendor LBK\n");
 
     USBD_Open(&gsInfo, NULL, NULL);
 

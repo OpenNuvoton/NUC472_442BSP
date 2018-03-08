@@ -327,7 +327,7 @@ void EMAC_TX_IRQHandler(void)
 #ifdef  TIME_STAMPING
         if(fin_tx_desc_ptr->status2 & TXFD_TTSAS)
         {
-            if(fin_tx_desc_ptr->reserved1 != NULL)
+            if((struct pbuf *)fin_tx_desc_ptr->reserved1 != NULL)
             {
                 ((struct pbuf *)(fin_tx_desc_ptr->reserved1))->ts_nsec = (u32_t)(fin_tx_desc_ptr->buf);
                 ((struct pbuf *)(fin_tx_desc_ptr->reserved1))->ts_sec = (u32_t)(fin_tx_desc_ptr->next);
@@ -341,7 +341,7 @@ void EMAC_TX_IRQHandler(void)
             if((struct pbuf *)fin_tx_desc_ptr->reserved1 != NULL)
                 pbuf_free((struct pbuf *)fin_tx_desc_ptr->reserved1);
         }
-        fin_tx_desc_ptr->reserved1 = NULL;
+        fin_tx_desc_ptr->reserved1 = (u32_t)NULL;
 #endif
         fin_tx_desc_ptr = fin_tx_desc_ptr->next;
     }

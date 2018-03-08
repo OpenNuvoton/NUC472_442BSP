@@ -27,7 +27,7 @@ uint8_t volatile g_u8ZeroOutShortPacket = 0;
 #pragma data_alignment=4
 uint8_t g_u8ZeroBase[512];
 #else
-__align(4) uint8_t g_u8ZeroBase[512];
+uint8_t g_u8ZeroBase[512] __attribute__((aligned(4)));
 #endif
 
 

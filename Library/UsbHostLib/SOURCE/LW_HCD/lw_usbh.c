@@ -43,30 +43,24 @@ static int  DEV_ADDR;
 int  is_low_speed;
 
 #ifdef __ICCARM__
+
 #pragma data_alignment=256
 struct ohci_hcca _OHCI_HCCA;
-#endif
 
-#ifdef __ICCARM__
 #pragma data_alignment=16
 ED_T  _ed;
-#endif
 
-#ifdef __ICCARM__
 #pragma data_alignment=16
 TD_T  _td[8];
-#endif
 
-#ifdef __ICCARM__
 #pragma data_alignment=4
 uint8_t  _transfer_buffer[USBH_INTR_BUFF_SIZE];
-#endif
 
-#ifdef __ARMCC_VERSION
-__align(256) struct ohci_hcca _OHCI_HCCA;
-__align(16) ED_T  _ed;
-__align(16) TD_T  _td[8];
-__align(4)  uint8_t  _transfer_buffer[USBH_INTR_BUFF_SIZE];
+#else
+struct ohci_hcca _OHCI_HCCA __attribute__((aligned(256)));
+ED_T  _ed __attribute__((aligned(16)));
+TD_T  _td[8] __attribute__((aligned(16)));
+uint8_t  _transfer_buffer[USBH_INTR_BUFF_SIZE] __attribute__((aligned(4)));
 #endif
 
 
@@ -85,6 +79,7 @@ static int get_ms_elapsed(int jiffy)
 }
 
 
+#ifndef __GNUC__
 static void  dump_device_descriptor(USB_DEV_DESC_T *desc)
 {
     usb_desc_dump("\n[Device Descriptor]\n");
@@ -162,6 +157,7 @@ static void  dump_config_descriptor(USB_CONFIG_DESC_T *desc)
         bptr += bptr[0];
     }
 }
+#endif
 
 static void td_fill(int td_idx, uint32_t info, uint8_t *buff, uint32_t data_len)
 {
@@ -325,7 +321,7 @@ int usbh_drv_ctrl_req(uint8_t  requesttype,
     _request.index        = index;
     _request.length       = length;
 
-    USBH->HcInterruptStatus = USBH->HcInterruptStatus;                 /* clear status   */
+    USBH->HcInterruptStatus = 0xFF;                                     /* clear status   */
     fill_ctrl_xfer_descriptors((request == USB_REQ_SET_ADDRESS) ? 0 : DEV_ADDR, buffer, data_len, dir);
 
     /*------------------------------------------------------------------------------------*/
@@ -477,7 +473,10 @@ int usbh_get_device_descriptor(uint8_t *desc_buff)
     if (ret < 0)
         return ret;
     for (i = 0; i < MINISEC_10; i++);
+
+#ifndef __GNUC__
     dump_device_descriptor((USB_DEV_DESC_T *)desc_buff);
+#endif
 
     return 0;
 }
@@ -510,7 +509,9 @@ int get_config_descriptor(uint8_t *desc_buff)
     if (ret < 0)
         return ret;
 
+#ifndef __GNUC__
     dump_config_descriptor((USB_CONFIG_DESC_T *)desc_buff);
+#endif
 
     return 0;
 }

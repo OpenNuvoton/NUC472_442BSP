@@ -8,6 +8,35 @@ Debug/
 Release/
 settings/
 
+# For GCC
+!.cproject
+!.project
+
+.lock
+.location
+.markers
+version.ini
+.history/
+.mylyn/
+Packages/
+.settings/
+RemoteSystemsTempFiles/
+Samplecode/*/*/GCC/.metadata/.plugins/*
+Samplecode/*/*/packages/
+Samplecode/*/GCC/.metadata/.plugins/*
+Samplecode/*/packages/
+
+!Samplecode/*/*/GCC/.metadata/.plugins/org.eclipse.core.resources/
+!Samplecode/*/*/GCC/.metadata/.plugins/org.eclipse.debug.core/
+!Samplecode/*/*/GCC/.metadata/.plugins/org.eclipse.debug.ui/
+!Samplecode/*/*/GCC/.metadata/.plugins/org.eclipse.e4.workbench/
+!Samplecode/*/*/GCC/.metadata/.plugins/org.eclipse.core.resources/.projects/RemoteSystemsTempFiles/
+!Samplecode/*/GCC/.metadata/.plugins/org.eclipse.core.resources/
+!Samplecode/*/GCC/.metadata/.plugins/org.eclipse.debug.core/
+!Samplecode/*/GCC/.metadata/.plugins/org.eclipse.debug.ui/
+!Samplecode/*/GCC/.metadata/.plugins/org.eclipse.e4.workbench/
+!Samplecode/*/GCC/.metadata/.plugins/org.eclipse.core.resources/.projects/RemoteSystemsTempFiles/
+
 #For OSX
 .DS_Store
 
@@ -21,6 +50,7 @@ settings/
 *.bin
 !SampleCode/StdDriver/CRYPTO_SHA/IAR/dummy.bin
 !SampleCode/StdDriver/FMC_MULTI_WORD_PROG/IAR/dummy.bin
+!SampleCode/StdDriver/FMC_MULTI_WORD_PROG/IAR/Release/Exe/fmc_multi_word_prog.bin
 !SampleCode/StdDriver/FMC_MULTI_WORD_PROG/Keil/obj/
 !SampleCode/StdDriver/FMC_MULTI_WORD_PROG/Keil/obj/fmc_multi_word_prog.bin
 !SampleCode/StdDriver/FMC_VECTOR_REMAP/Keil/obj/
@@ -34,6 +64,8 @@ settings/
 !SampleCode/StdDriver/FMC_VECTOR_REMAP/Keil/obj/
 !SampleCode/StdDriver/FMC_VECTOR_REMAP/Keil/obj/fmc_isp.bin
 !SampleCode/StdDriver/FMC_VECTOR_REMAP/Keil/obj/fmc_ld_boot.bin
+!SampleCode/StdDriver/FMC_VECTOR_REMAP/GCC/fmc_ld_boot.bin
+!SampleCode/StdDriver/FMC_VECTOR_REMAP/GCC/fmc_isp.bin
 *.obj
 *.orig
 *.ok

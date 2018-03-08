@@ -92,6 +92,7 @@ void UART_Init()
 
 int main()
 {
+    arm_cfft_radix4_instance_f32 S;
     float32_t maxValue;
 
     /* Unlock protected registers */
@@ -109,8 +110,11 @@ int main()
     printf("|             DSP FFT Sample Code        |\n");
     printf("+----------------------------------------+\n");
 
+    /* Initialize the CFFT/CIFFT module */
+    arm_cfft_radix4_init_f32(&S, fftSize, ifftFlag, doBitReverse);
+
     /* Process the data through the CFFT/CIFFT module */
-    arm_cfft_f32(&arm_cfft_sR_f32_len1024, testInput_f32_10khz, ifftFlag, doBitReverse);
+    arm_cfft_radix4_f32(&S, testInput_f32_10khz);
 
     /* Process the data through the Complex Magnitude Module for
     calculating the magnitude at each bin */

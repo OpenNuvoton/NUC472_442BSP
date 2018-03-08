@@ -140,7 +140,11 @@ int main()
     printf("Press any key...\n");
     getchar();
 
+#ifdef __GNUC__                        /* for GNU C compiler */
+    asm("msr msp, %0" : : "r" (MP_SUB_RO_ADDR));
+#else
     __set_SP(*(uint32_t *)MP_SUB_RO_ADDR);
+#endif
     mp_sub();
 
     while (1);
