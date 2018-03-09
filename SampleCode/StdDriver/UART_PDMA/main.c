@@ -165,17 +165,22 @@ void PDMA_IRQHandler(void)
 {
     uint32_t status = PDMA_GET_INT_STATUS();
 
-    if (status & 0x1) { /* abort */
+    if (status & 0x1)   /* abort */
+    {
         printf("target abort interrupt !!\n");
         if (PDMA_GET_ABORT_STS() & 0x4)
             u32IsTestOver = 2;
         PDMA_CLR_ABORT_FLAG(PDMA_ABTSTS_ABTIF_Msk);
-    } else if (status & 0x2) { /* done */
-        if ( (PDMA_GET_TD_STS() & (1 << 0)) && (PDMA_GET_TD_STS() & (1 << 1)) ) {
+    }
+    else if (status & 0x2)     /* done */
+    {
+        if ( (PDMA_GET_TD_STS() & (1 << 0)) && (PDMA_GET_TD_STS() & (1 << 1)) )
+        {
             u32IsTestOver = 1;
             PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF_Msk);
         }
-    } else
+    }
+    else
         printf("unknown interrupt !!\n");
 }
 
@@ -203,12 +208,14 @@ void UART_PDMATest()
         This code will send data from UART1_TX and receive data from UART1_RX.
     */
 
-    for (i=0; i<PDMA_TEST_LENGTH; i++) {
+    for (i=0; i<PDMA_TEST_LENGTH; i++)
+    {
         g_u8Tx_Buffer[i] = i;
         g_u8Rx_Buffer[i] = 0xff;
     }
 
-    while(1) {
+    while(1)
+    {
         PDMA_Init();
 
         UART1->INTEN |= UART_INTEN_TXPDMAEN_Msk | UART_INTEN_RXPDMAEN_Msk;
@@ -229,8 +236,10 @@ void UART_PDMATest()
         UART1->INTEN &= ~UART_INTEN_TXPDMAEN_Msk;
         UART1->INTEN &= ~UART_INTEN_RXPDMAEN_Msk;
 
-        for (i=0; i<PDMA_TEST_LENGTH; i++) {
-            if(g_u8Rx_Buffer[i] != i) {
+        for (i=0; i<PDMA_TEST_LENGTH; i++)
+        {
+            if(g_u8Rx_Buffer[i] != i)
+            {
                 printf("\n Receive Data Compare Error !!");
                 while(1);
             }

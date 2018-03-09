@@ -42,7 +42,8 @@ void RTC_TickHandle(void)
 void RTC_IRQHandler(void)
 {
 
-    if ( (RTC->INTEN & RTC_INTEN_TICKIEN_Msk) && (RTC->INTSTS & RTC_INTSTS_TICKIF_Msk) ) {      /* tick interrupt occurred */
+    if ( (RTC->INTEN & RTC_INTEN_TICKIEN_Msk) && (RTC->INTSTS & RTC_INTSTS_TICKIF_Msk) )        /* tick interrupt occurred */
+    {
         RTC->INTSTS = 0x2;
 
         RTC_TickHandle();

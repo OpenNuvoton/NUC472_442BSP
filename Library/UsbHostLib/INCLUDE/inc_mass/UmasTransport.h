@@ -54,7 +54,8 @@
  */
 
 /* command block wrapper */
-struct bulk_cb_wrap {
+struct bulk_cb_wrap
+{
     uint32_t  Signature;                 /* contains 'USBC' */
     uint32_t  Tag;                       /* unique per command id */
     uint32_t  DataTransferLength;        /* size of data */
@@ -70,7 +71,8 @@ struct bulk_cb_wrap {
 #define UMAS_BULK_FLAG_OUT        0
 
 /* command status wrapper */
-struct bulk_cs_wrap {
+struct bulk_cs_wrap
+{
     uint32_t  Signature;                 /* should = 'USBS' */
     uint32_t  Tag;                       /* same as original command */
     uint32_t  Residue;                   /* amount not transferred */

@@ -28,7 +28,8 @@
 typedef void (LBK_CB_FUN)(uint8_t *data_buff, int *data_len);
 typedef void (LBK_CB_ISO_FUN)(uint8_t *data_buff, int data_len);
 
-typedef struct lbk_dev_t {
+typedef struct lbk_dev_t
+{
     int          connected;
     int          ifnum;
     USB_DEV_T    *dev;

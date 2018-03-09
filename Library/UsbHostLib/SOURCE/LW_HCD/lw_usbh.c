@@ -110,8 +110,10 @@ static void  dump_config_descriptor(USB_CONFIG_DESC_T *desc)
     USB_IF_DESC_T  *if_desc;
     USB_EP_DESC_T  *ep_desc;
 
-    while (tlen > 0) {
-        switch (bptr[1]) {
+    while (tlen > 0)
+    {
+        switch (bptr[1])
+        {
         case USB_DT_CONFIG:
             usb_desc_dump("\n[Configuration Descriptor]\n");
             usb_desc_dump("----------------------------------------------\n");
@@ -189,7 +191,8 @@ static void fill_ctrl_xfer_descriptors(int dev_addr, uint8_t *data_buff, int dat
     /*------------------------------------------------------------------------------------*/
     /* prepare DATA stage TD                                                              */
     /*------------------------------------------------------------------------------------*/
-    if (data_len > 0) {
+    if (data_len > 0)
+    {
         if (pipe_out)
             info = (TD_CC | TD_R | TD_DP_OUT | TD_T_DATA1);
         else
@@ -239,7 +242,8 @@ static void fill_bulk_xfer_descriptors(uint16_t ep_addr, uint8_t *toggle,
     int        xfer_len;
     int        td_idx = 0;
 
-    do {
+    do
+    {
         if (pipe_out)
             info = (TD_CC | TD_R | TD_DP_OUT);
         else
@@ -257,7 +261,8 @@ static void fill_bulk_xfer_descriptors(uint16_t ep_addr, uint8_t *toggle,
         td_idx++;
         data_buff += xfer_len;
         data_len -= xfer_len;
-    }   while (data_len > 0);
+    }
+    while (data_len > 0);
 
     /* dummy TD */
     td_fill(td_idx, 0x01, NULL, 0);
@@ -331,7 +336,8 @@ int usbh_drv_ctrl_req(uint8_t  requesttype,
     USBH->HcCommandStatus = OHCI_CLF;                   /* start Control list                     */
 
     t0 = USBH->HcFmNumber & 0xffff;
-    while (get_ms_elapsed(t0) < 1000) {
+    while (get_ms_elapsed(t0) < 1000)
+    {
         if ((USBH->HcInterruptStatus & USBH_HcInterruptStatus_WDH_Msk) &&
                 ((_td[_last_td_idx].hwINFO & 0xf0000000) != 0xf0000000))
             break;
@@ -339,14 +345,17 @@ int usbh_drv_ctrl_req(uint8_t  requesttype,
 
     USBH->HcInterruptStatus = USBH_HcInterruptStatus_WDH_Msk;
 
-    if (get_ms_elapsed(t0) >= 1000) {
+    if (get_ms_elapsed(t0) >= 1000)
+    {
         usb_dbg_msg("Control transfer failed!\n");
         ret = USBH_RET_XFER_TIMEOUT;
         goto ctrl_out;
     }
 
-    for (i = 0; i <= _last_td_idx; i++) {
-        if (_td[i].hwINFO & 0xf0000000) {
+    for (i = 0; i <= _last_td_idx; i++)
+    {
+        if (_td[i].hwINFO & 0xf0000000)
+        {
             usb_dbg_msg("USB xfer error, CC=0x%x [0x%x]\n", (_td[i].hwINFO >> 28), (int)&_td[i]);
 
             if (ret == USBH_RET_STALL)
@@ -395,7 +404,8 @@ int usbh_drv_bulk_xfer(uint16_t ep_addr, uint8_t *toggle,
     USBH->HcCommandStatus = OHCI_BLF;                   /* start Control list                     */
 
     t0 = USBH->HcFmNumber & 0xffff;
-    while (get_ms_elapsed(t0) < timeout) {
+    while (get_ms_elapsed(t0) < timeout)
+    {
         if ((USBH->HcInterruptStatus & USBH_HcInterruptStatus_WDH_Msk) &&
                 ((_td[_last_td_idx].hwINFO & 0xf0000000) != 0xf0000000))
             break;
@@ -403,8 +413,10 @@ int usbh_drv_bulk_xfer(uint16_t ep_addr, uint8_t *toggle,
     //printf("0x%x, 0x%x\n", _OHCI_HCCA.done_head, &_td[_last_td_idx]);
     USBH->HcInterruptStatus = USBH_HcInterruptStatus_WDH_Msk;
 
-    for (i = 0; i <= _last_td_idx; i++) {
-        if (_td[i].hwINFO & 0xf0000000) {
+    for (i = 0; i <= _last_td_idx; i++)
+    {
+        if (_td[i].hwINFO & 0xf0000000)
+        {
             usb_dbg_msg("USB xfer error, CC=0x%x [0x%x]\n", (_td[i].hwINFO >> 28), (int)&_td[i]);
 
             if (ret == USBH_RET_STALL)
@@ -417,7 +429,8 @@ int usbh_drv_bulk_xfer(uint16_t ep_addr, uint8_t *toggle,
         }
     }
 
-    if (get_ms_elapsed(t0) >= timeout) {
+    if (get_ms_elapsed(t0) >= timeout)
+    {
         usb_dbg_msg("Bulk transfer failed!\n");
         ret = USBH_RET_XFER_TIMEOUT;
         goto bulk_exit;
@@ -537,16 +550,19 @@ static int do_port_reset(int port)
 {
     int  i, retry;
 
-    for (retry = 1; retry <= 3; retry++) {
+    for (retry = 1; retry <= 3; retry++)
+    {
         USBH->HcRhPortStatus[port] = USBH_HcRhPortStatus_PRS_Msk;
-        for (i = 0; i < MINISEC_10*retry; i++) {
+        for (i = 0; i < MINISEC_10*retry; i++)
+        {
             if (USBH->HcRhPortStatus[port] & USBH_HcRhPortStatus_PES_Msk)
                 break;
         }
         if (USBH->HcRhPortStatus[port] & USBH_HcRhPortStatus_PES_Msk)
             break;
     }
-    if (retry > 3) {
+    if (retry > 3)
+    {
         usb_dbg_msg("Port reset failed\n");
         return USBH_RET_ERR_PORT_RST;
     }
@@ -581,7 +597,8 @@ int usbh_probe_port(uint32_t port)
     port_staus = USBH->HcRhPortStatus[port];
     USBH->HcRhPortStatus[port] = port_staus & 0xffff0000;       /* clear port chage status */
 
-    if (!(port_staus & USBH_HcRhPortStatus_CSC_Msk)) {
+    if (!(port_staus & USBH_HcRhPortStatus_CSC_Msk))
+    {
         /*
          * No connect change status
          */
@@ -608,10 +625,13 @@ int usbh_probe_port(uint32_t port)
     if (do_port_reset(port) < 0)
         return USBH_RET_ERR_PORT_RST;
 
-    if ((USBH->HcRhPortStatus[port] & 0x03) == 0x03) {
+    if ((USBH->HcRhPortStatus[port] & 0x03) == 0x03)
+    {
         is_low_speed = (USBH->HcRhPortStatus[port] & USBH_HcRhPortStatus_LSDA_Msk) ? 1 : 0;
         usb_dbg_msg("USB device enabled (%s).\n", is_low_speed ? "Low-speed" : "Full-speed");
-    } else {
+    }
+    else
+    {
         usb_dbg_msg("Failed to enable USB device!!\n");
         return USBH_RET_ERR_PORT_ENABLE;
     }
@@ -623,7 +643,8 @@ int usbh_probe_port(uint32_t port)
     /*------------------------------------------------------------------------------------*/
     /* Issue SET ADDRESS command                                                          */
     /*------------------------------------------------------------------------------------*/
-    for (retry = 0; retry < 3; retry++) {
+    for (retry = 0; retry < 3; retry++)
+    {
         ret =  usbh_drv_ctrl_req(0, USB_REQ_SET_ADDRESS, DEV_ADDR, 0, 0,
                                  0 /* data len */, NULL /* buffer */, 1 /* dir out */);
         if (ret == 0)
@@ -633,13 +654,15 @@ int usbh_probe_port(uint32_t port)
 
         for (i = 0; i < MINISEC_100; i++);
     }
-    if (ret < 0) {
+    if (ret < 0)
+    {
         usb_dbg_msg("Failed to set device address!!\n");
         return ret;
     }
 
     ret = usbh_get_device_descriptor(_transfer_buffer);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         usb_dbg_msg("GET Device Descriptor command failed!!\n");
         return ret;
     }
@@ -659,11 +682,13 @@ static int ohci_reset(void)
     USBH->HcControl = 0;
     USBH->HcCommandStatus = OHCI_HCR;
 
-    for (t0 = 0; t0 < MINISEC_10; t0++) {
+    for (t0 = 0; t0 < MINISEC_10; t0++)
+    {
         if ((USBH->HcCommandStatus & OHCI_HCR) == 0)
             break;
     }
-    if (t0 >= MINISEC_10) {
+    if (t0 >= MINISEC_10)
+    {
         usb_dbg_msg("Error! - USB OHCI reset timed out!\n");
         return -1;
     }
@@ -672,11 +697,13 @@ static int ohci_reset(void)
 
     USBH->HcControl = OHCI_USB_RESET;
 
-    for (t0 = 0; t0 < MINISEC_10; t0++) {
+    for (t0 = 0; t0 < MINISEC_10; t0++)
+    {
         if ((USBH->HcCommandStatus & OHCI_HCR) == 0)
             break;
     }
-    if (t0 >= MINISEC_10) {
+    if (t0 >= MINISEC_10)
+    {
         usb_dbg_msg("Error! - USB HC reset timed out!\n");
         return -1;
     }
@@ -741,12 +768,14 @@ int usbh_init(void)
 
     USBH->HcMiscControl &= ~0x8;        /* over current setting */
 
-    if (ohci_reset() < 0) {
+    if (ohci_reset() < 0)
+    {
         usb_dbg_msg("OHCI reset failed!!\n");
         return USBH_RET_INIT;
     }
 
-    if (ohci_start() < 0) {
+    if (ohci_start() < 0)
+    {
         usb_dbg_msg("OHCI reset failed!!\n");
         return USBH_RET_INIT;
     }

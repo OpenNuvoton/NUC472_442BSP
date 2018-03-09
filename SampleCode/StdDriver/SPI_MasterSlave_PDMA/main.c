@@ -28,17 +28,21 @@ void PDMA_IRQHandler(void)
 {
     uint32_t u32Status = PDMA_GET_INT_STATUS();
 
-    if (u32Status & 0x1) { /* abort */
+    if (u32Status & 0x1)   /* abort */
+    {
         if (PDMA_GET_ABORT_STS() & 0x4)
             u32IsTestOver = 2;
         PDMA_CLR_ABORT_FLAG(PDMA_ABTSTS_ABTIF_Msk);
-    } else if (u32Status & 0x2) {
+    }
+    else if (u32Status & 0x2)
+    {
         if (PDMA_GET_TD_STS() & 0x4)    /* channel 2 done */
             u32IsTestOver += 1;
         if (PDMA_GET_TD_STS() & 0x10)   /* channel 4 done */
             u32IsTestOver += 8;
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF_Msk);
-    } else
+    }
+    else
         printf("unknown interrupt, status=0x%x!!\n", u32Status);
 }
 
@@ -187,7 +191,8 @@ int main(void)
     getchar();
     printf("\n");
 
-    for(i=0; i<PDMA_TEST_COUNT; i++) {
+    for(i=0; i<PDMA_TEST_COUNT; i++)
+    {
         g_au32MasterSrcData[i] = 0x55550000 + i;
         g_au32SlaveSrcData[i] = 0xAAAA0000 + i;
     }
@@ -216,12 +221,15 @@ int main(void)
         printf("PDMA error (%d)!\n", u32IsTestOver);
 
     /* Check Rx Data */
-    for(i=0; i<PDMA_TEST_COUNT; i++) {
-        if(g_au32MasterSrcData[i] != g_au32SlaveDstData[i]) {
+    for(i=0; i<PDMA_TEST_COUNT; i++)
+    {
+        if(g_au32MasterSrcData[i] != g_au32SlaveDstData[i])
+        {
             u32Err ++;
         }
 
-        if(g_au32SlaveSrcData[i] != g_au32MasterDstData[i]) {
+        if(g_au32SlaveSrcData[i] != g_au32MasterDstData[i])
+        {
             u32Err ++;
         }
     }

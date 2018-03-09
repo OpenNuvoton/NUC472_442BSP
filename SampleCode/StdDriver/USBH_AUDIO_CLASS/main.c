@@ -279,7 +279,8 @@ void  uac_control_example(UAC_DEV_T *uac_dev)
     ret = UAC_GetBitResolution(uac_dev, UAC_SPEAKER, &val8);
     if (ret < 0)
         printf("    Failed to get speaker's bit resoltion.\n");
-    else {
+    else
+    {
         printf("    Speaker audio subframe size: %d bytes\n", val8);
         printf("    Speaker subframe bit resolution: %d\n", ret);
     }
@@ -287,7 +288,8 @@ void  uac_control_example(UAC_DEV_T *uac_dev)
     ret = UAC_GetBitResolution(uac_dev, UAC_MICROPHONE, &val8);
     if (ret < 0)
         printf("    Failed to get microphone's bit resoltion.\n");
-    else {
+    else
+    {
         printf("    Microphone audio subframe size: %d bytes\n", val8);
         printf("    Microphone subframe bit resolution: %d\n", ret);
     }
@@ -300,10 +302,12 @@ void  uac_control_example(UAC_DEV_T *uac_dev)
     ret = UAC_GetSamplingRate(uac_dev, UAC_SPEAKER, (uint32_t *)&srate[0], 4, &val8);
     if (ret < 0)
         printf("    Failed to get speaker's sampling rate.\n");
-    else {
+    else
+    {
         if (val8 == 0)
             printf("    Speaker sampling rate range: %d ~ %d Hz\n", srate[0], srate[1]);
-        else {
+        else
+        {
             for (i = 0; i < val8; i++)
                 printf("    Speaker sampling rate: %d\n", srate[i]);
         }
@@ -312,10 +316,12 @@ void  uac_control_example(UAC_DEV_T *uac_dev)
     ret = UAC_GetSamplingRate(uac_dev, UAC_MICROPHONE, (uint32_t *)&srate[0], 4, &val8);
     if (ret < 0)
         printf("    Failed to get microphone's sampling rate.\n");
-    else {
+    else
+    {
         if (val8 == 0)
             printf("    Microphone sampling rate range: %d ~ %d Hz\n", srate[0], srate[1]);
-        else {
+        else
+        {
             for (i = 0; i < val8; i++)
                 printf("    Microphone sampling rate: %d\n", srate[i]);
         }
@@ -326,9 +332,11 @@ void  uac_control_example(UAC_DEV_T *uac_dev)
     /*-------------------------------------------------------------*/
     /*  Get current mute value of UAC device's speaker.            */
     /*-------------------------------------------------------------*/
-    if (UAC_MuteControl(uac_dev, UAC_SPEAKER, UAC_GET_CUR, UAC_CH_MASTER, data) == UAC_RET_OK) {
+    if (UAC_MuteControl(uac_dev, UAC_SPEAKER, UAC_GET_CUR, UAC_CH_MASTER, data) == UAC_RET_OK)
+    {
         printf("    Speaker mute state is %d.\n", data[0]);
-    } else
+    }
+    else
         printf("    Failed to get speaker mute state!\n");
 
     printf("\nSpeaker L(F) volume control ===>\n");
@@ -336,33 +344,41 @@ void  uac_control_example(UAC_DEV_T *uac_dev)
     /*--------------------------------------------------------------------------*/
     /*  Get current volume value of UAC device's speaker left channel.          */
     /*--------------------------------------------------------------------------*/
-    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_CUR, UAC_CH_LEFT_FRONT, &val16) == UAC_RET_OK) {
+    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_CUR, UAC_CH_LEFT_FRONT, &val16) == UAC_RET_OK)
+    {
         printf("    Speaker L(F) volume is 0x%x.\n", val16);
-    } else
+    }
+    else
         printf("    Failed to get seaker L(F) volume!\n");
 
     /*--------------------------------------------------------------------------*/
     /*  Get minimum volume value of UAC device's speaker left channel.          */
     /*--------------------------------------------------------------------------*/
-    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_MIN, UAC_CH_LEFT_FRONT, &val16) == UAC_RET_OK) {
+    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_MIN, UAC_CH_LEFT_FRONT, &val16) == UAC_RET_OK)
+    {
         printf("    Speaker L(F) minimum volume is 0x%x.\n", val16);
-    } else
+    }
+    else
         printf("    Failed to get speaker L(F) minimum volume!\n");
 
     /*--------------------------------------------------------------------------*/
     /*  Get maximum volume value of UAC device's speaker left channel.          */
     /*--------------------------------------------------------------------------*/
-    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_MAX, UAC_CH_LEFT_FRONT, &val16) == UAC_RET_OK) {
+    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_MAX, UAC_CH_LEFT_FRONT, &val16) == UAC_RET_OK)
+    {
         printf("    Speaker L(F) maximum volume is 0x%x.\n", val16);
-    } else
+    }
+    else
         printf("    Failed to get speaker L(F) maximum volume!\n");
 
     /*--------------------------------------------------------------------------*/
     /*  Get volume resolution of UAC device's speaker left channel.             */
     /*--------------------------------------------------------------------------*/
-    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_RES, UAC_CH_LEFT_FRONT, &val16) == UAC_RET_OK) {
+    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_RES, UAC_CH_LEFT_FRONT, &val16) == UAC_RET_OK)
+    {
         printf("    Speaker L(F) volume resolution is 0x%x.\n", val16);
-    } else
+    }
+    else
         printf("    Failed to get speaker L(F) volume resolution!\n");
 
 
@@ -371,33 +387,41 @@ void  uac_control_example(UAC_DEV_T *uac_dev)
     /*--------------------------------------------------------------------------*/
     /*  Get current volume value of UAC device's speaker right channel.         */
     /*--------------------------------------------------------------------------*/
-    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_CUR, UAC_CH_RIGHT_FRONT, &val16) == UAC_RET_OK) {
+    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_CUR, UAC_CH_RIGHT_FRONT, &val16) == UAC_RET_OK)
+    {
         printf("    Speaker R(F) volume is 0x%x.\n", val16);
-    } else
+    }
+    else
         printf("    Failed to get speaker R(F) volume!\n");
 
     /*--------------------------------------------------------------------------*/
     /*  Get minimum volume value of UAC device's speaker right channel.         */
     /*--------------------------------------------------------------------------*/
-    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_MIN, UAC_CH_RIGHT_FRONT, &val16) == UAC_RET_OK) {
+    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_MIN, UAC_CH_RIGHT_FRONT, &val16) == UAC_RET_OK)
+    {
         printf("    Speaker R(F) minimum volume is 0x%x.\n", val16);
-    } else
+    }
+    else
         printf("    Failed to get speaker R(F) minimum volume!\n");
 
     /*--------------------------------------------------------------------------*/
     /*  Get maximum volume value of UAC device's speaker right channel.         */
     /*--------------------------------------------------------------------------*/
-    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_MAX, UAC_CH_RIGHT_FRONT, &val16) == UAC_RET_OK) {
+    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_MAX, UAC_CH_RIGHT_FRONT, &val16) == UAC_RET_OK)
+    {
         printf("    Speaker R(F) maximum volume is 0x%x.\n", val16);
-    } else
+    }
+    else
         printf("    Failed to get speaker R(F) maximum volume!\n");
 
     /*--------------------------------------------------------------------------*/
     /*  Get volume resolution of UAC device's speaker right channel.            */
     /*--------------------------------------------------------------------------*/
-    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_RES, UAC_CH_RIGHT_FRONT, &val16) == UAC_RET_OK) {
+    if (UAC_VolumeControl(uac_dev, UAC_SPEAKER, UAC_GET_RES, UAC_CH_RIGHT_FRONT, &val16) == UAC_RET_OK)
+    {
         printf("    Speaker R(F) volume resolution is 0x%x.\n", val16);
-    } else
+    }
+    else
         printf("    Failed to get speaker R(F) volume resolution!\n");
 
     printf("\nMicrophone mute control ===>\n");
@@ -405,9 +429,11 @@ void  uac_control_example(UAC_DEV_T *uac_dev)
     /*-------------------------------------------------------------*/
     /*  Get current mute value of UAC device's speaker.            */
     /*-------------------------------------------------------------*/
-    if (UAC_MuteControl(uac_dev, UAC_MICROPHONE, UAC_GET_CUR, UAC_CH_MASTER, data) == UAC_RET_OK) {
+    if (UAC_MuteControl(uac_dev, UAC_MICROPHONE, UAC_GET_CUR, UAC_CH_MASTER, data) == UAC_RET_OK)
+    {
         printf("    Microphone mute state is %d.\n", data[0]);
-    } else
+    }
+    else
         printf("    Failed to get microphone mute state!\n");
 
     printf("\nMicrophone volume control ===>\n");
@@ -415,33 +441,41 @@ void  uac_control_example(UAC_DEV_T *uac_dev)
     /*-------------------------------------------------------------*/
     /*  Get current volume value of UAC device's microphone.       */
     /*-------------------------------------------------------------*/
-    if (UAC_VolumeControl(uac_dev, UAC_MICROPHONE, UAC_GET_CUR, UAC_CH_MASTER, &val16) == UAC_RET_OK) {
+    if (UAC_VolumeControl(uac_dev, UAC_MICROPHONE, UAC_GET_CUR, UAC_CH_MASTER, &val16) == UAC_RET_OK)
+    {
         printf("    Microphone current volume is 0x%x.\n", val16);
-    } else
+    }
+    else
         printf("    Failed to get microphone current volume!\n");
 
     /*-------------------------------------------------------------*/
     /*  Get minimum volume value of UAC device's microphone.       */
     /*-------------------------------------------------------------*/
-    if (UAC_VolumeControl(uac_dev, UAC_MICROPHONE, UAC_GET_MIN, UAC_CH_MASTER, &val16) == UAC_RET_OK) {
+    if (UAC_VolumeControl(uac_dev, UAC_MICROPHONE, UAC_GET_MIN, UAC_CH_MASTER, &val16) == UAC_RET_OK)
+    {
         printf("    Microphone minimum volume is 0x%x.\n", val16);
-    } else
+    }
+    else
         printf("    Failed to get microphone minimum volume!\n");
 
     /*-------------------------------------------------------------*/
     /*  Get maximum volume value of UAC device's microphone.       */
     /*-------------------------------------------------------------*/
-    if (UAC_VolumeControl(uac_dev, UAC_MICROPHONE, UAC_GET_MAX, UAC_CH_MASTER, &val16) == UAC_RET_OK) {
+    if (UAC_VolumeControl(uac_dev, UAC_MICROPHONE, UAC_GET_MAX, UAC_CH_MASTER, &val16) == UAC_RET_OK)
+    {
         printf("    Microphone maximum volume is 0x%x.\n", val16);
-    } else
+    }
+    else
         printf("    Failed to get microphone maximum volume!\n");
 
     /*-------------------------------------------------------------*/
     /*  Get resolution of UAC device's microphone volume value.    */
     /*-------------------------------------------------------------*/
-    if (UAC_VolumeControl(uac_dev, UAC_MICROPHONE, UAC_GET_RES, UAC_CH_LEFT_FRONT, &val16) == UAC_RET_OK) {
+    if (UAC_VolumeControl(uac_dev, UAC_MICROPHONE, UAC_GET_RES, UAC_CH_LEFT_FRONT, &val16) == UAC_RET_OK)
+    {
         printf("    Microphone volume resolution is 0x%x.\n", val16);
-    } else
+    }
+    else
         printf("    Failed to get microphone volume resolution!\n");
 
     printf("\nMicrophone automatic gain control ===>\n");
@@ -449,9 +483,11 @@ void  uac_control_example(UAC_DEV_T *uac_dev)
     /*-------------------------------------------------------------*/
     /*  Get current mute value of UAC device's speaker.            */
     /*-------------------------------------------------------------*/
-    if (UAC_AutoGainControl(uac_dev, UAC_MICROPHONE, UAC_GET_CUR, UAC_CH_MASTER, data) == UAC_RET_OK) {
+    if (UAC_AutoGainControl(uac_dev, UAC_MICROPHONE, UAC_GET_CUR, UAC_CH_MASTER, data) == UAC_RET_OK)
+    {
         printf("    Microphone auto gain is %s.\n", data[0] ? "ON" : "OFF");
-    } else
+    }
+    else
         printf("    Failed to get microphone auto-gain state!\n");
 
     printf("\nSampling rate control ===>\n");
@@ -459,35 +495,43 @@ void  uac_control_example(UAC_DEV_T *uac_dev)
     /*-------------------------------------------------------------*/
     /*  Get current sampling rate value of UAC device's speaker.   */
     /*-------------------------------------------------------------*/
-    if (UAC_SamplingRateControl(uac_dev, UAC_SPEAKER, UAC_GET_CUR, &val32) == UAC_RET_OK) {
+    if (UAC_SamplingRateControl(uac_dev, UAC_SPEAKER, UAC_GET_CUR, &val32) == UAC_RET_OK)
+    {
         printf("    Speaker's current sampling rate is %d.\n", val32);
-    } else
+    }
+    else
         printf("    Failed to get speaker's current sampling rate!\n");
 
     /*-------------------------------------------------------------*/
     /*  Set new sampling rate value of UAC device's speaker.       */
     /*-------------------------------------------------------------*/
     val32 = 48000;
-    if (UAC_SamplingRateControl(uac_dev, UAC_SPEAKER, UAC_SET_CUR, &val32) == UAC_RET_OK) {
+    if (UAC_SamplingRateControl(uac_dev, UAC_SPEAKER, UAC_SET_CUR, &val32) == UAC_RET_OK)
+    {
         printf("    Speaker's current sampling rate is %d.\n", val32);
-    } else
+    }
+    else
         printf("    Failed to set speaker's current sampling rate!\n");
 
     /*-------------------------------------------------------------*/
     /*  Get current sampling rate value of UAC device's microphone.*/
     /*-------------------------------------------------------------*/
-    if (UAC_SamplingRateControl(uac_dev, UAC_MICROPHONE, UAC_GET_CUR, &val32) == UAC_RET_OK) {
+    if (UAC_SamplingRateControl(uac_dev, UAC_MICROPHONE, UAC_GET_CUR, &val32) == UAC_RET_OK)
+    {
         printf("    Microphone's current sampling rate is %d.\n", val32);
-    } else
+    }
+    else
         printf("    Failed to get microphone's current sampling rate!\n");
 
     /*-------------------------------------------------------------*/
     /*  Set new sampling rate value of UAC device's microphone.    */
     /*-------------------------------------------------------------*/
     val32 = 48000;
-    if (UAC_SamplingRateControl(uac_dev, UAC_MICROPHONE, UAC_SET_CUR, &val32) == UAC_RET_OK) {
+    if (UAC_SamplingRateControl(uac_dev, UAC_MICROPHONE, UAC_SET_CUR, &val32) == UAC_RET_OK)
+    {
         printf("    Microphone's current sampling rate is %d.\n", val32);
-    } else
+    }
+    else
         printf("    Failed to set microphone's current sampling rate!\n");
 }
 
@@ -533,7 +577,8 @@ int32_t main(void)
     UAC_Init();
 
     printf("Wait until any Audio Class devices connected...\n");
-    while (1) {
+    while (1)
+    {
         USBH_ProcessHubEvents();             /* USB Host port detect polling and management */
 
         uac_dev = UAC_GetDeviceList();
@@ -543,17 +588,20 @@ int32_t main(void)
 
     uac_control_example(uac_dev);
 
-    if (UAC_InstallIsoInCbFun(uac_dev, au_in_buff, 2048, audio_in_callback) != UAC_RET_OK) {
+    if (UAC_InstallIsoInCbFun(uac_dev, au_in_buff, 2048, audio_in_callback) != UAC_RET_OK)
+    {
         printf("Failed to install audio-in callback function!\n");
         goto err_out;
     }
 
-    if (UAC_InstallIsoOutCbFun(uac_dev, audio_out_callback) != UAC_RET_OK) {
+    if (UAC_InstallIsoOutCbFun(uac_dev, audio_out_callback) != UAC_RET_OK)
+    {
         printf("Failed to install audio-out callback function!\n");
         goto err_out;
     }
 
-    while (1) {
+    while (1)
+    {
         au_in_cnt = 0;
         au_out_cnt = 0;
 

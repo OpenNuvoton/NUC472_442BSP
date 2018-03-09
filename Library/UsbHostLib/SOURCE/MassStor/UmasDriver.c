@@ -77,7 +77,8 @@ extern UMAS_DATA_T  *g_umas;
                     initFunction, flags) \
 USB_DEVICE_VER(id_vendor, id_product, bcdDeviceMin,bcdDeviceMax)
 
-static USB_DEV_ID_T  _UmasDeviceIDs[] = {
+static USB_DEV_ID_T  _UmasDeviceIDs[] =
+{
 //#include "unusual_devs.h"
 #undef UNUSUAL_DEV
     /* Control/Bulk transport for all SubClass values */
@@ -115,7 +116,8 @@ static USB_DEV_ID_T  _UmasDeviceIDs[] = {
                     init_function, Flags) \
 { vendor_name, product_name, use_protocol, use_transport, init_function, Flags }
 
-static UMAS_UUDEV_T  _UmasUUDevList[] = {
+static UMAS_UUDEV_T  _UmasUUDevList[] =
+{
 #undef UNUSUAL_DEV
     /* Control/Bulk transport for all SubClass values */
     { UMAS_SC_RBC,  UMAS_PR_CB },
@@ -156,8 +158,10 @@ extern void free_umas_drive(UMAS_DRIVE_T * umas_drive);
 static UMAS_DATA_T * alloc_umas()
 {
     int     i;
-    for (i = 0; i < UMAS_MAX_DEV; i++) {
-        if (_umac_alloc_mark[i] == 0) {
+    for (i = 0; i < UMAS_MAX_DEV; i++)
+    {
+        if (_umac_alloc_mark[i] == 0)
+        {
             _umac_alloc_mark[i] = 1;
             return &_umas_pool[i];
         }
@@ -171,7 +175,8 @@ void free_umas(UMAS_DATA_T * umas)
     int     i;
 
     g_umas = NULL;
-    for (i = 0; i < UMAS_MAX_DEV; i++) {
+    for (i = 0; i < UMAS_MAX_DEV; i++)
+    {
         if (umas == &_umas_pool[i])
             _umac_alloc_mark[i] = 0;
     }
@@ -181,7 +186,8 @@ void free_umas(UMAS_DATA_T * umas)
 static int  storage_probe(USB_DEV_T *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T *id);
 static void  storage_disconnect(USB_DEV_T *dev);
 
-USB_DRIVER_T  _UsbMassStorageDriver = {
+USB_DRIVER_T  _UsbMassStorageDriver =
+{
     "UMAS",
     storage_probe,
     storage_disconnect,
@@ -213,7 +219,8 @@ static int  usb_stor_allocate_irq(UMAS_DATA_T *umas)
 
     /* allocate the URB */
     umas->irq_urb = USBH_AllocUrb();
-    if (!umas->irq_urb) {
+    if (!umas->irq_urb)
+    {
         UMAS_DEBUG("couldn't allocate interrupt URB");
         return USB_ERR_NOMEM;
     }
@@ -256,9 +263,11 @@ static int  storage_probe(USB_DEV_T *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T
 
     //UMAS_DEBUG("id_index calculated to be: %d\n", id_index);
 
-    if (id_index < sizeof(_UmasUUDevList) / sizeof(_UmasUUDevList[0])) {
+    if (id_index < sizeof(_UmasUUDevList) / sizeof(_UmasUUDevList[0]))
+    {
         unusual_dev = &_UmasUUDevList[id_index];
-    } else
+    }
+    else
         /* no, we can't support it */
         return USB_ERR_NODEV;
 
@@ -275,13 +284,15 @@ static int  storage_probe(USB_DEV_T *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T
      * An optional interrupt is OK (necessary for CBI protocol).
      * We will ignore any others.
      */
-    for (i = 1; i < dev->ep_list_cnt; i++) {
+    for (i = 1; i < dev->ep_list_cnt; i++)
+    {
         if (dev->ep_list[i].ifnum != ifnum)
             continue;
 
         /* is it an BULK endpoint? */
         if ((dev->ep_list[i].bmAttributes &
-                USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_BULK) {
+                USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_BULK)
+        {
             /* BULK in or out? */
             if (dev->ep_list[i].bEndpointAddress & USB_DIR_IN)
                 ep_in = i;
@@ -291,7 +302,8 @@ static int  storage_probe(USB_DEV_T *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T
 
         /* is it an interrupt endpoint? */
         if ((dev->ep_list[i].bmAttributes &
-                USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_INT) {
+                USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_INT)
+        {
             ep_int = i;
         }
     }
@@ -299,13 +311,15 @@ static int  storage_probe(USB_DEV_T *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T
     //UMAS_DEBUG("Endpoints: In: %d Out: %d Int: %d\n", ep_in, ep_out, ep_int, ep_int);
 
     /* Do some basic sanity checks, and bail if we find a problem */
-    if (!ep_in || !ep_out || ((protocol == UMAS_PR_CBI) && !ep_int)) {
+    if (!ep_in || !ep_out || ((protocol == UMAS_PR_CBI) && !ep_int))
+    {
         UMAS_DEBUG("Endpoint sanity check failed! Rejecting dev.\n");
         return USB_ERR_NODEV;
     }
 
     umas = alloc_umas();
-    if (umas == NULL) {
+    if (umas == NULL)
+    {
         UMAS_DEBUG("umas - Out of memory\n");
         return USB_ERR_NOMEM;
     }
@@ -313,7 +327,8 @@ static int  storage_probe(USB_DEV_T *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T
 
     /* allocate the URB we're going to use */
     umas->current_urb = USBH_AllocUrb();
-    if (!umas->current_urb) {
+    if (!umas->current_urb)
+    {
         free_umas(umas);
         return USB_ERR_NOMEM;
     }
@@ -343,7 +358,8 @@ static int  storage_probe(USB_DEV_T *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T
      * Set the handler pointers based on the protocol
      * Again, this data is persistant across reattachments
      */
-    switch (umas->protocol) {
+    switch (umas->protocol)
+    {
     case UMAS_PR_CB:
         umas->transport_name = "Control/Bulk";
         umas->transport = UMAS_CbTransport;
@@ -377,7 +393,8 @@ static int  storage_probe(USB_DEV_T *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T
     if (umas->flags & UMAS_FL_SINGLE_LUN)
         umas->max_lun = 0;
 
-    switch (umas->subclass) {
+    switch (umas->subclass)
+    {
     case UMAS_SC_RBC:
         umas->protocol_name = "Reduced Block Commands (RBC)";
         umas->proto_handler = UMAS_TransparentScsiCommand;
@@ -419,7 +436,8 @@ static int  storage_probe(USB_DEV_T *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T
     UMAS_DEBUG("Mass storage protocol: %s\n", umas->protocol_name);
 
     /* allocate an IRQ callback if one is needed */
-    if ((umas->protocol == UMAS_PR_CBI) && usb_stor_allocate_irq(umas)) {
+    if ((umas->protocol == UMAS_PR_CBI) && usb_stor_allocate_irq(umas))
+    {
         return USB_ERR_IO;
     }
 
@@ -432,7 +450,8 @@ static int  storage_probe(USB_DEV_T *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T
     return 0;
 
 err_ret:
-    if (umas->current_urb) {
+    if (umas->current_urb)
+    {
         USBH_UnlinkUrb(umas->current_urb);
         USBH_FreeUrb(umas->current_urb);
     }
@@ -453,13 +472,15 @@ static void storage_disconnect(USB_DEV_T *dev)
 
     UMAS_DEBUG("storage_disconnect called\n");
 
-    for (i = 0; i < UMAS_MAX_DEV; i++) {
+    for (i = 0; i < UMAS_MAX_DEV; i++)
+    {
         if ((_umac_alloc_mark[i]) && (_umas_pool[i].pusb_dev == dev))
             umas = &_umas_pool[i];
     }
 
     /* this is the odd case -- we disconnected but weren't using it */
-    if (!umas) {
+    if (!umas)
+    {
         UMAS_DEBUG("storage_disconnect - device not in use\n");
         return;
     }
@@ -467,7 +488,8 @@ static void storage_disconnect(USB_DEV_T *dev)
 #ifdef USE_NVTFAT
     /* Unmount disk */
     umas_drive = umas->drive_list;
-    while (umas_drive != NULL) {
+    while (umas_drive != NULL)
+    {
         next_drv = umas_drive->next;
         fsPhysicalDiskDisconnected(umas_drive->client);
         free_umas_drive(umas_drive);
@@ -475,7 +497,8 @@ static void storage_disconnect(USB_DEV_T *dev)
     }
 #endif
 
-    if (umas->irq_urb) {
+    if (umas->irq_urb)
+    {
         UMAS_DEBUG("storage_disconnect -- releasing irq URB\n");
 #ifdef DEBUG
         UMAS_DEBUG("storage_disconnect -- usb_unlink_urb() returned %d\n", USBH_UnlinkUrb(umas->irq_urb));
@@ -504,7 +527,8 @@ static void storage_disconnect(USB_DEV_T *dev)
 void UMAS_ScanAllDevice()
 {
     int     i;
-    for (i = 0; i < UMAS_MAX_DEV; i++) {
+    for (i = 0; i < UMAS_MAX_DEV; i++)
+    {
         if (_umac_alloc_mark[i] == 0)
             continue;
 
@@ -564,8 +588,10 @@ int32_t  USBH_MassGetDiskList(mass_disk_t * dlist[], int max)
 {
     int  i, idx;
 
-    for (i = 0, idx = 0; (i < UMAS_MAX_DEV) && (idx < max); i++) {
-        if (_umac_alloc_mark[i]) {
+    for (i = 0, idx = 0; (i < UMAS_MAX_DEV) && (idx < max); i++)
+    {
+        if (_umac_alloc_mark[i])
+        {
             dlist[idx] = (mass_disk_t *)&_umas_pool[i];
             idx++;
         }

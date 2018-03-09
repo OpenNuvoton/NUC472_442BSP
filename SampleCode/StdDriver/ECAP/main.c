@@ -31,7 +31,8 @@ void ICAP0_IRQHandler(void)
         printf("overflow interupt \n");
     if(iFlag & ECAP_STATUS_CMPF_Msk)
         printf("compare match interupt \n");
-    if(iFlag & ECAP_STATUS_CAPF0_Msk) {
+    if(iFlag & ECAP_STATUS_CAPF0_Msk)
+    {
         printf("channel0 capture interupt \n");
         printf("ECAP_CNT: 0x %x \n", ECAP0->CNT);
     }

@@ -47,24 +47,30 @@ void I2C_WriteWAU8822(uint8_t u8addr, uint16_t u16data)
 void WAU8822_ConfigSampleRate(uint32_t u32SampleRate)
 {
     printf("[NAU8822] Configure Sampling Rate to %d\n", u32SampleRate);
-    if((u32SampleRate % 8) == 0) {
+    if((u32SampleRate % 8) == 0)
+    {
         I2C_WriteWAU8822(36, 0x008);    //12.288Mhz
         I2C_WriteWAU8822(37, 0x00C);
         I2C_WriteWAU8822(38, 0x093);
         I2C_WriteWAU8822(39, 0x0E9);
-    } else if(u32SampleRate == 44100) {
+    }
+    else if(u32SampleRate == 44100)
+    {
         I2C_WriteWAU8822(36, 0x007);    //11.2896Mhz, for 44.1k
         I2C_WriteWAU8822(37, 0x021);
         I2C_WriteWAU8822(38, 0x161);
         I2C_WriteWAU8822(39, 0x026);
-    } else {
+    }
+    else
+    {
         I2C_WriteWAU8822(36, 0x00B);    //16.934Mhz
         I2C_WriteWAU8822(37, 0x011);
         I2C_WriteWAU8822(38, 0x153);
         I2C_WriteWAU8822(39, 0x1F0);
     }
 
-    switch (u32SampleRate) {
+    switch (u32SampleRate)
+    {
     case 16000:
         I2C_WriteWAU8822(6, 0x1AD);   /* Divide by 6, 16K */
         I2C_WriteWAU8822(7, 0x006);   /* 16K for internal filter cofficients */
@@ -99,7 +105,8 @@ void WAU8822_ConfigSampleRate(uint32_t u32SampleRate)
 
 void WAU8822_ConfigBitNumber(uint32_t u32BitNum)
 {
-    switch(u32BitNum) {
+    switch(u32BitNum)
+    {
     case 16:
         I2C_WriteWAU8822(4,  0x010);   /* 16-bit word length, I2S format, Stereo */
         break;

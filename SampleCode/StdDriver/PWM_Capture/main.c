@@ -37,13 +37,15 @@ void PWM0CH2_IRQHandler(void)
     u32CapIntFlag = PWM_GetCaptureIntFlag(PWM0, 2);
 
     // Rising latch condition happened
-    if ((u32CapIntFlag & PWM_RISING_LATCH_INT_FLAG) && token == 0) {
+    if ((u32CapIntFlag & PWM_RISING_LATCH_INT_FLAG) && token == 0)
+    {
         cap_val[u8Count >> 1][0] = PWM_GET_CAPTURE_RISING_DATA(PWM0, 2);
         cap_index++;
         token = 1;
     }
     // Falling latch condition happened
-    if ((u32CapIntFlag & PWM_FALLING_LATCH_INT_FLAG) && token == 1) {
+    if ((u32CapIntFlag & PWM_FALLING_LATCH_INT_FLAG) && token == 1)
+    {
         cap_val[u8Count >> 1][1] = PWM_GET_CAPTURE_FALLING_DATA(PWM0, 2);
         cap_index++;
         token = 0;
@@ -181,7 +183,8 @@ int32_t main (void)
 
     printf("Captured data is as below.\n");
     printf("(rising : falling)\n");
-    for(i = 1; i < (SAMPLE_CNT  >> 1); i++) {  // ignore first sampled data. it's wrong
+    for(i = 1; i < (SAMPLE_CNT  >> 1); i++)    // ignore first sampled data. it's wrong
+    {
         printf("%d, %d : %d\n", i, cap_val[i][0], cap_val[i][1]);
     }
 

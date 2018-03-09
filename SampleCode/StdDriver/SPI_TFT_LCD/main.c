@@ -75,8 +75,10 @@ void ILI9341_LCD_DisplayOnScreen(void)
     SPI_TRIGGER(SPI3);
 
     /* Load image */
-    for (i=0; i<320; i++) {
-        for (j=0; j<240; j++) {
+    for (i=0; i<320; i++)
+    {
+        for (j=0; j<240; j++)
+        {
             while(SPI_GET_TX_FIFO_FULL_FLAG(SPI3));
             SPI_WRITE_TX(SPI3, *(u16ImgPtr++));
         }

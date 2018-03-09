@@ -32,7 +32,8 @@ struct umas_data;
  * Unusual device list definitions
  */
 
-typedef struct umas_unusual_dev {
+typedef struct umas_unusual_dev
+{
     uint8_t   useProtocol;
     uint8_t   useTransport;
 } UMAS_UUDEV_T;
@@ -54,7 +55,8 @@ typedef void (*proto_cmnd)(SCSI_CMD_T*, struct umas_data *);
 struct umas_drive;
 
 /* we allocate one of these for every device that we remember */
-typedef struct umas_data {             /* LINUX: struct us_data */
+typedef struct umas_data               /* LINUX: struct us_data */
+{
     USB_DEV_T     *pusb_dev;           /* this usb_device */
     uint16_t      vendor_id;
     uint16_t      product_id;
@@ -96,7 +98,8 @@ typedef struct umas_data {             /* LINUX: struct us_data */
 } UMAS_DATA_T;
 
 
-typedef struct umas_drive {
+typedef struct umas_drive
+{
     UMAS_DATA_T     *umas;
     uint8_t         lun_no;
     void            *client;           /* file system client data */

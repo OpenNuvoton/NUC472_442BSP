@@ -81,7 +81,8 @@ int main (void)
     /* Configure PB.10 as Output mode */
     GPIO_SetMode(PB, BIT10, GPIO_MODE_OUTPUT);
 
-    while(1) {
+    while(1)
+    {
         PB10 = 0;
         CLK_SysTickDelay(500000);
         PB10 = 1;

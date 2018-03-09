@@ -12,7 +12,8 @@
  * using the generic single-entry routines.
  */
 
-typedef struct list_head {
+typedef struct list_head
+{
     struct list_head *next, *prev;
 } USB_LIST_T;
 

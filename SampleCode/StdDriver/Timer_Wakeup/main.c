@@ -84,7 +84,8 @@ int main(void)
     TIMER_Start(TIMER0);
     /* Unlock protected registers */
     SYS_UnlockReg();
-    while(1) {
+    while(1)
+    {
         CLK_PowerDown();
         printf("Wake %d\n", i++);
         while(!UART_IS_TX_EMPTY(UART0));

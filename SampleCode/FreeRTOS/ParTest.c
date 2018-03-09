@@ -97,14 +97,18 @@ void vParTestToggleLED( unsigned long ulLED )
 {
     unsigned portSHORT usBit;
 
-    if( ulLED < partstMAX_LEDS ) {
+    if( ulLED < partstMAX_LEDS )
+    {
         taskENTER_CRITICAL();
         {
             usBit = partstFIRST_LED << ulLED;
 
-            if( usOutputValue & usBit ) {
+            if( usOutputValue & usBit )
+            {
                 usOutputValue &= ~usBit;
-            } else {
+            }
+            else
+            {
                 usOutputValue |= usBit;
             }
 

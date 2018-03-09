@@ -49,11 +49,14 @@ int32_t  UAC_GetChannelNumber(UAC_DEV_T *audev, uint8_t target)
     if (uac_info == NULL)
         return UAC_RET_IO_ERR;
 
-    if (target == UAC_SPEAKER) {
+    if (target == UAC_SPEAKER)
+    {
         if (!uac_info->ft_play)
             return UAC_RET_DEV_NOT_SUPPORTED;
         return uac_info->ft_play->bNrChannels;
-    } else {
+    }
+    else
+    {
         if (!uac_info->ft_rec)
             return UAC_RET_DEV_NOT_SUPPORTED;
         return uac_info->ft_rec->bNrChannels;
@@ -79,12 +82,15 @@ int32_t  UAC_GetBitResolution(UAC_DEV_T *audev, uint8_t target, uint8_t *byte_cn
     if (uac_info == NULL)
         return UAC_RET_IO_ERR;
 
-    if (target == UAC_SPEAKER) {
+    if (target == UAC_SPEAKER)
+    {
         if (!uac_info->ft_play)
             return UAC_RET_DEV_NOT_SUPPORTED;
         *byte_cnt = uac_info->ft_play->bSubframeSize;
         return uac_info->ft_play->bBitResolution;
-    } else {
+    }
+    else
+    {
         if (!uac_info->it_microphone)
             return UAC_RET_DEV_NOT_SUPPORTED;
         *byte_cnt = uac_info->ft_rec->bSubframeSize;
@@ -137,13 +143,16 @@ int32_t  UAC_GetSamplingRate(UAC_DEV_T *audev, uint8_t target, uint32_t *srate_l
 
     *type = ft->bSamFreqType;
 
-    if (*type == 0) {
+    if (*type == 0)
+    {
         if (max_cnt < 2)
             return UAC_RET_OUT_OF_MEMORY;
 
         srate_list[0] = srate_to_u32(&ft->tSamFreq[0][0]);
         srate_list[1] = srate_to_u32(&ft->tSamFreq[1][0]);
-    } else {
+    }
+    else
+    {
         for (i = 0; i < *type; i++)
             srate_list[i] = srate_to_u32(&ft->tSamFreq[i][0]);
     }
@@ -191,11 +200,11 @@ int32_t  UAC_SamplingRateControl(UAC_DEV_T *audev, uint8_t target, uint8_t req, 
     if (ep == NULL)
         return UAC_RET_DEV_NOT_SUPPORTED;
 
-	if (target == UAC_SPEAKER)
-    	USBH_SetInterface(audev->udev, uac_info->ifd_play->bInterfaceNumber, uac_info->ifd_play->bAlternateSetting);
-	
-	if (target == UAC_MICROPHONE)
-		USBH_SetInterface(audev->udev, uac_info->ifd_rec->bInterfaceNumber, uac_info->ifd_rec->bAlternateSetting);
+    if (target == UAC_SPEAKER)
+        USBH_SetInterface(audev->udev, uac_info->ifd_play->bInterfaceNumber, uac_info->ifd_play->bAlternateSetting);
+
+    if (target == UAC_MICROPHONE)
+        USBH_SetInterface(audev->udev, uac_info->ifd_rec->bInterfaceNumber, uac_info->ifd_rec->bAlternateSetting);
 
     tSampleFreq[0] = *srate & 0xff;
     tSampleFreq[1] = (*srate >> 8) & 0xff;
@@ -203,10 +212,13 @@ int32_t  UAC_SamplingRateControl(UAC_DEV_T *audev, uint8_t target, uint8_t req, 
 
     bmRequestType = USB_TYPE_CLASS | USB_RECIP_ENDPOINT;
 
-    if (req & 0x80) {
+    if (req & 0x80)
+    {
         pipe = usb_rcvctrlpipe(udev, 0);
         bmRequestType |= 0x80;
-    } else {
+    }
+    else
+    {
         pipe = usb_sndctrlpipe(udev, 0);
     }
 
@@ -214,7 +226,8 @@ int32_t  UAC_SamplingRateControl(UAC_DEV_T *audev, uint8_t target, uint8_t req, 
                            (SAMPLING_FREQ_CONTROL << 8),               // wValue
                            ep->bEndpointAddress,   // wIndex
                            tSampleFreq, 3, UAC_REQ_TIMEOUT);
-    if (len == 3) {
+    if (len == 3)
+    {
         *srate = srate_to_u32(tSampleFreq);
         return 0;
     }
@@ -275,10 +288,13 @@ int32_t  UAC_MuteControl(UAC_DEV_T *audev, uint8_t target, uint8_t req, uint16_t
 
     bmRequestType = USB_TYPE_CLASS | USB_RECIP_INTERFACE;
 
-    if (req & 0x80) {
+    if (req & 0x80)
+    {
         pipe = usb_rcvctrlpipe(udev, 0);
         bmRequestType |= 0x80;
-    } else {
+    }
+    else
+    {
         pipe = usb_sndctrlpipe(udev, 0);
     }
 
@@ -365,10 +381,13 @@ int32_t  UAC_VolumeControl(UAC_DEV_T *audev, uint8_t target, uint8_t req, uint16
 
     bmRequestType = USB_TYPE_CLASS | USB_RECIP_INTERFACE;
 
-    if (req & 0x80) {
+    if (req & 0x80)
+    {
         pipe = usb_rcvctrlpipe(udev, 0);
         bmRequestType |= 0x80;
-    } else {
+    }
+    else
+    {
         pipe = usb_sndctrlpipe(udev, 0);
     }
 
@@ -435,10 +454,13 @@ int32_t  UAC_AutoGainControl(UAC_DEV_T *audev, uint8_t target, uint8_t req, uint
 
     bmRequestType = USB_TYPE_CLASS | USB_RECIP_INTERFACE;
 
-    if (req & 0x80) {
+    if (req & 0x80)
+    {
         pipe = usb_rcvctrlpipe(udev, 0);
         bmRequestType |= 0x80;
-    } else {
+    }
+    else
+    {
         pipe = usb_sndctrlpipe(udev, 0);
     }
 
@@ -469,7 +491,8 @@ static void iso_in_irq(URB_T *urb)
     //printf("Iso in - SF=%d, EC=%d, L=%d.\n", urb->start_frame, urb->error_count, urb->actual_length);
     //printf("IN: SF=%d, L=%d\n", urb->start_frame, urb->actual_length);
 
-    for (i = 0; i < urb->number_of_packets; i++) {
+    for (i = 0; i < urb->number_of_packets; i++)
+    {
         len = urb->iso_frame_desc[i].actual_length;
         if (!len)
             continue;
@@ -485,7 +508,8 @@ static void iso_in_irq(URB_T *urb)
         audev->au_in_bufidx += cp_len;
         len -= cp_len;
 
-        if (len) {
+        if (len)
+        {
             buff += cp_len;
             memcpy(audev->au_in_buff, buff+cp_len, len);
             audev->au_in_func(audev, audev->au_in_buff, len);
@@ -500,7 +524,8 @@ static void iso_in_irq(URB_T *urb)
     urb->number_of_packets = ISO_FRAME_COUNT;
     urb->transfer_buffer_length = AU_IN_MAX_PKTSZ * ISO_FRAME_COUNT;
     urb->actual_length = 0;
-    for (i = 0; i < ISO_FRAME_COUNT; i++) {
+    for (i = 0; i < ISO_FRAME_COUNT; i++)
+    {
         urb->iso_frame_desc[i].status = 0;
         urb->iso_frame_desc[i].actual_length = 0;
         urb->iso_frame_desc[i].offset = i * AU_IN_MAX_PKTSZ;
@@ -539,7 +564,8 @@ int32_t UAC_InstallIsoInCbFun(UAC_DEV_T *audev, uint8_t *au_in_buff, int bufsiz,
         return UAC_RET_INVALID;
 
     ep = uac_info->epd_rec;
-    if (!ep) {
+    if (!ep)
+    {
         USBAS_DBGMSG("Isochronous-in endpoint not found in this device!\n");
         return UAC_RET_DEV_NOT_SUPPORTED;
     }
@@ -570,7 +596,8 @@ int32_t UAC_StartIsoInPipe(UAC_DEV_T *audev)
         return UAC_RET_INVALID;
 
     ep = uac_info->epd_rec;
-    if (!ep) {
+    if (!ep)
+    {
         USBAS_DBGMSG("Isochronous-in endpoint not found in this device!\n");
         return UAC_RET_DEV_NOT_SUPPORTED;
     }
@@ -581,9 +608,11 @@ int32_t UAC_StartIsoInPipe(UAC_DEV_T *audev)
     if (USBH_SetInterface(audev->udev, uac_info->ifd_rec->bInterfaceNumber, uac_info->ifd_rec->bAlternateSetting) != 0)
         return UAC_RET_IO_ERR;
 
-    for (uidx = 0; uidx < ISO_IN_URB_CNT; uidx++) {
+    for (uidx = 0; uidx < ISO_IN_URB_CNT; uidx++)
+    {
         urb = USBH_AllocUrb();
-        if (urb == NULL) {
+        if (urb == NULL)
+        {
             USBAS_DBGMSG("Failed to allocated URB!\n");
             ret = UAC_RET_OUT_OF_MEMORY;
             goto err_out;
@@ -601,13 +630,15 @@ int32_t UAC_StartIsoInPipe(UAC_DEV_T *audev)
         urb->transfer_buffer_length = AU_IN_MAX_PKTSZ * ISO_FRAME_COUNT;
         urb->actual_length = 0;
 
-        for (i = 0; i < ISO_FRAME_COUNT; i++) {
+        for (i = 0; i < ISO_FRAME_COUNT; i++)
+        {
             urb->iso_frame_desc[i].offset = i * AU_IN_MAX_PKTSZ;
             urb->iso_frame_desc[i].length = AU_IN_MAX_PKTSZ;
         }
 
         ret = USBH_SubmitUrb(urb);
-        if (ret) {
+        if (ret)
+        {
             USBAS_DBGMSG("Error - failed to submit URB (%d)", ret);
             ret = UAC_RET_IO_ERR;
             goto err_out;
@@ -618,8 +649,10 @@ int32_t UAC_StartIsoInPipe(UAC_DEV_T *audev)
     return UAC_RET_OK;
 
 err_out:
-    for (i = 0; i < ISO_IN_URB_CNT; i++) {
-        if (audev->urbin[i]) {
+    for (i = 0; i < ISO_IN_URB_CNT; i++)
+    {
+        if (audev->urbin[i])
+        {
             USBH_UnlinkUrb(audev->urbin[i]);
             USBH_FreeUrb(audev->urbin[i]);
             audev->urbin[i] = NULL;
@@ -647,8 +680,10 @@ int32_t UAC_StopIsoInPipe(UAC_DEV_T *audev)
     /* Set interface alternative settings */
     USBH_SetInterface(audev->udev, uac_info->ifd_rec->bInterfaceNumber, 0);
 
-    for (i = 0; i < ISO_IN_URB_CNT; i++) {
-        if (audev->urbin[i]) {
+    for (i = 0; i < ISO_IN_URB_CNT; i++)
+    {
+        if (audev->urbin[i])
+        {
             USBH_UnlinkUrb(audev->urbin[i]);
             USBH_FreeUrb(audev->urbin[i]);
             audev->urbin[i] = NULL;
@@ -682,7 +717,8 @@ static void iso_out_irq(URB_T *urb)
     urb->number_of_packets = ISO_FRAME_COUNT;
     urb->transfer_buffer_length = AU_OUT_MAX_PKTSZ * ISO_FRAME_COUNT;
     urb->actual_length = 0;
-    for (i = 0; i < ISO_FRAME_COUNT; i++) {
+    for (i = 0; i < ISO_FRAME_COUNT; i++)
+    {
         urb->iso_frame_desc[i].status = 0;
         urb->iso_frame_desc[i].offset = i * AU_OUT_MAX_PKTSZ;
         urb->iso_frame_desc[i].actual_length = audev->au_out_func(audev, (uint8_t *)urb->transfer_buffer + urb->iso_frame_desc[i].offset, ep->wMaxPacketSize);
@@ -718,7 +754,8 @@ int32_t UAC_InstallIsoOutCbFun(UAC_DEV_T *audev, UAC_CB_FUNC *func)
         return UAC_RET_INVALID;
 
     ep = uac_info->epd_play;
-    if (!ep) {
+    if (!ep)
+    {
         USBAS_DBGMSG("Isochronous-out endpoint not found in this device!\n");
         return UAC_RET_DEV_NOT_SUPPORTED;
     }
@@ -746,7 +783,8 @@ int32_t UAC_StartIsoOutPipe(UAC_DEV_T *audev)
         return UAC_RET_INVALID;
 
     ep = uac_info->epd_play;
-    if (!ep) {
+    if (!ep)
+    {
         USBAS_DBGMSG("Isochronous-out endpoint not found in this device!\n");
         return UAC_RET_DEV_NOT_SUPPORTED;
     }
@@ -755,9 +793,11 @@ int32_t UAC_StartIsoOutPipe(UAC_DEV_T *audev)
     if (USBH_SetInterface(audev->udev, uac_info->ifd_play->bInterfaceNumber, uac_info->ifd_play->bAlternateSetting) != 0)
         return UAC_RET_IO_ERR;
 
-    for (uidx = 0; uidx < ISO_OUT_URB_CNT; uidx++) {
+    for (uidx = 0; uidx < ISO_OUT_URB_CNT; uidx++)
+    {
         urb = USBH_AllocUrb();
-        if (urb == NULL) {
+        if (urb == NULL)
+        {
             USBAS_DBGMSG("Failed to allocated URB!\n");
             ret = UAC_RET_OUT_OF_MEMORY;
             goto err_out;
@@ -775,10 +815,12 @@ int32_t UAC_StartIsoOutPipe(UAC_DEV_T *audev)
         urb->transfer_buffer_length = AU_OUT_MAX_PKTSZ * ISO_FRAME_COUNT;
         urb->actual_length = 0;
 
-        for (i = 0; i < ISO_FRAME_COUNT; i++) {
+        for (i = 0; i < ISO_FRAME_COUNT; i++)
+        {
             urb->iso_frame_desc[i].offset = i * AU_OUT_MAX_PKTSZ;
             urb->iso_frame_desc[i].length = audev->au_out_func(audev, (uint8_t *)urb->transfer_buffer + urb->iso_frame_desc[i].offset, ep->wMaxPacketSize);
-            if (urb->iso_frame_desc[i].length > ep->wMaxPacketSize) {
+            if (urb->iso_frame_desc[i].length > ep->wMaxPacketSize)
+            {
                 USBAS_ERRMSG("Audio-out packet buffer overrun!\n");
                 return -1;
             }
@@ -786,7 +828,8 @@ int32_t UAC_StartIsoOutPipe(UAC_DEV_T *audev)
         }
 
         ret = USBH_SubmitUrb(urb);
-        if (ret) {
+        if (ret)
+        {
             USBAS_DBGMSG("Error - failed to submit URB (%d)", ret);
             ret = UAC_RET_IO_ERR;
             goto err_out;
@@ -797,8 +840,10 @@ int32_t UAC_StartIsoOutPipe(UAC_DEV_T *audev)
     return UAC_RET_OK;
 
 err_out:
-    for (i = 0; i < ISO_OUT_URB_CNT; i++) {
-        if (audev->urbout[i]) {
+    for (i = 0; i < ISO_OUT_URB_CNT; i++)
+    {
+        if (audev->urbout[i])
+        {
             USBH_UnlinkUrb(audev->urbout[i]);
             USBH_FreeUrb(audev->urbout[i]);
             audev->urbout[i] = NULL;
@@ -826,8 +871,10 @@ int32_t UAC_StopIsoOutPipe(UAC_DEV_T *audev)
     /* Set interface alternative settings */
     USBH_SetInterface(audev->udev, uac_info->ifd_play->bInterfaceNumber, 0);
 
-    for (i = 0; i < ISO_OUT_URB_CNT; i++) {
-        if (audev->urbout[i]) {
+    for (i = 0; i < ISO_OUT_URB_CNT; i++)
+    {
+        if (audev->urbout[i])
+        {
             USBH_UnlinkUrb(audev->urbout[i]);
             USBH_FreeUrb(audev->urbout[i]);
             audev->urbout[i] = NULL;

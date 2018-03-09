@@ -53,7 +53,8 @@
 #define ED_URB_DEL      0x08
 
 /* usb_ohci_ed */
-typedef struct ohci_ed_t {
+typedef struct ohci_ed_t
+{
     uint32_t  hwINFO;
     uint32_t  hwTailP;
     uint32_t  hwHeadP;
@@ -110,7 +111,8 @@ typedef struct ohci_ed_t {
 
 #define MAXPSW             8
 
-typedef struct ohci_td_t {
+typedef struct ohci_td_t
+{
     uint32_t  hwINFO;
     uint32_t  hwCBP;            /* Current Buffer Pointer */
     uint32_t  hwNextTD;         /* Next TD Pointer */
@@ -135,7 +137,8 @@ typedef struct ohci_td_t {
 
 #define NUM_INTS 32     /* part of the OHCI standard */
 
-typedef struct ohci_hcca {
+typedef struct ohci_hcca
+{
     uint32_t   int_table[NUM_INTS];    /* Interrupt ED table */
     uint16_t   frame_no;               /* current frame number */
     uint16_t   pad1;                   /* set to 0 on each frame_no change */
@@ -154,7 +157,8 @@ typedef struct ohci_hcca {
  * region.  This is Memory Mapped I/O.  You must use the readl() and
  * writel() macros defined in asm/io.h to access these!!
  */
-struct ohci_regs {
+struct ohci_regs
+{
     /* control and status registers */
     uint32_t   HcRevision;
     uint32_t   CTL;
@@ -177,7 +181,8 @@ struct ohci_regs {
     uint32_t   HcPeriodicStart;
     uint32_t   HcLSThreshold;
     /* Root hub ports */
-    struct  ohci_roothub_regs {
+    struct  ohci_roothub_regs
+    {
         uint32_t   a;
         uint32_t   b;
         uint32_t   status;
@@ -235,7 +240,8 @@ typedef struct ohci_regs OHCI_REGS_T;
 
 
 /* Virtual Root HUB */
-typedef struct virt_root_hub {
+typedef struct virt_root_hub
+{
     int   devnum; /* Address of Root Hub endpoint */
     void  *urb;
     void  *int_addr;
@@ -350,7 +356,8 @@ typedef struct virt_root_hub {
  * a subset of what the full implementation needs. (Linus)
  */
 
-typedef struct ohci {
+typedef struct ohci
+{
     OHCI_HCCA_T  *hcca;                /* hcca */
     /* Modified by YCHuang, from hcca to *hcca */
     /* We must guarantee the HCCA is located on 256 */
@@ -376,7 +383,8 @@ typedef struct ohci {
 #define NUM_TDS 0               /* num of preallocated transfer descriptors */
 #define NUM_EDS 32              /* num of preallocated endpoint descriptors */
 
-typedef struct ohci_device {
+typedef struct ohci_device
+{
     //ED_T    ed[NUM_EDS];
     EDP_T   edp[NUM_EDS];
     int     ed_cnt;

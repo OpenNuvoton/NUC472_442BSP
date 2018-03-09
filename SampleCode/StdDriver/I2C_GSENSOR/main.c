@@ -173,7 +173,8 @@ int32_t main (void)
     /* Init I2C3 to access GSensor */
     I2C3_Init();
 
-    while(1) {
+    while(1)
+    {
         Multi_Read_TXYZ(DMARD05_T_REG_START_ADDRESS, buffer);
 
         if(buffer[0] & 0x400)

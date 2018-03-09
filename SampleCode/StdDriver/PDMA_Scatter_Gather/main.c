@@ -20,7 +20,8 @@ uint8_t SrcArray[256];
 uint8_t DestArray0[256];
 uint8_t DestArray1[256];
 
-typedef struct dma_desc_t {
+typedef struct dma_desc_t
+{
     uint32_t ctl;
     uint32_t endsrc;
     uint32_t enddest;
@@ -111,7 +112,8 @@ int main (void)
     /* Init UART to 115200-8n1 for print message */
     UART_Open(UART0, 115200);
 
-    for (i=0; i<PDMA_TEST_LENGTH*4; i++) {
+    for (i=0; i<PDMA_TEST_LENGTH*4; i++)
+    {
         SrcArray[i] = i;
         DestArray0[i] = 0;
         DestArray1[i] = 0;

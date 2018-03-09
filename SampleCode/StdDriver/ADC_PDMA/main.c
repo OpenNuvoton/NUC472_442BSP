@@ -26,15 +26,19 @@ void PDMA_IRQHandler(void)
 {
     uint32_t u32Status = PDMA_GET_INT_STATUS();
 
-    if (u32Status & 0x1) { /* abort */
+    if (u32Status & 0x1)   /* abort */
+    {
         if (PDMA_GET_ABORT_STS() & 0x4)
             g_u32PdmaTAbortInt = 1;
         PDMA_CLR_ABORT_FLAG(PDMA_ABTSTS_ABTIF_Msk);
-    } else if (u32Status & 0x2) {
+    }
+    else if (u32Status & 0x2)
+    {
         if (PDMA_GET_TD_STS() & 0x2)    /* channel 1 done */
             g_u32PdmaTDoneInt = 1;
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF_Msk);
-    } else
+    }
+    else
         printf("unknown interrupt, status=0x%x!!\n", u32Status);
 }
 
@@ -189,12 +193,15 @@ int32_t main (void)
 
     ADC_START_CONV(ADC);
 
-    while(1) {
+    while(1)
+    {
         uint32_t u32Ch;
-        if(ADC_GET_INT_FLAG(ADC,ADC_ADF_INT) == 1) {
+        if(ADC_GET_INT_FLAG(ADC,ADC_ADF_INT) == 1)
+        {
             ADC_CLR_INT_FLAG(ADC, ADC_ADF_INT);
 
-            for (u32Ch = 0; u32Ch < 4; u32Ch++) {
+            for (u32Ch = 0; u32Ch < 4; u32Ch++)
+            {
                 au32AdcData[u32DataCount++] = ADC_GET_CONVERSION_DATA(ADC, u32Ch);
                 if(u32DataCount >= ADC_TEST_COUNT)
                     break;
@@ -209,8 +216,10 @@ int32_t main (void)
     while(g_u32PdmaTDoneInt == 0);
 
     /* Compare the log of ADC conversion data register with the content of PDMA target buffer */
-    for(u32DataCount = 0; u32DataCount < ADC_TEST_COUNT; u32DataCount++) {
-        if( au32AdcData[u32DataCount] != (g_au32RxPDMADestination[u32DataCount] & 0xFFF) ) {
+    for(u32DataCount = 0; u32DataCount < ADC_TEST_COUNT; u32DataCount++)
+    {
+        if( au32AdcData[u32DataCount] != (g_au32RxPDMADestination[u32DataCount] & 0xFFF) )
+        {
             printf("*** Count %d, conversion result: 0x%X, PDMA result: 0x%X.\n",
                    u32DataCount, au32AdcData[u32DataCount], g_au32RxPDMADestination[u32DataCount]);
             u32ErrorCount++;

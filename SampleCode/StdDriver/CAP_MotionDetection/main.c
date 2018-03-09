@@ -37,21 +37,25 @@ void CAP_IRQHandler(void)
 {
     uint32_t u32CapInt;
     u32CapInt = ICAP->INT;
-    if( (u32CapInt & (CAP_INT_VIEN_Msk | CAP_INT_VINTF_Msk )) == (CAP_INT_VIEN_Msk | CAP_INT_VINTF_Msk)) {
+    if( (u32CapInt & (CAP_INT_VIEN_Msk | CAP_INT_VINTF_Msk )) == (CAP_INT_VIEN_Msk | CAP_INT_VINTF_Msk))
+    {
         CAP_InterruptHandler();
         ICAP->INT |= CAP_INT_VINTF_Msk;        /* Clear Frame end interrupt */
         u32EscapeFrame = u32EscapeFrame+1;
     }
 
-    if((u32CapInt & (CAP_INT_ADDRMIEN_Msk|CAP_INT_ADDRMINTF_Msk)) == (CAP_INT_ADDRMIEN_Msk|CAP_INT_ADDRMINTF_Msk)) {
+    if((u32CapInt & (CAP_INT_ADDRMIEN_Msk|CAP_INT_ADDRMINTF_Msk)) == (CAP_INT_ADDRMIEN_Msk|CAP_INT_ADDRMINTF_Msk))
+    {
         ICAP->INT |= CAP_INT_ADDRMINTF_Msk; /* Clear Address match interrupt */
     }
 
-    if ((u32CapInt & (CAP_INT_MEIEN_Msk|CAP_INT_MEINTF_Msk)) == (CAP_INT_MEIEN_Msk|CAP_INT_MEINTF_Msk)) {
+    if ((u32CapInt & (CAP_INT_MEIEN_Msk|CAP_INT_MEINTF_Msk)) == (CAP_INT_MEIEN_Msk|CAP_INT_MEINTF_Msk))
+    {
         ICAP->INT |= CAP_INT_MEINTF_Msk;    /* Clear Memory error interrupt */
     }
 
-    if ((u32CapInt & (CAP_INT_MDIEN_Msk|CAP_INT_MDINTF_Msk)) == (CAP_INT_MDIEN_Msk|CAP_INT_MDINTF_Msk)) {
+    if ((u32CapInt & (CAP_INT_MDIEN_Msk|CAP_INT_MDINTF_Msk)) == (CAP_INT_MDIEN_Msk|CAP_INT_MDINTF_Msk))
+    {
         ICAP->INT |= CAP_INT_MDINTF_Msk;    /* Clear Motion Detection interrupt */
     }
     ICAP->CTL = ICAP->CTL | CAP_CTL_UPDATE;
@@ -210,7 +214,8 @@ void MotionDetection8x8(void)
     u32FramePass = 0;
     while( (u32FramePass<5) );
 
-    while(1) {
+    while(1)
+    {
 
         /* Enable Image Capture Interface */
         CAP_Start();
@@ -226,9 +231,11 @@ void MotionDetection8x8(void)
         CAP_Stop(TRUE);    /* Set one shutter mode */
 
         pu8MotionDetAddr=u8MDOutputBuffer;
-        for(i=0; i<SYSTEM_WIDTH/8*SYSTEM_HEIGHT/8; i=i+1) {
+        for(i=0; i<SYSTEM_WIDTH/8*SYSTEM_HEIGHT/8; i=i+1)
+        {
             uint32_t u32Div = SYSTEM_WIDTH/8;
-            if( ((i%u32Div)==0) ) {
+            if( ((i%u32Div)==0) )
+            {
                 printf("\n");
                 if(((SYSTEM_WIDTH/8)%4)!=0)
                     pu8MotionDetAddr = pu8MotionDetAddr+(4-(SYSTEM_WIDTH/8)%4);

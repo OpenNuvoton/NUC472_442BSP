@@ -23,7 +23,8 @@ void EPWM0_IRQHandler(void)
     static uint32_t out;
 
     // Channel 0 frequency is 100Hz, every 1 second enter this IRQ handler 10 times.
-    if(++cnt == 10) {
+    if(++cnt == 10)
+    {
         if(out)
             EPWM_EnableOutput(EPWM0, 0x3F);
         else
@@ -86,7 +87,7 @@ void SYS_Init(void)
 
     /* Set A12 A11 A10 A9 A8 A7 multi-function pins for EPWM0 Channel 0~5  */
     SYS->GPA_MFPH |=  SYS_GPA_MFPH_PA12MFP_EPWM0_CH0 | SYS_GPA_MFPH_PA11MFP_EPWM0_CH1 | SYS_GPA_MFPH_PA10MFP_EPWM0_CH2
-                     | SYS_GPA_MFPH_PA9MFP_EPWM0_CH3 | SYS_GPA_MFPH_PA8MFP_EPWM0_CH4;
+                      | SYS_GPA_MFPH_PA9MFP_EPWM0_CH3 | SYS_GPA_MFPH_PA8MFP_EPWM0_CH4;
     SYS->GPA_MFPL |=  SYS_GPA_MFPL_PA7MFP_EPWM0_CH5;
 
     /* Lock protected registers */

@@ -23,8 +23,10 @@ void PDMA_IRQHandler(void)
 {
     uint32_t u32Status = PDMA_GET_INT_STATUS();
 
-    if (u32Status & 0x2) { /* done */
-        if (PDMA_GET_TD_STS() & 0x4) {
+    if (u32Status & 0x2)   /* done */
+    {
+        if (PDMA_GET_TD_STS() & 0x4)
+        {
             if(aPCMBuffer_Full[u8PCMBuffer_Playing^1] != 1)
                 printf("underflow!!\n");
             aPCMBuffer_Full[u8PCMBuffer_Playing] = 0;       //set empty flag
@@ -32,7 +34,9 @@ void PDMA_IRQHandler(void)
             u8PCMBuffer_Playing ^= 1;
         }
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF_Msk);
-    } else {
+    }
+    else
+    {
         printf("0x%x\n", u32Status);
         while(1);
     }

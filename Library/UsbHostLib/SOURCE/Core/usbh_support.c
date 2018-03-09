@@ -90,8 +90,10 @@ URB_T * USBH_AllocUrb()
 {
     int  i;
 
-    for (i = 0; i < URB_MAX_NUM; i++) {
-        if (urb_alloc_mark[i] == 0) {
+    for (i = 0; i < URB_MAX_NUM; i++)
+    {
+        if (urb_alloc_mark[i] == 0)
+        {
             urb_alloc_mark[i] = 1;
             memset((char *)&g_urb_pool[i], 0, sizeof(URB_T));
             return &g_urb_pool[i];
@@ -111,8 +113,10 @@ void USBH_FreeUrb(URB_T *urb)
 {
     int  i;
 
-    for (i = 0; i < URB_MAX_NUM; i++) {
-        if (&g_urb_pool[i] == urb) {
+    for (i = 0; i < URB_MAX_NUM; i++)
+    {
+        if (&g_urb_pool[i] == urb)
+        {
             urb_alloc_mark[i] = 0;
             return;
         }
@@ -127,9 +131,12 @@ void usbh_free_dev_urbs(USB_DEV_T *dev)
 {
     int  i;
 
-    for (i = 0; i < URB_MAX_NUM; i++) {
-        if (urb_alloc_mark[i]) {
-            if (g_urb_pool[i].dev == dev) {
+    for (i = 0; i < URB_MAX_NUM; i++)
+    {
+        if (urb_alloc_mark[i])
+        {
+            if (g_urb_pool[i].dev == dev)
+            {
                 USBH_UnlinkUrb(&g_urb_pool[i]);
                 urb_alloc_mark[i] = 0;
             }
@@ -142,8 +149,10 @@ ED_T * ohci_alloc_ed()
 {
     int  i;
 
-    for (i = 0; i < ED_MAX_NUM; i++) {
-        if (ed_alloc_mark[i] == 0) {
+    for (i = 0; i < ED_MAX_NUM; i++)
+    {
+        if (ed_alloc_mark[i] == 0)
+        {
             ed_alloc_mark[i] = 1;
             memset((char *)&g_ed_pool[i], 0, sizeof(ED_T));
             _ed_cnt--;
@@ -159,8 +168,10 @@ void ohci_free_ed(ED_T *ed_p)
 {
     int  i;
 
-    for (i = 0; i < ED_MAX_NUM; i++) {
-        if (&g_ed_pool[i] == ed_p) {
+    for (i = 0; i < ED_MAX_NUM; i++)
+    {
+        if (&g_ed_pool[i] == ed_p)
+        {
             ed_alloc_mark[i] = 0;
             _ed_cnt++;
             return;
@@ -174,8 +185,10 @@ TD_T * ohci_alloc_td(USB_DEV_T *dev)
 {
     int  i;
 
-    for (i = 0; i < TD_MAX_NUM; i++) {
-        if (td_alloc_mark[i] == 0) {
+    for (i = 0; i < TD_MAX_NUM; i++)
+    {
+        if (td_alloc_mark[i] == 0)
+        {
             td_alloc_mark[i] = 1;
             td_alloc_dev[i] = dev;
             memset((char *)&g_td_pool[i], 0, sizeof(TD_T));
@@ -192,8 +205,10 @@ void ohci_free_td(TD_T *td_p)
 {
     int  i;
 
-    for (i = 0; i < TD_MAX_NUM; i++) {
-        if ((&g_td_pool[i] == td_p) && (td_alloc_mark[i])) {
+    for (i = 0; i < TD_MAX_NUM; i++)
+    {
+        if ((&g_td_pool[i] == td_p) && (td_alloc_mark[i]))
+        {
             _td_cnt++;
             td_alloc_mark[i] = 0;
             return;
@@ -205,8 +220,10 @@ void ohci_free_td(TD_T *td_p)
 void ohci_free_dev_td(USB_DEV_T *dev)
 {
     int   i;
-    for (i = 0; i < TD_MAX_NUM; i++) {
-        if ((td_alloc_mark[i]) && (td_alloc_dev[i] == dev)) {
+    for (i = 0; i < TD_MAX_NUM; i++)
+    {
+        if ((td_alloc_mark[i]) && (td_alloc_dev[i] == dev))
+        {
             _td_cnt++;
             td_alloc_mark[i] = 0;
             return;
@@ -224,15 +241,18 @@ USB_DEV_T  *usbh_alloc_device(USB_DEV_T *parent, USB_BUS_T *bus)
     int     i;
     USB_DEV_T  *dev;
 
-    for (i = 0; i < DEV_MAX_NUM; i++) {
-        if (dev_alloc_mark[i] == 0) {
+    for (i = 0; i < DEV_MAX_NUM; i++)
+    {
+        if (dev_alloc_mark[i] == 0)
+        {
             dev_alloc_mark[i] = 1;
             dev = &g_dev_pool[i];
             memset((char *)dev, 0, sizeof(*dev));
             dev->act_config = -1;
             dev->parent = parent;
             dev->bus = bus;
-            if (dev->bus->op->allocate(dev) != 0) {
+            if (dev->bus->op->allocate(dev) != 0)
+            {
                 dev_alloc_mark[i] = 0;
                 return NULL;
             }
@@ -250,10 +270,13 @@ void  usbh_free_device(USB_DEV_T *dev)
     OHCI_DEVICE_T  *ohcidev;
 
     dev->bus->op->deallocate(dev);
-    for (i = 0; i < DEV_MAX_NUM; i++) {
-        if (&g_dev_pool[i] == dev) {
+    for (i = 0; i < DEV_MAX_NUM; i++)
+    {
+        if (&g_dev_pool[i] == dev)
+        {
             ohcidev = usb_to_ohci(dev);
-            for (j = 0; j < NUM_EDS; j++) {
+            for (j = 0; j < NUM_EDS; j++)
+            {
                 if (ohcidev->edp[j] != NULL)
                     ohci_free_ed(ohcidev->edp[j]);
             }
@@ -269,8 +292,10 @@ USB_HUB_T * usbh_alloc_hubdev()
 {
     int  i;
 
-    for (i = 0; i < MAX_HUB_DEVICE; i++) {
-        if (hub_alloc_mark[i] == 0) {
+    for (i = 0; i < MAX_HUB_DEVICE; i++)
+    {
+        if (hub_alloc_mark[i] == 0)
+        {
             hub_alloc_mark[i] = 1;
             memset((char *)&g_hub_pool[i], 0, sizeof(USB_HUB_T));
             return &g_hub_pool[i];
@@ -285,8 +310,10 @@ void usbh_free_hubdev(USB_HUB_T *hub)
 {
     int  i;
 
-    for (i = 0; i < MAX_HUB_DEVICE; i++) {
-        if (&g_hub_pool[i] == hub) {
+    for (i = 0; i < MAX_HUB_DEVICE; i++)
+    {
+        if (&g_hub_pool[i] == hub)
+        {
             hub_alloc_mark[i] = 0;
             return;
         }
@@ -299,8 +326,10 @@ USB_HUB_T * usbh_get_hub_by_dev(USB_DEV_T *dev)
 {
     int   i;
 
-    for (i = 0; i < MAX_HUB_DEVICE; i++) {
-        if (hub_alloc_mark[i]) {
+    for (i = 0; i < MAX_HUB_DEVICE; i++)
+    {
+        if (hub_alloc_mark[i])
+        {
             if (g_hub_pool[i].dev == dev)
                 return &g_hub_pool[i];
         }
@@ -318,13 +347,17 @@ void  usbh_mdelay(uint32_t msec)
     volatile uint32_t  t0;
     volatile uint32_t  frame_no;
 
-    if ((USBH->HcControl & 0xC0) == 0x40) {
+    if ((USBH->HcControl & 0xC0) == 0x40)
+    {
         /* OHCI in operational state */
-        for (t0 = 0; t0 < msec; t0++) {
+        for (t0 = 0; t0 < msec; t0++)
+        {
             frame_no = USBH->HcFmNumber;
             while (USBH->HcFmNumber == frame_no) ;
         }
-    } else {
+    }
+    else
+    {
         for (t0 = 0; t0 < msec * 0x1000; t0++) ;
     }
 }

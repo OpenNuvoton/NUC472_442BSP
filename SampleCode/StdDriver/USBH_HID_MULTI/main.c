@@ -34,7 +34,8 @@ uint8_t  desc_buff[1024];
 
 void Delay(uint32_t delayCnt)
 {
-    while(delayCnt--) {
+    while(delayCnt--)
+    {
         __NOP();
         __NOP();
     }
@@ -206,9 +207,11 @@ int  init_hid_device(HID_DEV_T *hdev)
     printf("  VID: 0x%x, PID: 0x%x\n\n", hdev->udev->descriptor.idVendor, hdev->udev->descriptor.idProduct);
 
     ret = HID_HidGetReportDescriptor(hdev, desc_buff, 1024);
-    if (ret > 0) {
+    if (ret > 0)
+    {
         printf("\nDump report descriptor =>\n");
-        for (i = 0; i < ret; i++) {
+        for (i = 0; i < ret; i++)
+        {
             if ((i % 16) == 0)
                 printf("\n");
             printf("%02x ", desc_buff[i]);
@@ -232,7 +235,8 @@ int  init_hid_device(HID_DEV_T *hdev)
      *  Example: GET_REPORT request on report ID 0x1, report type FEATURE.
      */
     ret = HID_HidGetReport(hdev, RT_FEATURE, 0x1, desc_buff, 64);
-    if (ret > 0) {
+    if (ret > 0)
+    {
         printf("[GET_REPORT] Data => ");
         for (i = 0; i < ret; i++)
             printf("%02x ", desc_buff[i]);
@@ -240,7 +244,8 @@ int  init_hid_device(HID_DEV_T *hdev)
     }
 
     printf("\nUSBH_HidStartIntReadPipe...\n");
-    if (USBH_HidStartIntReadPipe(hdev, int_read_callback) == HID_RET_OK) {
+    if (USBH_HidStartIntReadPipe(hdev, int_read_callback) == HID_RET_OK)
+    {
         printf("Interrupt in transfer started...\n");
     }
 
@@ -292,13 +297,16 @@ int32_t main(void)
 
     printf("Wait until any HID devices connected...\n");
 
-    while (1) {
-        if (USBH_ProcessHubEvents()) {           /* USB Host port detect polling and management */
+    while (1)
+    {
+        if (USBH_ProcessHubEvents())             /* USB Host port detect polling and management */
+        {
             hdev = USBH_HidGetDeviceList();
             if (hdev == NULL)
                 continue;
 
-            while (hdev != NULL) {
+            while (hdev != NULL)
+            {
                 init_hid_device(hdev);
 
                 if (hdev != NULL)

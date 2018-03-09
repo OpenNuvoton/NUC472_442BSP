@@ -28,7 +28,8 @@
  */
 void  usbh_dump_device_descriptor(USB_DEV_DESC_T *desc)
 {
-    if (!desc) {
+    if (!desc)
+    {
         USB_debug("Invalid USB device descriptor (NULL POINTER)\n");
         return;
     }
@@ -45,7 +46,8 @@ void  usbh_dump_device_descriptor(USB_DEV_DESC_T *desc)
               desc->bcdDevice >> 8, desc->bcdDevice & 0xff);
     USB_debug("  Device Class:SubClass:Protocol = %02x:%02x:%02x\n",
               desc->bDeviceClass, desc->bDeviceSubClass, desc->bDeviceProtocol);
-    switch (desc->bDeviceClass) {
+    switch (desc->bDeviceClass)
+    {
     case 0:
         USB_debug("    Per-interface classes\n");
         break;
@@ -132,7 +134,8 @@ void  usbh_dump_ep_descriptor(USB_EP_DESC_T *desc)
     USB_debug("      bInterval           =   %02x\n", desc->bInterval);
 
     /* Audio extensions to the endpoint descriptor */
-    if (desc->bLength == USB_DT_ENDPOINT_AUDIO_SIZE) {
+    if (desc->bLength == USB_DT_ENDPOINT_AUDIO_SIZE)
+    {
         USB_debug("      bRefresh            =   %02x\n", desc->bRefresh);
         USB_debug("      bSynchAddress       =   %02x\n", desc->bSynchAddress);
     }

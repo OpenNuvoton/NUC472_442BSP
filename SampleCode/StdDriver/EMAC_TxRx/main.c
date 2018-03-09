@@ -47,7 +47,8 @@ void EMAC_TX_IRQHandler(void)
 void EMAC_RX_IRQHandler(void)
 {
 
-    while(1) {
+    while(1)
+    {
         // Check if there's any packets available
         if(EMAC_RecvPkt(auPkt, &u32PktLen) == 0)
             break;
@@ -110,12 +111,12 @@ void SYS_Init(void)
     SYS->GPG_MFPL |= SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
     // Configure RMII pins
     SYS->GPC_MFPL |= SYS_GPC_MFPL_PC0MFP_EMAC_REFCLK |
-                    SYS_GPC_MFPL_PC1MFP_EMAC_MII_RXERR |
-                    SYS_GPC_MFPL_PC2MFP_EMAC_MII_RXDV |
-                    SYS_GPC_MFPL_PC3MFP_EMAC_MII_RXD1 |
-                    SYS_GPC_MFPL_PC4MFP_EMAC_MII_RXD0 |
-                    SYS_GPC_MFPL_PC6MFP_EMAC_MII_TXD0 |
-                    SYS_GPC_MFPL_PC7MFP_EMAC_MII_TXD1;
+                     SYS_GPC_MFPL_PC1MFP_EMAC_MII_RXERR |
+                     SYS_GPC_MFPL_PC2MFP_EMAC_MII_RXDV |
+                     SYS_GPC_MFPL_PC3MFP_EMAC_MII_RXD1 |
+                     SYS_GPC_MFPL_PC4MFP_EMAC_MII_RXD0 |
+                     SYS_GPC_MFPL_PC6MFP_EMAC_MII_TXD0 |
+                     SYS_GPC_MFPL_PC7MFP_EMAC_MII_TXD1;
 
 
     SYS->GPC_MFPH |= SYS_GPC_MFPH_PC8MFP_EMAC_MII_TXEN;
@@ -149,7 +150,8 @@ int main(void)
     EMAC_ENABLE_RX();
     EMAC_ENABLE_TX();
 
-    if (dhcp_start() < 0) {
+    if (dhcp_start() < 0)
+    {
         // Cannot get a DHCP lease, use static IP.
         printf("DHCP failed, use static IP 192.168.10.10\n");
         g_au8IpAddr[0] = 0xC0;

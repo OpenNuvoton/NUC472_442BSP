@@ -168,7 +168,8 @@
 
 
 /*!< device descriptor structure  \hideinitializer   */
-typedef struct {
+typedef struct
+{
     __packed uint8_t  requesttype;      /*!< Characteristics of request \hideinitializer  */
     __packed uint8_t  request;          /*!< Specific request \hideinitializer            */
     __packed uint16_t value;            /*!< Word-sized field that varies according to request \hideinitializer */
@@ -192,7 +193,8 @@ typedef struct {
 #define USB_MAXENDPOINTS        32
 
 /* All standard descriptors have these 2 fields in common */
-typedef struct usb_descriptor_header {
+typedef struct usb_descriptor_header
+{
     __packed uint8_t  bLength;
     __packed uint8_t  bDescriptorType;
 } USB_DESC_HDR_T;
@@ -210,7 +212,8 @@ struct urb_t;
  *  USB device descriptor
  */
 /*!< Device descriptor structure \hideinitializer           */
-typedef struct usb_device_descriptor {
+typedef struct usb_device_descriptor
+{
     __packed uint8_t  bLength;          /*!< Length of device descriptor \hideinitializer           */
     __packed uint8_t  bDescriptorType;  /*!< Device descriptor type \hideinitializer                */
     __packed uint16_t bcdUSB;           /*!< USB version number \hideinitializer                    */
@@ -232,7 +235,8 @@ typedef struct usb_device_descriptor {
  *  USB endpoint descriptor
  */
 /*! Endpoint descriptor structure \hideinitializer         */
-typedef struct usb_endpoint_descriptor {
+typedef struct usb_endpoint_descriptor
+{
     __packed uint8_t  bLength;          /*!< Length of endpoint descriptor \hideinitializer         */
     __packed uint8_t  bDescriptorType;  /*!< Descriptor type \hideinitializer                       */
     __packed uint8_t  bEndpointAddress; /*!< Endpoint address \hideinitializer                      */
@@ -248,7 +252,8 @@ typedef struct usb_endpoint_descriptor {
  *  USB interface descriptor
  */
 /*! Interface descriptor structure \hideinitializer        */
-typedef struct usb_interface_descriptor {
+typedef struct usb_interface_descriptor
+{
     __packed uint8_t  bLength;          /*!< Length of interface descriptor \hideinitializer        */
     __packed uint8_t  bDescriptorType;  /*!< Descriptor type \hideinitializer                       */
     __packed uint8_t  bInterfaceNumber; /*!< Interface number \hideinitializer                      */
@@ -266,7 +271,8 @@ typedef struct usb_interface_descriptor {
  *  Configuration descriptor
  */
 /*! Configuration descriptor structure \hideinitializer    */
-typedef struct usb_config_descriptor {
+typedef struct usb_config_descriptor
+{
     __packed uint8_t   bLength;         /*!< Length of configuration descriptor \hideinitializer    */
     __packed uint8_t   bDescriptorType; /*!< Descriptor type \hideinitializer                       */
     __packed uint16_t  wTotalLength;    /*!< Total length of this configuration \hideinitializer    */
@@ -281,7 +287,8 @@ typedef struct usb_config_descriptor {
 /// @cond HIDDEN_SYMBOLS
 
 /* String descriptor */
-typedef struct usb_string_descriptor {
+typedef struct usb_string_descriptor
+{
     __packed uint8_t  bLength;
     __packed uint8_t  bDescriptorType;
     __packed uint16_t wData[1];
@@ -332,7 +339,8 @@ typedef struct usb_string_descriptor {
 #define USB_INTERFACE_INFO(cl,sc,pr) \
         { USB_DEVICE_ID_MATCH_INT_INFO, 0, 0, 0, 0, 0, 0, 0, cl, sc, pr, 0 }
 
-typedef struct usb_device_id {
+typedef struct usb_device_id
+{
     /* This bitmask is used to determine which of the following fields
      * are to be used for matching.
      */
@@ -371,7 +379,8 @@ typedef struct usb_device_id {
 } USB_DEV_ID_T;
 
 
-typedef struct usb_driver {
+typedef struct usb_driver
+{
     const char  *name;
     int   (*probe)(struct usb_device *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T *id);
     void  (*disconnect)(struct usb_device *);
@@ -406,7 +415,8 @@ typedef struct usb_driver {
 struct ohci_ed_t;
 struct ohci_td_t;
 
-typedef struct {
+typedef struct
+{
     struct ohci_ed_t    *ed;
     uint16_t            length;       /* number of tds associated with this request */
     uint16_t            td_cnt;       /* number of tds already serviced */
@@ -420,7 +430,8 @@ typedef struct {
 /*-----------------------------------------------------------------------------------
  *  URB isochronous descriptor structure
  */
-typedef struct iso_pkt_t {              /*! Isochronous packet structure \hideinitializer          */
+typedef struct iso_pkt_t                /*! Isochronous packet structure \hideinitializer          */
+{
     uint32_t  offset;                   /*!< Start offset in transfer buffer \hideinitializer       */
     uint32_t  length;                   /*!< Length in transfer buffer \hideinitializer             */
     uint32_t  actual_length;            /*!< Actual transfer length \hideinitializer                */
@@ -430,7 +441,8 @@ typedef struct iso_pkt_t {              /*! Isochronous packet structure \hidein
 /*-----------------------------------------------------------------------------------
  *  USB Request Block (URB) structure
  */
-typedef struct urb_t {                  /*! URB structure \hideinitializer                         */
+typedef struct urb_t                    /*! URB structure \hideinitializer                         */
+{
     URB_PRIV_T  urb_hcpriv;             /*!< private data for host controller \hideinitializer      */
     USB_LIST_T  urb_list;               /*!< list pointer to all active urbs \hideinitializer       */
     struct urb_t  *next;                /*!< pointer to next URB \hideinitializer                   */
@@ -516,7 +528,8 @@ typedef struct urb_t {                  /*! URB structure \hideinitializer      
     } while (0)
 
 
-typedef struct usb_operations {
+typedef struct usb_operations
+{
     int (*allocate)(struct usb_device *);
     int (*deallocate)(struct usb_device *);
     int (*get_frame_number) (struct usb_device *usb_dev);
@@ -525,7 +538,8 @@ typedef struct usb_operations {
 } USB_OP_T;
 
 
-typedef struct usb_bus {
+typedef struct usb_bus
+{
     USB_OP_T  *op;                      /* Operations (specific to the HC) */
     struct usb_device  *root_hub;       /* Root hub */
     void   *hcpriv;                     /* Host Controller private data */
@@ -534,7 +548,8 @@ typedef struct usb_bus {
 
 #define USB_MAXCHILDREN         (4)     /* This is arbitrary */
 
-typedef struct ep_info_t {
+typedef struct ep_info_t
+{
     uint8_t     cfgno;
     uint8_t     ifnum;
     uint8_t     altno;
@@ -555,7 +570,8 @@ typedef struct ep_info_t {
 /*-----------------------------------------------------------------------------------
  *  USB device structure
  */
-typedef struct usb_device {             /*! USB device structure  \hideinitializer                 */
+typedef struct usb_device               /*! USB device structure  \hideinitializer                 */
+{
     USB_DEV_DESC_T  descriptor;         /*!< Device descriptor. \hideinitializer                    */
 
     int     devnum;                     /*!< Device number on USB bus \hideinitializer              */

@@ -97,7 +97,8 @@ const USB_DEV_ID_T  *usb_match_id(USB_DEV_T *dev, USB_IF_DESC_T *intf,
      *  id->driver_info is the way to create an entry that indicates
      *  that the driver want to examine every device and interface.
      */
-    for (; id->idVendor || id->bDeviceClass || id->bInterfaceClass || id->driver_info; id++) {
+    for (; id->idVendor || id->bDeviceClass || id->bInterfaceClass || id->driver_info; id++)
+    {
         if ((id->match_flags & USB_DEVICE_ID_MATCH_VENDOR) &&
                 (id->idVendor != dev->descriptor.idVendor))
             continue;
@@ -168,22 +169,27 @@ static int  usb_find_interface_driver(USB_DEV_T *dev, USB_IF_DESC_T *intf)
     USB_DRIVER_T        *driver;
     int                 i, found;
 
-    for (tmp = _UsbDriverList.next; tmp != &_UsbDriverList;) { /* search through the driver list */
+    for (tmp = _UsbDriverList.next; tmp != &_UsbDriverList;)   /* search through the driver list */
+    {
         driver = list_entry(tmp, USB_DRIVER_T, driver_list);
         tmp = tmp->next;
 
         id = driver->id_table;
         id = usb_match_id(dev, intf, id);
-        if (id) {
-            if (driver->probe(dev, intf, id) == 0) {
+        if (id)
+        {
+            if (driver->probe(dev, intf, id) == 0)
+            {
                 /*
                  *  Add driver to driver list of this device.
                  */
                 for (found = 0, i = 0; i < dev->driver_cnt; i++)
                     if (dev->driver[i] == driver) found = 1;
 
-                if (!found) {
-                    if (dev->driver_cnt >= MAX_DRIVER_PER_DEV) {
+                if (!found)
+                {
+                    if (dev->driver_cnt >= MAX_DRIVER_PER_DEV)
+                    {
                         USB_error("Driver overrun for one device!\n");
                         return USB_ERR_NOMEM;
                     }
@@ -213,7 +219,8 @@ int  USBH_SubmitUrb(URB_T *urb)
 {
     if (urb && urb->dev)
         return urb->dev->bus->op->submit_urb(urb);
-    else {
+    else
+    {
         return USB_ERR_NODEV;
     }
 }
@@ -281,7 +288,8 @@ static int  usb_start_wait_urb(URB_T *urb, int timeout, int* actual_length)
         return status;
 
 #if 1
-    for (t0 = 0; t0 < 0x100000; t0++) {
+    for (t0 = 0; t0 < 0x100000; t0++)
+    {
         if (get_ctrl_msg_signal())
             break;
     }
@@ -292,7 +300,8 @@ static int  usb_start_wait_urb(URB_T *urb, int timeout, int* actual_length)
         urb->status = 0;
 #else
     t0 = sysGetTicks(TIMER0);
-    while (sysGetTicks(TIMER0) - t0 < timeout) {
+    while (sysGetTicks(TIMER0) - t0 < timeout)
+    {
         if (get_ctrl_msg_signal())
             break;
     }
@@ -303,12 +312,14 @@ static int  usb_start_wait_urb(URB_T *urb, int timeout, int* actual_length)
         urb->status = 0;
 #endif
 
-    if (urb->status == USB_ERR_INPROGRESS) {
+    if (urb->status == USB_ERR_INPROGRESS)
+    {
         /* timeout */
         USB_warning("usb_control/bulk_msg: timeout\n");
         USBH_UnlinkUrb(urb);     /* remove urb safely */
         status = USB_ERR_TIMEOUT;
-    } else
+    }
+    else
         status = urb->status;
 
     if (actual_length)
@@ -425,9 +436,11 @@ int usb_maxpacket(USB_DEV_T *dev, uint32_t pipe, int out)
     if ((ep_addr == 0) || (ep_addr == 0x80))
         return dev->ep_list[0].wMaxPacketSize;
 
-    for (i = 0; i < dev->ep_list_cnt; i++) {
+    for (i = 0; i < dev->ep_list_cnt; i++)
+    {
         if ((dev->ep_list[i].cfgno == dev->act_config) &&
-                (dev->ep_list[i].bEndpointAddress == ep_addr)) {
+                (dev->ep_list[i].bEndpointAddress == ep_addr))
+        {
             return dev->ep_list[i].wMaxPacketSize;
         }
     }
@@ -447,18 +460,21 @@ static int  usb_parse_endpoint(USB_DEV_T *dev, int cfg_value, USB_IF_DESC_T *ifp
     memcpy((uint8_t *)&endpoint, buffer, sizeof(USB_EP_DESC_T));
 
     /* Everything should be fine being passed into here, but we sanity */
-    if (header->bLength > size) {
+    if (header->bLength > size)
+    {
         USB_error("Error! - ran out of descriptors parsing");
         return -1;
     }
 
-    if (header->bDescriptorType != USB_DT_ENDPOINT) {
+    if (header->bDescriptorType != USB_DT_ENDPOINT)
+    {
         USB_warning("Warning! - unexpected descriptor 0x%X, expecting endpoint descriptor, type 0x%X",
                     endpoint.bDescriptorType, USB_DT_ENDPOINT);
         return parsed;
     }
 
-    if (dev->ep_list_cnt < MAX_ENDPOINTS) {
+    if (dev->ep_list_cnt < MAX_ENDPOINTS)
+    {
         ep_info = &dev->ep_list[dev->ep_list_cnt];
         ep_info->cfgno = cfg_value;
         ep_info->ifnum = ifp->bInterfaceNumber;
@@ -467,8 +483,10 @@ static int  usb_parse_endpoint(USB_DEV_T *dev, int cfg_value, USB_IF_DESC_T *ifp
         ep_info->bmAttributes = endpoint.bmAttributes;
         ep_info->bInterval = endpoint.bInterval;
         ep_info->wMaxPacketSize = endpoint.wMaxPacketSize;
-        if ((ep_info->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_BULK) {
-            if (ep_info->wMaxPacketSize > 64) {
+        if ((ep_info->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_BULK)
+        {
+            if (ep_info->wMaxPacketSize > 64)
+            {
                 USB_debug("Endpoint %x wMaxPacketSize is %d bytes, force to change as 64 bytes!\n",
                           endpoint.bEndpointAddress, endpoint.wMaxPacketSize);
                 ep_info->wMaxPacketSize = 64;
@@ -477,7 +495,9 @@ static int  usb_parse_endpoint(USB_DEV_T *dev, int cfg_value, USB_IF_DESC_T *ifp
         dev->ep_list_cnt++;
         //USB_debug("Add endpoint 0x%x - %d %d %d, max_pkt = %d\n", ep_info->bEndpointAddress, ep_info->cfgno,
         //           ep_info->ifnum, ep_info->altno, ep_info->wMaxPacketSize);
-    } else {
+    }
+    else
+    {
         USB_error("Too many endpoints!\n");
     }
 
@@ -487,10 +507,12 @@ static int  usb_parse_endpoint(USB_DEV_T *dev, int cfg_value, USB_IF_DESC_T *ifp
 
     /* Skip over the rest of the Class Specific or Vendor Specific descriptors */
     numskipped = 0;
-    while (size >= sizeof(USB_DESC_HDR_T)) {
+    while (size >= sizeof(USB_DESC_HDR_T))
+    {
         header = (USB_DESC_HDR_T *)buffer;
 
-        if (header->bLength < 2) {
+        if (header->bLength < 2)
+        {
             USB_error("Error! - invalid descriptor length of %d\n", header->bLength);
             return -1;
         }
@@ -527,7 +549,8 @@ static int  usb_parse_interface(USB_DEV_T *dev, int cfg_value, uint8_t *buffer, 
     //HexDumpBuffer("usb_parse_interface", (uint8_t *)buffer, size);
 #endif
 
-    while (size > 0) {
+    while (size > 0)
+    {
         memcpy((char *)&ifp, buffer, USB_DT_INTERFACE_SIZE);
 
         /* Skip over the interface */
@@ -542,10 +565,12 @@ static int  usb_parse_interface(USB_DEV_T *dev, int cfg_value, uint8_t *buffer, 
          *  ¦b parsing interface descriptors ªº¹Lµ{¤¤, ­Yµo²{ class descriptors
          *  ©̠vendor descriptors, ´Nª½±µ skip ¤§, ¤£°µ parsing
          */
-        while (size >= sizeof(USB_DESC_HDR_T)) {
+        while (size >= sizeof(USB_DESC_HDR_T))
+        {
             header = (USB_DESC_HDR_T *)buffer;
 
-            if (header->bLength < 2) {
+            if (header->bLength < 2)
+            {
                 USB_error("Invalid descriptor length of %d\n", header->bLength);
                 return -1;
             }
@@ -565,7 +590,8 @@ static int  usb_parse_interface(USB_DEV_T *dev, int cfg_value, uint8_t *buffer, 
             size -= header->bLength;
         }
 
-        if (numskipped) {
+        if (numskipped)
+        {
             USB_warning("skipped %d class/vendor specific interface descriptors\n", numskipped);
         }
 
@@ -573,21 +599,26 @@ static int  usb_parse_interface(USB_DEV_T *dev, int cfg_value, uint8_t *buffer, 
         header = (USB_DESC_HDR_T *)buffer;
         if ((size >= sizeof(USB_DESC_HDR_T)) &&
                 ((header->bDescriptorType == USB_DT_CONFIG) ||
-                 (header->bDescriptorType == USB_DT_DEVICE))) {
+                 (header->bDescriptorType == USB_DT_DEVICE)))
+        {
             USB_warning("parsing interface - hit an unexpected descriptor!\n");
             return parsed;
         }
 
-        if (ifp.bNumEndpoints > USB_MAXENDPOINTS) {
+        if (ifp.bNumEndpoints > USB_MAXENDPOINTS)
+        {
             USB_warning("Warning - illegal endpoint number %d\n", ifp.bNumEndpoints);
             return -1;
         }
 
         /* fixed by YCHuang, 2002.03.13, ifp.bNumEndpoints number may be zero */
-        if (ifp.bNumEndpoints > 0) {
-            for (i = 0; i < ifp.bNumEndpoints; i++) {
+        if (ifp.bNumEndpoints > 0)
+        {
+            for (i = 0; i < ifp.bNumEndpoints; i++)
+            {
                 header = (USB_DESC_HDR_T *)buffer;
-                if (header->bLength > size) {
+                if (header->bLength > size)
+                {
                     USB_error("Error - ran out of descriptors parsing");
                     return -1;
                 }
@@ -623,7 +654,8 @@ static int  usb_parse_configuration(USB_DEV_T *dev, USB_CONFIG_DESC_T *config, u
     memcpy(config, buffer, USB_DT_CONFIG_SIZE);
     size = config->wTotalLength;
 
-    if (config->bNumInterfaces > USB_MAXINTERFACES) {
+    if (config->bNumInterfaces > USB_MAXINTERFACES)
+    {
         USB_warning("Warning - too many interfaces\n");
         return -1;
     }
@@ -631,16 +663,19 @@ static int  usb_parse_configuration(USB_DEV_T *dev, USB_CONFIG_DESC_T *config, u
     buffer += config->bLength;
     size -= config->bLength;
 
-    for (i = 0; i < config->bNumInterfaces; i++) {
+    for (i = 0; i < config->bNumInterfaces; i++)
+    {
         int numskipped;
 
         /* Skip over the rest of the Class Specific or Vendor */
         /*  Specific descriptors */
         numskipped = 0;
-        while (size >= sizeof(USB_DESC_HDR_T)) {
+        while (size >= sizeof(USB_DESC_HDR_T))
+        {
             header = (USB_DESC_HDR_T *)buffer;
 
-            if ((header->bLength > size) || (header->bLength < 2)) {
+            if ((header->bLength > size) || (header->bLength < 2))
+            {
                 USB_error("Error - invalid descriptor length of %d\n", header->bLength);
                 return -1;
             }
@@ -660,7 +695,8 @@ static int  usb_parse_configuration(USB_DEV_T *dev, USB_CONFIG_DESC_T *config, u
             size -= header->bLength;
         } /* end of while */
 
-        if (numskipped) {
+        if (numskipped)
+        {
             USB_warning("skipped %d class/vendor specific endpoint descriptors\n", numskipped);
         }
 
@@ -700,20 +736,23 @@ void usbh_disconnect_device(USB_DEV_T **pdev)
 
     usbh_free_dev_urbs(dev);
 
-    for (i = 0; i < dev->driver_cnt; i++) {
+    for (i = 0; i < dev->driver_cnt; i++)
+    {
         driver = dev->driver[i];
         driver->disconnect(dev);
     }
 
     /* Free up all the children.. */
-    for (i = 0; i < USB_MAXCHILDREN; i++) {
+    for (i = 0; i < USB_MAXCHILDREN; i++)
+    {
         USB_DEV_T **child = dev->children + i;
         if (*child)
             usbh_disconnect_device(child);
     }
 
     /* Free the device number and remove the /proc/bus/usb entry */
-    if (dev->devnum > 0) {
+    if (dev->devnum > 0)
+    {
         g_devmap &= ~(1 << dev->devnum);
     }
 
@@ -736,11 +775,13 @@ void usbh_connect_device(USB_DEV_T *dev)
 
     dev->descriptor.bMaxPacketSize0 = 8;  /* Start off at 8 bytes  */
 
-    for (devnum = 1; devnum < 31; devnum++) {
+    for (devnum = 1; devnum < 31; devnum++)
+    {
         if ((g_devmap & (1 << devnum)) == 0)
             break;
     }
-    if (devnum > 31) {
+    if (devnum > 31)
+    {
         USB_error("Serious devnum error!\n");
         devnum = 31;
     }
@@ -786,7 +827,8 @@ int  USBH_GetDescriptor(USB_DEV_T *dev, uint8_t type, uint8_t index,
 
     memset(buf, 0, size);     /* Make sure we parse really received data */
 
-    while (i--) {
+    while (i--)
+    {
         if ((result = USBH_SendCtrlMsg(dev, usb_rcvctrlpipe(dev, 0),
                                        USB_REQ_GET_DESCRIPTOR, USB_DIR_IN,
                                        (type << 8) + index, 0, buf, size, HZ * GET_TIMEOUT)) > 0 || result == USB_ERR_PIPE)
@@ -960,12 +1002,14 @@ static int  usbh_settle_configuration(USB_DEV_T *dev)
     USB_CONFIG_DESC_T *desc;
     uint32_t    stack_buff[384];
 
-    if (dev->descriptor.bNumConfigurations > USB_MAXCONFIG) {
+    if (dev->descriptor.bNumConfigurations > USB_MAXCONFIG)
+    {
         USB_warning("Too many configurations\n");
         return USB_ERR_INVAL;
     }
 
-    if (dev->descriptor.bNumConfigurations != 1) {
+    if (dev->descriptor.bNumConfigurations != 1)
+    {
         USB_warning("This driver does not support multi-configuration devices!\n");
         return USB_ERR_INVAL;
     }
@@ -973,14 +1017,17 @@ static int  usbh_settle_configuration(USB_DEV_T *dev)
     buffer = (uint8_t *)&stack_buff[0];
     desc = (USB_CONFIG_DESC_T *)buffer;
 
-    for (cfgno = 0; cfgno < dev->descriptor.bNumConfigurations; cfgno++) {
+    for (cfgno = 0; cfgno < dev->descriptor.bNumConfigurations; cfgno++)
+    {
         /* We grab the first 8 bytes so we know how long the whole */
         /*  configuration is */
         result = USBH_GetDescriptor(dev, USB_DT_CONFIG, cfgno, buffer, 8);
-        if (result < 8) {
+        if (result < 8)
+        {
             if (result < 0)
                 USB_error("Unable to get descriptor\n");
-            else {
+            else
+            {
                 USB_error("Config descriptor too short (expected %i, got %i)\n", 8, result);
                 result = USB_ERR_INVAL;
             }
@@ -990,19 +1037,22 @@ static int  usbh_settle_configuration(USB_DEV_T *dev)
         /* Get the full buffer */
         length = desc->wTotalLength;
 
-        if (length > 384) {
+        if (length > 384)
+        {
             length = 384;
             USB_error("Config descriptor is too large. Read 384 bytes only. This may cause lost of information!\n");
         }
 
         /* Now that we know the length, get the whole thing */
         result = USBH_GetDescriptor(dev, USB_DT_CONFIG, cfgno, buffer, length);
-        if (result < 0) {
+        if (result < 0)
+        {
             USB_error("Couldn't get all of config descriptors\n");
             goto err;
         }
 
-        if (result < length) {
+        if (result < length)
+        {
             USB_error("Config descriptor too short (expected %d, got %d)\n", length, result);
             result = USB_ERR_INVAL;
             goto err;
@@ -1011,9 +1061,11 @@ static int  usbh_settle_configuration(USB_DEV_T *dev)
         /*
          * Set first configuration as the default configuration
          */
-        if (cfgno == 0) {
+        if (cfgno == 0)
+        {
             result = USBH_SetConfiguration(dev, desc->bConfigurationValue);
-            if (result) {
+            if (result)
+            {
                 USB_error("Failed to set device %d default configuration (error=%d)\n", dev->devnum, result);
                 goto err;
             }
@@ -1024,9 +1076,12 @@ static int  usbh_settle_configuration(USB_DEV_T *dev)
 #endif
 
         result = usb_parse_configuration(dev, desc, buffer);
-        if (result > 0) {
+        if (result > 0)
+        {
             USB_warning("Descriptor data left\n");
-        } else if (result < 0) {
+        }
+        else if (result < 0)
+        {
             USB_warning("usb_parse_configuration error\n");
             result = USB_ERR_INVAL;
             goto err;
@@ -1055,16 +1110,22 @@ int  usbh_translate_string(USB_DEV_T *dev, int index, char *buf, int size)
     buf[0] = 0;
 
     /* get langid for strings if it's not yet known */
-    if (!dev->have_langid) {
+    if (!dev->have_langid)
+    {
         err = usbh_get_string_descriptor(dev, 0, 0, tbuf, 4);
-        if (err < 0) {
+        if (err < 0)
+        {
             USB_error("usbh_translate_string - error getting string descriptor 0 (error=%d)\n", err);
             goto errout;
-        } else if (tbuf[0] < 4) {
+        }
+        else if (tbuf[0] < 4)
+        {
             USB_error("usbh_translate_string - string descriptor 0 too short\n");
             err = USB_ERR_INVAL;
             goto errout;
-        } else {
+        }
+        else
+        {
             dev->have_langid = -1;
             dev->string_langid = tbuf[2] | (tbuf[3]<< 8);
             /* always use the first langid listed */
@@ -1074,7 +1135,8 @@ int  usbh_translate_string(USB_DEV_T *dev, int index, char *buf, int size)
     }
 
     /* YCHuang, added for W99683, prevent halt */
-    if ((dev->descriptor.idVendor == 0x416) && (dev->descriptor.idProduct == 0x9683)) {
+    if ((dev->descriptor.idVendor == 0x416) && (dev->descriptor.idProduct == 0x9683))
+    {
         USB_warning("??? Skip usbh_get_string_descriptor, 255\n");
         goto errout;
     }
@@ -1089,7 +1151,8 @@ int  usbh_translate_string(USB_DEV_T *dev, int index, char *buf, int size)
         goto errout;
 
     size--;                     /* leave room for trailing NULL char in output buffer */
-    for (idx = 0, u = 2; u < err; u += 2) {
+    for (idx = 0, u = 2; u < err; u += 2)
+    {
         if (idx >= size)
             break;
         if (tbuf[u+1])           /* high byte */
@@ -1129,7 +1192,8 @@ int  usbh_settle_new_device(USB_DEV_T *dev)
     dev->ep_list_cnt = 1;
 
     err = usbh_set_address(dev);
-    if (err < 0) {
+    if (err < 0)
+    {
         USB_error("USB device not accepting new address=%d (error=%d)\n", dev->devnum, err);
         g_devmap &= ~(1 << dev->devnum);
         dev->devnum = -1;
@@ -1141,7 +1205,8 @@ int  usbh_settle_new_device(USB_DEV_T *dev)
     memset((char *)&dev->descriptor, 0, 8);
 
     err = USBH_GetDescriptor(dev, USB_DT_DEVICE, 0, &dev->descriptor, 8);
-    if (err < 8) {
+    if (err < 8)
+    {
         USB_debug("USBH_GetDescriptor failed!!\n");
         if (err < 0)
             USB_error("USB device not responding, giving up (error=%d)\n", err);
@@ -1155,7 +1220,8 @@ int  usbh_settle_new_device(USB_DEV_T *dev)
     dev->ep_list[0].wMaxPacketSize = dev->descriptor.bMaxPacketSize0;
 
     err = usbh_get_device_descriptor(dev);
-    if (err < sizeof(dev->descriptor)) {
+    if (err < sizeof(dev->descriptor))
+    {
         if (err < 0)
             USB_error("unable to get device descriptor (error=%d)\n", err);
         else
@@ -1172,7 +1238,8 @@ int  usbh_settle_new_device(USB_DEV_T *dev)
 #endif
 
     err = usbh_settle_configuration(dev);
-    if (err < 0) {
+    if (err < 0)
+    {
         USB_error("Unable to get device %d configuration (error=%d)\n", dev->devnum, err);
         g_devmap &= ~(1 << dev->devnum);
         dev->devnum = -1;
@@ -1233,7 +1300,8 @@ int USBH_Open(void)
 #ifdef SUPPORT_CDC_CLASS
 #endif
 
-    if (usbh_init_ohci() < 0) {
+    if (usbh_init_ohci() < 0)
+    {
         USB_debug("OHCI init failed!\n");
         return -1;
     }
@@ -1271,8 +1339,10 @@ int32_t USBH_Suspend(void)
     USB_DEV_T   *dev;
 
     /* Set feature Device Remote Wakeup to all devices */
-    for (i = 0; i < DEV_MAX_NUM; i++) {
-        if (dev_alloc_mark[i]) {
+    for (i = 0; i < DEV_MAX_NUM; i++)
+    {
+        if (dev_alloc_mark[i])
+        {
             dev = &g_dev_pool[i];
             USBH_SendCtrlMsg(dev, usb_sndctrlpipe(dev, 0),
                              USB_REQ_SET_FEATURE, 0x00, 0x0001, 0x0000, NULL, 0x0000, HZ * SET_TIMEOUT);

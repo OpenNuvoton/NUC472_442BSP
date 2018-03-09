@@ -25,11 +25,15 @@ void PDMA_IRQHandler(void)
 {
     uint32_t u32Status = PDMA_GET_INT_STATUS();
 
-    if (u32Status & 0x1) { /* abort */
+    if (u32Status & 0x1)   /* abort */
+    {
         if (PDMA_GET_ABORT_STS() & 0x4)
             PDMA_CLR_ABORT_FLAG(PDMA_ABTSTS_ABTIF_Msk);
-    } else if (u32Status & 0x2) {
-        if (PDMA_GET_TD_STS() & 0x2) {          /* channel 1 done, Tx */
+    }
+    else if (u32Status & 0x2)
+    {
+        if (PDMA_GET_TD_STS() & 0x2)            /* channel 1 done, Tx */
+        {
 
             /* Reset PDMA scatter-gather table */
             PDMA_ResetTxSGTable(u8PDMATxIdx);
@@ -75,7 +79,8 @@ void PDMA_WriteTxSGTable(void)
     uint16_t i;
 
     /* Use PDMA_TXBUFFER_CNT scatter-gather tables and link with each other */
-    for(i=0; i<PDMA_TXBUFFER_CNT; i++) {
+    for(i=0; i<PDMA_TXBUFFER_CNT; i++)
+    {
         DMA_TXDESC[i].ctl = ((BUFF_LEN-1)<<PDMA_DSCT_CTL_TXCNT_Pos)|PDMA_WIDTH_32|PDMA_SAR_INC|PDMA_DAR_FIX|PDMA_REQ_SINGLE|PDMA_OP_SCATTER;
         DMA_TXDESC[i].endsrc = (uint32_t)&PcmPlayBuff[i] + BUFF_LEN * 4;
         DMA_TXDESC[i].enddest = (uint32_t)&I2S1->TX;

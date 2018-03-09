@@ -41,8 +41,10 @@ static int  uac_parse_cs_interface(UAC_DEV_T *audev, USB_IF_DESC_T *ifp, uint8_t
 
     hdr = (AC_IF_HDR_T *)buffer;
 
-    if (ifp->bInterfaceSubClass == SUBCLS_AUDIOCONTROL) {
-        switch (hdr->bDescriptorSubtype) {
+    if (ifp->bInterfaceSubClass == SUBCLS_AUDIOCONTROL)
+    {
+        switch (hdr->bDescriptorSubtype)
+        {
         case AC_DESCRIPTOR_UNDEFINED:
             USBAS_DBGMSG("AC: AC_DESCRIPTOR_UNDEFINED\n");
             break;
@@ -54,13 +56,18 @@ static int  uac_parse_cs_interface(UAC_DEV_T *audev, USB_IF_DESC_T *ifp, uint8_t
         case INPUT_TERMINAL:
             USBAS_DBGMSG("AC: INPUT_TERMINAL\n");
             ac_itd = (AC_IT_T *)buffer;
-            if (ac_itd->wTerminalType == UAC_TT_USB_STREAMING) {
+            if (ac_itd->wTerminalType == UAC_TT_USB_STREAMING)
+            {
                 USBAS_DBGMSG("SPEAKER USB streaming terminal found, ID=0x%x\n", ac_itd->bTerminalID);
                 uac_info->it_usbs = ac_itd;
-            } else if ((ac_itd->wTerminalType & 0x200) == 0x200) {
+            }
+            else if ((ac_itd->wTerminalType & 0x200) == 0x200)
+            {
                 USBAS_DBGMSG("MICROPHONE input terminal found, ID=0x%x\n", ac_itd->bTerminalID);
                 uac_info->it_microphone = ac_itd;
-            } else {
+            }
+            else
+            {
                 USBAS_DBGMSG("Unsupported INPUT TERMINAL, ignore it!\n");
             }
             USBAS_DBGMSG("      bTerminalID: 0%x\n", ac_itd->bTerminalID);
@@ -73,13 +80,18 @@ static int  uac_parse_cs_interface(UAC_DEV_T *audev, USB_IF_DESC_T *ifp, uint8_t
         case OUTPUT_TERMINAL:
             USBAS_DBGMSG("AC: OUTPUT_TERMINAL\n");
             ac_otd = (AC_OT_T *)buffer;
-            if (ac_otd->wTerminalType == UAC_TT_USB_STREAMING) {
+            if (ac_otd->wTerminalType == UAC_TT_USB_STREAMING)
+            {
                 USBAS_DBGMSG("MICROPHONE USB streaming terminal found, ID=0x%x\n", ac_otd->bTerminalID);
                 uac_info->ot_usbs = ac_otd;
-            } else if ((ac_otd->wTerminalType & 0x300) == 0x300) {
+            }
+            else if ((ac_otd->wTerminalType & 0x300) == 0x300)
+            {
                 USBAS_DBGMSG("SPEAKER output terminal found, ID=0x%x\n", ac_otd->bTerminalID);
                 uac_info->ot_speaker = ac_otd;
-            } else {
+            }
+            else
+            {
                 USBAS_DBGMSG("Unsupported OUTPUT TERMINAL, ignore it!\n");
             }
             USBAS_DBGMSG("      bTerminalID: 0%x\n", ac_otd->bTerminalID);
@@ -108,10 +120,13 @@ static int  uac_parse_cs_interface(UAC_DEV_T *audev, USB_IF_DESC_T *ifp, uint8_t
 
         case FEATURE_UNIT:
             USBAS_DBGMSG("AC: FEATURE_UNIT\n");
-            if (fu_cnt < MAX_FEATURE_UNIT) {
+            if (fu_cnt < MAX_FEATURE_UNIT)
+            {
                 funit[fu_cnt] = (AC_FU_T *)buffer;
                 fu_cnt++;
-            } else {
+            }
+            else
+            {
                 USBAS_ERRMSG("Too many FEATURE UNITs, information may be lost!\n");
             }
 #ifdef USBAS_DEBUG
@@ -138,8 +153,10 @@ static int  uac_parse_cs_interface(UAC_DEV_T *audev, USB_IF_DESC_T *ifp, uint8_t
         }
     }
 
-    if (ifp->bInterfaceSubClass == SUBCLS_AUDIOSTREAMING) {
-        switch (hdr->bDescriptorSubtype) {
+    if (ifp->bInterfaceSubClass == SUBCLS_AUDIOSTREAMING)
+    {
+        switch (hdr->bDescriptorSubtype)
+        {
         case AS_DESCRIPTOR_UNDEFINED:
             USBAS_DBGMSG("AS: AS_DESCRIPTOR_UNDEFINED\n");
             break;
@@ -175,11 +192,14 @@ static int  uac_parse_interface(UAC_DEV_T *audev, uint8_t *buffer, int size)
     USB_EP_DESC_T   * ep;
     int             retval, parsed = 0;
 
-    while (size > 0) {
-        while (size >= sizeof(USB_DESC_HDR_T)) {
+    while (size > 0)
+    {
+        while (size >= sizeof(USB_DESC_HDR_T))
+        {
             header = (USB_DESC_HDR_T *)buffer;
 
-            if (header->bLength < 2) {
+            if (header->bLength < 2)
+            {
                 USBAS_DBGMSG("Invalid descriptor length of %d\n", header->bLength);
                 return -1;
             }
@@ -199,7 +219,8 @@ static int  uac_parse_interface(UAC_DEV_T *audev, uint8_t *buffer, int size)
             size -= header->bLength;
         }
 
-        if (header->bDescriptorType == USB_DT_INTERFACE) {
+        if (header->bDescriptorType == USB_DT_INTERFACE)
+        {
             ifp = (USB_IF_DESC_T *)buffer;
 
             USBAS_DBGMSG("DT_INTERFACE\n");
@@ -211,7 +232,9 @@ static int  uac_parse_interface(UAC_DEV_T *audev, uint8_t *buffer, int size)
             buffer += ifp->bLength;
             parsed += ifp->bLength;
             size -= ifp->bLength;
-        } else if (header->bDescriptorType == CS_INTERFACE) {
+        }
+        else if (header->bDescriptorType == CS_INTERFACE)
+        {
             retval = uac_parse_cs_interface(audev, uac_info->last_ifd, buffer, size);
             if (retval < 0)
                 return retval;
@@ -219,21 +242,28 @@ static int  uac_parse_interface(UAC_DEV_T *audev, uint8_t *buffer, int size)
             buffer += retval;
             parsed += retval;
             size -= retval;
-        } else if (header->bDescriptorType == CS_ENDPOINT) {
+        }
+        else if (header->bDescriptorType == CS_ENDPOINT)
+        {
             USBAS_DBGMSG("CS_ENDPOINT\n");
             buffer += header->bLength;
             parsed += header->bLength;
             size -= header->bLength;
-        } else if (header->bDescriptorType == USB_DT_ENDPOINT) {
+        }
+        else if (header->bDescriptorType == USB_DT_ENDPOINT)
+        {
             ep = (USB_EP_DESC_T *)header;
             USBAS_DBGMSG("USB_DT_ENDPOINT\n");
             USBAS_DBGMSG("      bEndpointAddress: 0x%x, %s\n", ep->bEndpointAddress, (ep->bEndpointAddress & 0x80) ? "IN" : "OUT");
             USBAS_DBGMSG("      wMaxPacketSize: %d\n", ep->wMaxPacketSize);
             USBAS_DBGMSG("      bInterval: %d\n", ep->bInterval);
 
-            if ((ep->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_ISOC) {
-                if (ep->bEndpointAddress & 0x80) { /* is IN endpoint? */
-                    if (ep->wMaxPacketSize > AU_IN_MAX_PKTSZ) {
+            if ((ep->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_ISOC)
+            {
+                if (ep->bEndpointAddress & 0x80)   /* is IN endpoint? */
+                {
+                    if (ep->wMaxPacketSize > AU_IN_MAX_PKTSZ)
+                    {
                         USBAS_ERRMSG("IN endpoint packet size is larger than AU_IN_MAX_PKTSZ setting!\n");
                         return UAC_RET_DRV_NOT_SUPPORTED;
                     }
@@ -243,8 +273,11 @@ static int  uac_parse_interface(UAC_DEV_T *audev, uint8_t *buffer, int size)
                     if ((uac_info->last_ft->bFormatType == FORMAT_TYPE_I) ||
                             (uac_info->last_ft->bFormatType == FORMAT_TYPE_III))
                         uac_info->ft_rec = uac_info->last_ft;
-                } else {
-                    if (ep->wMaxPacketSize > AU_OUT_MAX_PKTSZ) {
+                }
+                else
+                {
+                    if (ep->wMaxPacketSize > AU_OUT_MAX_PKTSZ)
+                    {
                         USBAS_ERRMSG("OUT endpoint packet size is larger than AU_OUT_MAX_PKTSZ setting!\n");
                         return UAC_RET_DRV_NOT_SUPPORTED;
                     }
@@ -260,7 +293,9 @@ static int  uac_parse_interface(UAC_DEV_T *audev, uint8_t *buffer, int size)
             buffer += header->bLength;
             parsed += header->bLength;
             size -= header->bLength;
-        } else {
+        }
+        else
+        {
             USBAS_DBGMSG("Unexpected error occurred on parsing interface descriptor!\n");
             break;
         }
@@ -293,13 +328,15 @@ int  uac_config_parser(UAC_DEV_T *audev)
     /*------------------------------------------------------------------*/
 
     result = USBH_GetDescriptor(udev, USB_DT_CONFIG, 0, buffer, 8);
-    if (result < 8) {
+    if (result < 8)
+    {
         result = USB_ERR_INVAL;
         return -1;
     }
 
     length = config->wTotalLength;
-    if (length > MAX_CFG_DESC_SIZE) {
+    if (length > MAX_CFG_DESC_SIZE)
+    {
         USBAS_ERRMSG("The Configuration descriptor of Audio Class device is too large.\n");
         USBAS_ERRMSG("Please enlarge MAX_CFG_DESC_SIZE in usbh_uac.h to be larger than %d.\n", length);
         return -1;
@@ -307,7 +344,8 @@ int  uac_config_parser(UAC_DEV_T *audev)
 
     /* Now that we know the length, get the whole thing */
     result = USBH_GetDescriptor(udev, USB_DT_CONFIG, 0, buffer, length);
-    if (result != length) {
+    if (result != length)
+    {
         USBAS_DBGMSG("Failed to get configuration descriptor!\n");
         return -1;
     }
@@ -321,13 +359,16 @@ int  uac_config_parser(UAC_DEV_T *audev)
     buffer += config->bLength;
     size = config->wTotalLength - config->bLength;
 
-    for (i = 0; i < config->bNumInterfaces; i++) {
+    for (i = 0; i < config->bNumInterfaces; i++)
+    {
         /* Skip over the rest of the Class Specific or Vendor */
         /*  Specific descriptors */
-        while (size >= sizeof(USB_DESC_HDR_T)) {
+        while (size >= sizeof(USB_DESC_HDR_T))
+        {
             header = (USB_DESC_HDR_T *)buffer;
 
-            if ((header->bLength > size) || (header->bLength < 2)) {
+            if ((header->bLength > size) || (header->bLength < 2))
+            {
                 USBAS_DBGMSG("Error - invalid descriptor length of %d\n", header->bLength);
                 return -1;
             }
@@ -356,20 +397,25 @@ int  uac_config_parser(UAC_DEV_T *audev)
         size -= result;
     }
 
-    if ((uac_info->gen_play == NULL) && (uac_info->gen_rec == NULL)) {
+    if ((uac_info->gen_play == NULL) && (uac_info->gen_rec == NULL))
+    {
         USBAS_ERRMSG("Audio stream interface not found!\n");
         return -1;
     }
 
-    for (i = 0; i < fu_cnt; i++) {
-        if (funit[i]->bSourceID == uac_info->it_microphone->bTerminalID) {
+    for (i = 0; i < fu_cnt; i++)
+    {
+        if (funit[i]->bSourceID == uac_info->it_microphone->bTerminalID)
+        {
             uac_info->fu_rec = funit[i];
             break;
         }
     }
 
-    for (i = 0; i < fu_cnt; i++) {
-        if (funit[i]->bUnitID == uac_info->ot_speaker->bSourceID) {
+    for (i = 0; i < fu_cnt; i++)
+    {
+        if (funit[i]->bUnitID == uac_info->ot_speaker->bSourceID)
+        {
             uac_info->fu_play = funit[i];
             break;
         }
@@ -395,13 +441,17 @@ int uac_check_fu_ctrl(UAC_INFO_T  *uac_info, uint8_t target, int channel, int co
     if (channel == 0)
         return 0;          /* always fine for master channel */
 
-    if (target == UAC_SPEAKER) {
+    if (target == UAC_SPEAKER)
+    {
         fu = uac_info->fu_play;
         ft = uac_info->ft_play;
-    } else if (target == UAC_MICROPHONE) {
+    }
+    else if (target == UAC_MICROPHONE)
+    {
         fu = uac_info->fu_rec;
         ft = uac_info->ft_rec;
-    } else
+    }
+    else
         return UAC_RET_INVALID;
 
     if (!fu || !ft)

@@ -99,7 +99,8 @@ static int  set_data_flash_base(uint32_t u32DFBA)
 {
     uint32_t   au32Config[4];
 
-    if (FMC_ReadConfig(au32Config, 4) < 0) {
+    if (FMC_ReadConfig(au32Config, 4) < 0)
+    {
         printf("\nRead User Config failed!\n");
         return -1;
     }
@@ -126,11 +127,13 @@ int32_t fill_data_pattern(uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t u
     uint32_t u32Addr;
 
 #ifdef USING_WRITE_64
-    for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; u32Addr += 8) {
+    for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; u32Addr += 8)
+    {
         FMC_Write_64(u32Addr, u32Pattern, u32Pattern);
     }
 #else
-    for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; u32Addr += 4) {
+    for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; u32Addr += 4)
+    {
         FMC_Write(u32Addr, u32Pattern);
     }
 #endif
@@ -144,10 +147,12 @@ int32_t  verify_data(uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t u32Pat
     uint32_t    u32Addr;
     uint32_t    u32data0, u32data1;
 
-    for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; u32Addr += 8) {
+    for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; u32Addr += 8)
+    {
         u32data0 = u32data1 = 0;
         FMC_Read_64(u32Addr, &u32data0, &u32data1);
-        if ((u32data0 != u32Pattern) || (u32data1 != u32Pattern)) {
+        if ((u32data0 != u32Pattern) || (u32data1 != u32Pattern))
+        {
             printf("\nFMC_Read_64 verify failed at address 0x%x, read=0x%x 0x%x, expect=0x%x!\n", u32Addr, u32data0, u32data1, u32Pattern);
             return -1;
         }
@@ -163,9 +168,11 @@ int32_t  verify_data(uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t u32Pat
     if (u32StartAddr == UHB_BASE)
         u32EndAddr = UHB_END;
 
-    for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; u32Addr += 4) {
+    for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; u32Addr += 4)
+    {
         u32data = FMC_Read(u32Addr, &u32data);
-        if (u32data != u32Pattern) {
+        if (u32data != u32Pattern)
+        {
             printf("\nFMC_Read data verify failed at address 0x%x, read=0x%x, expect=0x%x\n", u32Addr, u32data, u32Pattern);
             return -1;
         }
@@ -179,43 +186,50 @@ int32_t  flash_test(uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t u32Patt
 {
     uint32_t    u32Addr;
 
-    for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; u32Addr += FMC_FLASH_PAGE_SIZE) {
+    for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; u32Addr += FMC_FLASH_PAGE_SIZE)
+    {
         printf("    Flash test address: 0x%x    \r", u32Addr);
 
         // Erase page
-        if (FMC_Erase(u32Addr) < 0) {
+        if (FMC_Erase(u32Addr) < 0)
+        {
             printf("\nPage 0x%x erase failed!\n", u32Addr);
             return -1;
         }
 
         // Verify if page contents are all 0xFFFFFFFF
-        if (verify_data(u32Addr, u32Addr + FMC_FLASH_PAGE_SIZE, 0xFFFFFFFF) < 0) {
+        if (verify_data(u32Addr, u32Addr + FMC_FLASH_PAGE_SIZE, 0xFFFFFFFF) < 0)
+        {
             printf("\nPage 0x%x erase verify failed!\n", u32Addr);
             return -1;
         }
 
         // Write test pattern to fill the whole page
-        if (fill_data_pattern(u32Addr, u32Addr + FMC_FLASH_PAGE_SIZE, u32Pattern) < 0) {
+        if (fill_data_pattern(u32Addr, u32Addr + FMC_FLASH_PAGE_SIZE, u32Pattern) < 0)
+        {
             printf("Failed to write page 0x%x!\n", u32Addr);
             FMC_Erase(u32Addr);
             return -1;
         }
 
         // Verify if page contents are all equal to test pattern
-        if (verify_data(u32Addr, u32Addr + FMC_FLASH_PAGE_SIZE, u32Pattern) < 0) {
+        if (verify_data(u32Addr, u32Addr + FMC_FLASH_PAGE_SIZE, u32Pattern) < 0)
+        {
             printf("\nData verify failed!\n ");
             FMC_Erase(u32Addr);
             return -1;
         }
 
         // Erase page
-        if (FMC_Erase(u32Addr) < 0) {
+        if (FMC_Erase(u32Addr) < 0)
+        {
             printf("\nPage 0x%x erase failed!\n", u32Addr);
             return -1;
         }
 
         // Verify if page contents are all 0xFFFFFFFF
-        if (verify_data(u32Addr, u32Addr + FMC_FLASH_PAGE_SIZE, 0xFFFFFFFF) < 0) {
+        if (verify_data(u32Addr, u32Addr + FMC_FLASH_PAGE_SIZE, 0xFFFFFFFF) < 0)
+        {
             printf("\nPage 0x%x erase verify failed!\n", u32Addr);
             return -1;
         }
@@ -245,7 +259,8 @@ int main()
 
     /* Read Company ID */
     u32Data = FMC_ReadCID();
-    if (u32Data != 0xda) {
+    if (u32Data != 0xda)
+    {
         printf("Wrong CID: 0x%x\n", u32Data);
         goto lexit;
     }
@@ -253,7 +268,8 @@ int main()
     /*
      *  Enable Data Flash and set Data Flash base address as DATA_FLASH_TEST_BASE.
      */
-    if (set_data_flash_base(DATA_FLASH_TEST_BASE) < 0) {
+    if (set_data_flash_base(DATA_FLASH_TEST_BASE) < 0)
+    {
         printf("Failed to set Data Flash base address!\n");
         goto lexit;
     }
@@ -268,7 +284,8 @@ int main()
     printf("  Boot Mode .................................. ");
     if (FMC_GetBootSource() == IS_BOOT_FROM_APROM)
         printf("[APROM]\n");
-    else {
+    else
+    {
         printf("[LDROM]\n");
         printf("  WARNING: The driver sample code must execute in AP mode!\n");
         goto lexit;
@@ -314,7 +331,8 @@ int main()
 
     printf("\n\nLDROM test =>\n");
     FMC_ENABLE_LD_UPDATE();
-    if (flash_test(FMC_LDROM_BASE, FMC_LDROM_END, TEST_PATTERN) < 0) {
+    if (flash_test(FMC_LDROM_BASE, FMC_LDROM_END, TEST_PATTERN) < 0)
+    {
         printf("\n\nLDROM test failed!\n");
         goto lexit;
     }
@@ -322,14 +340,16 @@ int main()
 
     printf("\n\nAPROM test =>\n");
     FMC_ENABLE_AP_UPDATE();
-    if (flash_test(APROM_TEST_BASE, DATA_FLASH_TEST_BASE, TEST_PATTERN) < 0) {
+    if (flash_test(APROM_TEST_BASE, DATA_FLASH_TEST_BASE, TEST_PATTERN) < 0)
+    {
         printf("\n\nAPROM test failed!\n");
         goto lexit;
     }
     FMC_DISABLE_AP_UPDATE();
 
     printf("\n\nData Flash test =>\n");
-    if (flash_test(DATA_FLASH_TEST_BASE, DATA_FLASH_TEST_END, TEST_PATTERN) < 0) {
+    if (flash_test(DATA_FLASH_TEST_BASE, DATA_FLASH_TEST_END, TEST_PATTERN) < 0)
+    {
         printf("\n\nUHB test failed!\n");
         goto lexit;
     }

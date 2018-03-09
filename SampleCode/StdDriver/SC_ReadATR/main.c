@@ -109,14 +109,16 @@ int main(void)
     // Activate slot 0
     retval = SCLIB_Activate(5, FALSE);
 
-    if(retval == SCLIB_SUCCESS) {
+    if(retval == SCLIB_SUCCESS)
+    {
         SCLIB_GetCardInfo(5, &s_info);
         printf("ATR: ");
         for(i = 0; i < s_info.ATR_Len; i++)
             printf("%02x ", s_info.ATR_Buf[i]);
         printf("\n");
 
-    } else
+    }
+    else
         printf("Smartcard activate failed\n");
 
     while(1);

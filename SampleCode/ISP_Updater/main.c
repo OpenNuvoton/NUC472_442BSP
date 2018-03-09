@@ -192,12 +192,16 @@ void  do_dir()
         return;
 
     p1 = s1 = s2 = 0;
-    for (; ;) {
+    for (; ;)
+    {
         res = f_readdir(&dir, &Finfo);
         if ((res != FR_OK) || !Finfo.fname[0]) break;
-        if (Finfo.fattrib & AM_DIR) {
+        if (Finfo.fattrib & AM_DIR)
+        {
             s2++;
-        } else {
+        }
+        else
+        {
             s1++;
             p1 += Finfo.fsize;
         }
@@ -230,13 +234,16 @@ int  program_flash_page(uint32_t page_addr, uint32_t *buff, int count)
 
     p = buff;
     FMC_Erase(page_addr);
-    for (addr = page_addr; addr < page_addr+count; addr += 4, p++) {
+    for (addr = page_addr; addr < page_addr+count; addr += 4, p++)
+    {
         FMC_Write(addr, *p);
     }
 
     p = buff;
-    for (addr = page_addr; addr < page_addr+count; addr += 4, p++) {
-        if (FMC_Read(addr) != *p) {
+    for (addr = page_addr; addr < page_addr+count; addr += 4, p++)
+    {
+        if (FMC_Read(addr) != *p)
+        {
             printf("Verify failed at 0x%x, read:0x%x, epect:0x%x\n", addr, FMC_Read(addr), *p);
             return -1;
         }
@@ -259,22 +266,29 @@ int isp_update_by_usb()
 #endif
     do_dir();
 
-    if (f_open(&file1, FIRMWARE_FILE_NAME, FA_OPEN_EXISTING | FA_READ)) {
+    if (f_open(&file1, FIRMWARE_FILE_NAME, FA_OPEN_EXISTING | FA_READ))
+    {
         printf("Firmware %s file not found.\n", FIRMWARE_FILE_NAME);
-    } else {
+    }
+    else
+    {
         printf("Firmare file found, start update firmware...\n");
         /*
          *  Update APROM
          */
-        for (addr = 0; ; addr += FMC_FLASH_PAGE_SIZE) {
+        for (addr = 0; ; addr += FMC_FLASH_PAGE_SIZE)
+        {
             cnt = FMC_FLASH_PAGE_SIZE;
             res = f_read(&file1, _Buff, cnt, &cnt);
-            if ((res == FR_OK) && cnt) {
-                if (program_flash_page(addr, (uint32_t *)_Buff, cnt) != 0) {
+            if ((res == FR_OK) && cnt)
+            {
+                if (program_flash_page(addr, (uint32_t *)_Buff, cnt) != 0)
+                {
                     f_close(&file1);
                     return 0;
                 }
-            } else
+            }
+            else
                 break;
         }
 
@@ -286,28 +300,36 @@ int isp_update_by_usb()
         f_close(&file1);
     }
 
-    if (FMC_Read(0x300000) & 0x1) {
+    if (FMC_Read(0x300000) & 0x1)
+    {
         printf("Data flash is not enabled.\n");
         return 0;
     }
 
     dfba = FMC_ReadDataFlashBaseAddr();
 
-    if (f_open(&file1, DATA_FILE_NAME, FA_OPEN_EXISTING | FA_READ)) {
+    if (f_open(&file1, DATA_FILE_NAME, FA_OPEN_EXISTING | FA_READ))
+    {
         printf("Data file %s not found.\n", DATA_FILE_NAME);
-    } else {
+    }
+    else
+    {
         /*
          *  Update Data Flash
          */
-        for (addr = dfba; ; addr += FMC_FLASH_PAGE_SIZE) {
+        for (addr = dfba; ; addr += FMC_FLASH_PAGE_SIZE)
+        {
             cnt = FMC_FLASH_PAGE_SIZE;
             res = f_read(&file1, _Buff, cnt, &cnt);
-            if ((res == FR_OK) && cnt) {
-                if (program_flash_page(addr, (uint32_t *)_Buff, cnt) != 0) {
+            if ((res == FR_OK) && cnt)
+            {
+                if (program_flash_page(addr, (uint32_t *)_Buff, cnt) != 0)
+                {
                     f_close(&file1);
                     return 0;
                 }
-            } else
+            }
+            else
                 break;
         }
 
@@ -351,7 +373,8 @@ int32_t main(void)
 
     enable_sys_ticks(100);
 
-    if ((FMC_Read(FMC_CONFIG_BASE) & 0xc0) != 0x40) {
+    if ((FMC_Read(FMC_CONFIG_BASE) & 0xc0) != 0x40)
+    {
         printf("CONFIG0 = 0x%x\n", FMC_Read(FMC_CONFIG_BASE));
         printf("This program must be running under \"Boot from LDROM without IAP\" mode!\n");
         printf("Please modify User Configuration...\n");
@@ -370,9 +393,12 @@ int32_t main(void)
      *  Detecting USB mass storage device...
      */
     t0 = get_sys_ticks();
-    while (get_sys_ticks() - t0 < ISP_DETECT_TIME) {
-        if ((usbh_probe_port(1) == 0) || (usbh_probe_port(0) == 0)) {
-            if (usbh_probe_umass() == 0) {
+    while (get_sys_ticks() - t0 < ISP_DETECT_TIME)
+    {
+        if ((usbh_probe_port(1) == 0) || (usbh_probe_port(0) == 0))
+        {
+            if (usbh_probe_umass() == 0)
+            {
                 isp_update_by_usb();
                 break;
             }

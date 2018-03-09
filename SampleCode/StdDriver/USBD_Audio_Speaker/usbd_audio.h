@@ -92,7 +92,8 @@ void EPB_Handler(void);
 void WAU8822_Setup(void);
 void timer_init(void);
 
-typedef struct dma_desc_t {
+typedef struct dma_desc_t
+{
     uint32_t ctl;
     uint32_t endsrc;
     uint32_t enddest;

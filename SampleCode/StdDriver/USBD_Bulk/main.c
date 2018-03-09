@@ -99,8 +99,10 @@ int32_t main (void)
     NVIC_EnableIRQ(USBD_IRQn);
 
     /* Start transaction */
-    while(1) {
-        if (!USBD_IS_ATTACHED()) {
+    while(1)
+    {
+        if (!USBD_IS_ATTACHED())
+        {
 
             continue;
         }

@@ -39,14 +39,16 @@ extern "C"
 #define _SWI2C_SDA_GETVALUE(PortIndex, PinMask)     (inp32(REG_GPIOA_PIN+(PortIndex))&PinMask)
 
 typedef void (*PFN_SWI2C_TIMEDELY)(uint32_t);
-typedef struct {
+typedef struct
+{
     uint32_t u32SCKPortIndex;
     uint32_t u32SCKPinMask;
     uint32_t u32SDAPortIndex;
     uint32_t u32SDAPinMask;
 } S_I2C_Channel;
 
-typedef enum {
+typedef enum
+{
     eDRVGPIO_GPIOA = 0x00,
     eDRVGPIO_GPIOB = 0x40,
     eDRVGPIO_GPIOC = 0x80,
@@ -58,7 +60,8 @@ typedef enum {
     eDRVGPIO_GPIOI = 0x200,
     eDRVGPIO_GPIOJ = 0x240,
 } E_DRVGPIO_PORT;
-typedef enum {
+typedef enum
+{
     eDRVGPIO_PIN0 = (1),
     eDRVGPIO_PIN1 = (1<<1),
     eDRVGPIO_PIN2 = (1<<2),

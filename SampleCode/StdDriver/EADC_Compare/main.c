@@ -163,10 +163,13 @@ void EADC0_IRQHandler(void)
 
     g_u32AdcIntFlag = EADC_GET_INT_FLAG(EADC, 0xFF);
 
-    if (g_u32AdcIntFlag & 0x40) { //ADCMPF0
+    if (g_u32AdcIntFlag & 0x40)   //ADCMPF0
+    {
         i32ConversionData = EADC_GET_CONV_DATA(EADC, 0);
         printf("ADC result is 0x%x greater than or equal to 0x200!\n",i32ConversionData);
-    } else if (g_u32AdcIntFlag & 0x80) { //ADCMPF1
+    }
+    else if (g_u32AdcIntFlag & 0x80)     //ADCMPF1
+    {
         i32ConversionData = EADC_GET_CONV_DATA(EADC, 0);
         printf("ADC result is 0x%x less than 0x200!\n",i32ConversionData);
     }

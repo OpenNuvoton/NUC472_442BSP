@@ -93,7 +93,8 @@ void init_test_pattern()
 {
     int         i;
 
-    for (i =0; i < FMC_FLASH_PAGE_SIZE/4; i += 2) {
+    for (i =0; i < FMC_FLASH_PAGE_SIZE/4; i += 2)
+    {
         page_buff[i] = 0x5A5A5A5A;
         page_buff[i+1] = 0xA5A5A5A5;
     }
@@ -106,7 +107,8 @@ int  do_page_program(uint32_t u32PageAddr)
 
     printf("Page program 0x%x\n", u32PageAddr);
 
-    if (FMC_Erase(u32PageAddr) < 0) {
+    if (FMC_Erase(u32PageAddr) < 0)
+    {
         printf("Erase page 0x%x failed!\n", u32PageAddr);
         return -1;
     }
@@ -115,7 +117,8 @@ int  do_page_program(uint32_t u32PageAddr)
      *  One multi-program can burst program maximum 512 bytes (128 words).
      *  A 2K page required 4 multi-program burst at least.
      */
-    for (u32MPADR = u32PageAddr; u32MPADR < u32PageAddr+FMC_FLASH_PAGE_SIZE; u32MPADR += 512) {
+    for (u32MPADR = u32PageAddr; u32MPADR < u32PageAddr+FMC_FLASH_PAGE_SIZE; u32MPADR += 512)
+    {
         idx = (u32MPADR - u32PageAddr)/4;
 
         // program the first 4 words
@@ -128,7 +131,8 @@ int  do_page_program(uint32_t u32PageAddr)
         FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;
 
         // program the subsequent 124 words
-        for (i = idx+4; i < idx+128; i += 4) {
+        for (i = idx+4; i < idx+128; i += 4)
+        {
             while (FMC->MPSTS & (FMC_MPSTS_D0_Msk | FMC_MPSTS_D1_Msk)) ;
 
             FMC->MPDAT0 = page_buff[i];
@@ -145,10 +149,12 @@ int  do_page_program(uint32_t u32PageAddr)
 
     printf("Verify...\n");
 
-    for (i = 0; i < FMC_FLASH_PAGE_SIZE; i += 4) {
+    for (i = 0; i < FMC_FLASH_PAGE_SIZE; i += 4)
+    {
         u32Data = FMC_Read(u32PageAddr+i);
 
-        if (u32Data !=  page_buff[i/4]) {
+        if (u32Data !=  page_buff[i/4])
+        {
             printf("Verify error on 0x%x, read:0x%x, expected:0x%x\n", u32PageAddr+i, u32Data, page_buff[i/4]);
             return -1;
         }
@@ -161,7 +167,8 @@ int  page_program_test(uint32_t u32startaddr, uint32_t u32EndAddr)
 {
     uint32_t    u32PgAdr;
 
-    for (u32PgAdr = u32startaddr; u32PgAdr < u32EndAddr; u32PgAdr += FMC_FLASH_PAGE_SIZE) {
+    for (u32PgAdr = u32startaddr; u32PgAdr < u32EndAddr; u32PgAdr += FMC_FLASH_PAGE_SIZE)
+    {
         if (do_page_program(u32PgAdr) < 0)
             return -1;
     }

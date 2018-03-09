@@ -24,11 +24,15 @@ void PDMA_IRQHandler(void)
 {
     uint32_t u32Status = PDMA_GET_INT_STATUS();
 
-    if (u32Status & 0x1) { /* abort */
+    if (u32Status & 0x1)   /* abort */
+    {
         if (PDMA_GET_ABORT_STS() & 0x4)
             PDMA_CLR_ABORT_FLAG(PDMA_ABTSTS_ABTIF_Msk);
-    } else if (u32Status & 0x2) {
-        if (PDMA_GET_TD_STS() & 0x4) {          /* channel 2 done */
+    }
+    else if (u32Status & 0x2)
+    {
+        if (PDMA_GET_TD_STS() & 0x4)            /* channel 2 done */
+        {
             /* Copy RX data to TX buffer */
             memcpy(&PcmTxBuff[u8TxIdx^1], &PcmRxBuff[u8RxIdx], BUFF_LEN*4);
 
@@ -37,7 +41,8 @@ void PDMA_IRQHandler(void)
             u8RxIdx ^= 1;
         }
 
-        if (PDMA_GET_TD_STS() & 0x2) {          /* channel 1 done */
+        if (PDMA_GET_TD_STS() & 0x2)            /* channel 1 done */
+        {
             /* Reset PDMA Scater-Gatter table */
             PDMA_ResetTxSGTable(u8TxIdx);
             u8TxIdx ^= 1;
@@ -45,7 +50,8 @@ void PDMA_IRQHandler(void)
 
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF_Msk);
 
-    } else
+    }
+    else
         printf("unknown interrupt, status=0x%x!!\n", u32Status);
 }
 

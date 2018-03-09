@@ -77,24 +77,31 @@ static void  usb_stor_scsiSenseParseBuffer(SCSI_CMD_T *srb,
     SCATTER_LIST_T  *sg = 0;
 
     /* are we scatter-gathering? */
-    if (srb->use_sg != 0) {
+    if (srb->use_sg != 0)
+    {
         /*
          * loop over all the scatter gather structures and
          * get pointer to the data members in the headers
          * (also work out the length while we're here)
          */
         sg = (SCATTER_LIST_T *)srb->request_buff;
-        for (i = 0; i < srb->use_sg; i++) {
+        for (i = 0; i < srb->use_sg; i++)
+        {
             length += sg[i].length;
             /* We only do the inner loop for the headers */
-            if (element < USB_STOR_SCSI_SENSE_10_HDRSZ) {
+            if (element < USB_STOR_SCSI_SENSE_10_HDRSZ)
+            {
                 /* scan through this scatterlist */
-                for (j = 0; j < sg[i].length; j++) {
-                    if (element < USB_STOR_SCSI_SENSE_HDRSZ) {
+                for (j = 0; j < sg[i].length; j++)
+                {
+                    if (element < USB_STOR_SCSI_SENSE_HDRSZ)
+                    {
                         /* fill in the pointers for both header types */
                         the6->array[element] = (uint8_t *)&(sg[i].address[j]);
                         the10->array[element] = (uint8_t *)&(sg[i].address[j]);
-                    } else if (element < USB_STOR_SCSI_SENSE_10_HDRSZ) {
+                    }
+                    else if (element < USB_STOR_SCSI_SENSE_10_HDRSZ)
+                    {
                         /* only the longer headers still cares now */
                         the10->array[element] = (uint8_t *)&(sg[i].address[j]);
                     }
@@ -103,16 +110,21 @@ static void  usb_stor_scsiSenseParseBuffer(SCSI_CMD_T *srb,
                 }  /* end of for */
             }
         } /* end of for */
-    } else {
+    }
+    else
+    {
         length = srb->request_bufflen;
         buffer = srb->request_buff;
         if (length < USB_STOR_SCSI_SENSE_10_HDRSZ)
             UMAS_DEBUG("Buffer length smaller than header!!\n");
-        for (i = 0; i < USB_STOR_SCSI_SENSE_10_HDRSZ; i++) {
-            if (i < USB_STOR_SCSI_SENSE_HDRSZ) {
+        for (i = 0; i < USB_STOR_SCSI_SENSE_10_HDRSZ; i++)
+        {
+            if (i < USB_STOR_SCSI_SENSE_HDRSZ)
+            {
                 the6->array[i] = &(buffer[i]);
                 the10->array[i] = &(buffer[i]);
-            } else
+            }
+            else
                 the10->array[i] = &(buffer[i]);
         }
     }
@@ -146,17 +158,21 @@ static int  usb_stor_scsiSense10to6(SCSI_CMD_T *the10)
     outputBufferSize += USB_STOR_SCSI_SENSE_HDRSZ;
 
     /* Check to see if we need to trucate the output */
-    if (outputBufferSize > length) {
+    if (outputBufferSize > length)
+    {
         UMAS_DEBUG("usb_stor_scsiSense10to6 - Had to truncate MODE_SENSE_10 buffer into MODE_SENSE.\n");
         UMAS_DEBUG("outputBufferSize is %d and length is %d.\n", outputBufferSize, length);
     }
     outputBufferSize = length;
 
     /* Data length */
-    if (*the10Locations.hdr.dataLengthMSB != 0) { /* MSB must be zero */
+    if (*the10Locations.hdr.dataLengthMSB != 0)   /* MSB must be zero */
+    {
         UMAS_DEBUG("usb_stor_scsiSense10to6 - Command will be truncated to fit in SENSE6 buffer.\n");
         *the6Locations.hdr.dataLength = 0xff;
-    } else {
+    }
+    else
+    {
         *the6Locations.hdr.dataLength = *the10Locations.hdr.dataLengthLSB;
     }
 
@@ -165,14 +181,18 @@ static int  usb_stor_scsiSense10to6(SCSI_CMD_T *the10)
     *the6Locations.hdr.devSpecParms = *the10Locations.hdr.devSpecParms;
 
     /* Block descriptor length */
-    if (*the10Locations.hdr.blkDescLengthMSB != 0) { /* MSB must be zero */
+    if (*the10Locations.hdr.blkDescLengthMSB != 0)   /* MSB must be zero */
+    {
         UMAS_DEBUG("usb_stor_scsiSense10to6 - Command will be truncated to fit in SENSE6 buffer.\n");
         *the6Locations.hdr.blkDescLength = 0xff;
-    } else {
+    }
+    else
+    {
         *the6Locations.hdr.blkDescLength = *the10Locations.hdr.blkDescLengthLSB;
     }
 
-    if (the10->use_sg == 0) {
+    if (the10->use_sg == 0)
+    {
         buffer = the10->request_buff;
         /* Copy the rest of the data */
         memcpy(&(buffer[USB_STOR_SCSI_SENSE_HDRSZ]),
@@ -183,18 +203,24 @@ static int  usb_stor_scsiSense10to6(SCSI_CMD_T *the10)
                         -(USB_STOR_SCSI_SENSE_10_HDRSZ-USB_STOR_SCSI_SENSE_HDRSZ)]),
                0,
                USB_STOR_SCSI_SENSE_10_HDRSZ-USB_STOR_SCSI_SENSE_HDRSZ);
-    } else {
+    }
+    else
+    {
         sg = (SCATTER_LIST_T *) the10->request_buff;
         /* scan through this scatterlist and figure out starting positions */
-        for (i = 0; i < the10->use_sg; i++) {
+        for (i = 0; i < the10->use_sg; i++)
+        {
             sgLength = sg[i].length;
-            for (j = 0; j < sgLength; j++ ) {
+            for (j = 0; j < sgLength; j++ )
+            {
                 /* get to end of header */
-                if (element == USB_STOR_SCSI_SENSE_HDRSZ) {
+                if (element == USB_STOR_SCSI_SENSE_HDRSZ)
+                {
                     db=i;
                     di=j;
                 }
-                if (element == USB_STOR_SCSI_SENSE_10_HDRSZ) {
+                if (element == USB_STOR_SCSI_SENSE_10_HDRSZ)
+                {
                     sb=i;
                     si=j;
                     /* we've found both sets now, exit loops */
@@ -208,10 +234,12 @@ static int  usb_stor_scsiSense10to6(SCSI_CMD_T *the10)
         /* Now we know where to start the copy from */
         element = USB_STOR_SCSI_SENSE_HDRSZ;
         while (element < outputBufferSize
-                -(USB_STOR_SCSI_SENSE_10_HDRSZ-USB_STOR_SCSI_SENSE_HDRSZ)) {
+                -(USB_STOR_SCSI_SENSE_10_HDRSZ-USB_STOR_SCSI_SENSE_HDRSZ))
+        {
             /* check limits */
             if ((sb >= the10->use_sg) || (si >= sg[sb].length) ||
-                    (db >= the10->use_sg) || (di >= sg[db].length)) {
+                    (db >= the10->use_sg) || (di >= sg[db].length))
+            {
                 UMAS_DEBUG("usb_stor_scsiSense10to6 - Buffer overrun averted, this shouldn't happen!\n");
                 break;
             }
@@ -220,36 +248,47 @@ static int  usb_stor_scsiSense10to6(SCSI_CMD_T *the10)
             sg[db].address[di] = sg[sb].address[si];
 
             /* get next destination */
-            if (sg[db].length - 1 == di) {
+            if (sg[db].length - 1 == di)
+            {
                 db++;
                 di=0;
-            } else {
+            }
+            else
+            {
                 di++;
             }
 
             /* get next source */
-            if (sg[sb].length - 1 == si) {
+            if (sg[sb].length - 1 == si)
+            {
                 sb++;
                 si=0;
-            } else {
+            }
+            else
+            {
                 si++;
             }
             element++;
         }
         /* zero the remaining bytes */
-        while (element < outputBufferSize) {
+        while (element < outputBufferSize)
+        {
             /* check limits */
-            if ((db >= the10->use_sg) || (di >= sg[db].length)) {
+            if ((db >= the10->use_sg) || (di >= sg[db].length))
+            {
                 UMAS_DEBUG("usb_stor_scsiSense10to6 - Buffer overrun averted, this shouldn't happen!\n");
                 break;
             }
             sg[db].address[di] = 0;
 
             /* get next destination */
-            if (sg[db].length-1 == di) {
+            if (sg[db].length-1 == di)
+            {
                 db++;
                 di=0;
-            } else {
+            }
+            else
+            {
                 di++;
             }
             element++;
@@ -283,7 +322,8 @@ static int  usb_stor_scsiSense6to10(SCSI_CMD_T* the6)
     outputBufferSize += USB_STOR_SCSI_SENSE_10_HDRSZ;
 
     /* Check to see if we need to trucate the output */
-    if (outputBufferSize > length) {
+    if (outputBufferSize > length)
+    {
         UMAS_DEBUG("Had to truncate MODE_SENSE into MODE_SENSE_10 buffer.\n");
         UMAS_DEBUG("outputBufferSize is %d and length is %d.\n", outputBufferSize, length);
     }
@@ -308,7 +348,8 @@ static int  usb_stor_scsiSense6to10(SCSI_CMD_T* the6)
     *the10Locations.hdr.dataLengthLSB = *the6Locations.hdr.dataLength;
     *the10Locations.hdr.dataLengthMSB = 0;
 
-    if (!the6->use_sg) {
+    if (!the6->use_sg)
+    {
         buffer = the6->request_buff;
         /* Copy the rest of the data */
         memcpy(&(buffer[USB_STOR_SCSI_SENSE_10_HDRSZ]),
@@ -317,17 +358,23 @@ static int  usb_stor_scsiSense6to10(SCSI_CMD_T* the6)
         /* Put the first four bytes (after header) in place */
         memcpy(&(buffer[USB_STOR_SCSI_SENSE_10_HDRSZ]), tempBuffer,
                USB_STOR_SCSI_SENSE_10_HDRSZ-USB_STOR_SCSI_SENSE_HDRSZ);
-    } else {
+    }
+    else
+    {
         sg = (SCATTER_LIST_T *) the6->request_buff;
         /* scan through this scatterlist and figure out ending positions */
-        for (i = 0; i < the6->use_sg; i++) {
-            for (j = 0; j < sg[i].length; j++) {
+        for (i = 0; i < the6->use_sg; i++)
+        {
+            for (j = 0; j < sg[i].length; j++)
+            {
                 /* get to end of header */
-                if (element == USB_STOR_SCSI_SENSE_HDRSZ ) {
+                if (element == USB_STOR_SCSI_SENSE_HDRSZ )
+                {
                     ldb = i;
                     ldi = j;
                 }
-                if (element == USB_STOR_SCSI_SENSE_10_HDRSZ) {
+                if (element == USB_STOR_SCSI_SENSE_10_HDRSZ)
+                {
                     lsb = i;
                     lsi = j;
                     /* we've found both sets now, exit loops */
@@ -346,11 +393,14 @@ static int  usb_stor_scsiSense6to10(SCSI_CMD_T* the6)
         db=the6->use_sg - 1;
         di=sg[db].length - 1;
 
-        for (i = the6->use_sg - 1; i >= 0; i--) {
-            for (j = sg[i].length - 1; j >= 0; j--) {
+        for (i = the6->use_sg - 1; i >= 0; i--)
+        {
+            for (j = sg[i].length - 1; j >= 0; j--)
+            {
                 /* get to end of header and find source for copy */
                 if (element == length - 1
-                        - (USB_STOR_SCSI_SENSE_10_HDRSZ-USB_STOR_SCSI_SENSE_HDRSZ)) {
+                        - (USB_STOR_SCSI_SENSE_10_HDRSZ-USB_STOR_SCSI_SENSE_HDRSZ))
+                {
                     sb = i;
                     si = j;
                     /* we've found both sets now, exit loops */
@@ -364,9 +414,11 @@ static int  usb_stor_scsiSense6to10(SCSI_CMD_T* the6)
         /* Now we know where to start the copy from */
         element = length - 1
                   - (USB_STOR_SCSI_SENSE_10_HDRSZ-USB_STOR_SCSI_SENSE_HDRSZ);
-        while (element >= USB_STOR_SCSI_SENSE_10_HDRSZ) {
+        while (element >= USB_STOR_SCSI_SENSE_10_HDRSZ)
+        {
             /* check limits */
-            if (((sb <= lsb) && (si < lsi)) || ((db <= ldb) && (di < ldi))) {
+            if (((sb <= lsb) && (si < lsi)) || ((db <= ldb) && (di < ldi)))
+            {
                 UMAS_DEBUG("Buffer overrun averted, this shouldn't happen!\n");
                 break;
             }
@@ -375,27 +427,35 @@ static int  usb_stor_scsiSense6to10(SCSI_CMD_T* the6)
             sg[db].address[di] = sg[sb].address[si];
 
             /* get next destination */
-            if (di == 0) {
+            if (di == 0)
+            {
                 db--;
                 di = sg[db].length - 1;
-            } else {
+            }
+            else
+            {
                 di--;
             }
 
             /* get next source */
-            if (si == 0) {
+            if (si == 0)
+            {
                 sb--;
                 si = sg[sb].length - 1;
-            } else {
+            }
+            else
+            {
                 si--;
             }
             element--;
         }
 
         /* copy the remaining four bytes */
-        while ( element >= USB_STOR_SCSI_SENSE_HDRSZ ) {
+        while ( element >= USB_STOR_SCSI_SENSE_HDRSZ )
+        {
             /* check limits */
-            if ((db <= ldb) && (di < ldi)) {
+            if ((db <= ldb) && (di < ldi))
+            {
                 UMAS_DEBUG("Buffer overrun averted, this shouldn't happen!\n");
                 break;
             }
@@ -403,10 +463,13 @@ static int  usb_stor_scsiSense6to10(SCSI_CMD_T* the6)
             sg[db].address[di] = tempBuffer[element - USB_STOR_SCSI_SENSE_HDRSZ];
 
             /* get next destination */
-            if (di == 0) {
+            if (di == 0)
+            {
                 db--;
                 di = sg[db].length - 1;
-            } else {
+            }
+            else
+            {
                 di--;
             }
             element--;
@@ -433,12 +496,14 @@ static void  fix_inquiry_data(SCSI_CMD_T *srb)
     UMAS_DEBUG("Fixing INQUIRY data to show SCSI rev 2\n");
 
     /* find the location of the data */
-    if (srb->use_sg) {
+    if (srb->use_sg)
+    {
         SCATTER_LIST_T  *sg;
 
         sg = (SCATTER_LIST_T *) srb->request_buff;
         data_ptr = (uint8_t *) sg[0].address;
-    } else
+    }
+    else
         data_ptr = (uint8_t *)srb->request_buff;
 
     /* Change the SCSI revision number */
@@ -493,7 +558,8 @@ void  UMAS_AtapiCommand(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
     srb->cmd_len = 12;
 
     /* determine the correct (or minimum) data length for these commands */
-    switch (srb->cmnd[0]) {
+    switch (srb->cmnd[0])
+    {
     /* change MODE_SENSE/MODE_SELECT from 6 to 10 byte commands */
     case MODE_SENSE:
     case MODE_SELECT:
@@ -566,7 +632,8 @@ void  UMAS_UfiCommand(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
     srb->cmd_len = 12;
 
     /* determine the correct (or minimum) data length for these commands */
-    switch (srb->cmnd[0]) {
+    switch (srb->cmnd[0])
+    {
     /* for INQUIRY, UFI devices only ever return 36 bytes */
     case INQUIRY:
         srb->cmnd[4] = 36;
@@ -652,9 +719,11 @@ void  UMAS_TransparentScsiCommand(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
      * Apparently, neither Windows or MacOS will use these commands,
      * so some devices do not support them
      */
-    if (umas->flags & UMAS_FL_MODE_XLATE) {
+    if (umas->flags & UMAS_FL_MODE_XLATE)
+    {
         /* translate READ_6 to READ_10 */
-        if (srb->cmnd[0] == READ_6) {
+        if (srb->cmnd[0] == READ_6)
+        {
             /* get the control */
             srb->cmnd[9] = umas->srb.cmnd[5];
 
@@ -681,7 +750,8 @@ void  UMAS_TransparentScsiCommand(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
         }
 
         /* translate WRITE_6 to WRITE_10 */
-        if (srb->cmnd[0] == WRITE_6) {
+        if (srb->cmnd[0] == WRITE_6)
+        {
             /* get the control */
             srb->cmnd[9] = umas->srb.cmnd[5];
 

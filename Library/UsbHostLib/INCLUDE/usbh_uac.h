@@ -96,7 +96,8 @@ typedef int (UAC_CB_FUNC)(struct uac_dev_t *dev, uint8_t *data, int len);    /*!
  *  Audio Class device
  */
 /*! Audio Class device structure \hideinitializer      */
-typedef struct uac_dev_t {
+typedef struct uac_dev_t
+{
     USB_DEV_T           *udev;          /*!< USB device pointer of UAC_DEV_T \hideinitializer  */
     int                 ctrl_ifnum;     /*!< Audio control interface numder \hideinitializer   */
     int                 au_in_ifnum;    /*!< Audio data-in interface numder \hideinitializer   */

@@ -152,7 +152,8 @@
 /*-----------------------------------------------------------------------------------
  *  UAC Class-specific interface descriptor
  */
-typedef struct ac_if_header {           /*! Audio Class-Specific AC Interface Header Descriptor \hideinitializer  */
+typedef struct ac_if_header             /*! Audio Class-Specific AC Interface Header Descriptor \hideinitializer  */
+{
     __packed uint8_t  bLength;          /*!< Size of this descriptor, in bytes: 8+n \hideinitializer  */
     __packed uint8_t  bDescriptorType;  /*!< CS_INTERFACE descriptor type; 0x24 \hideinitializer    */
     __packed uint8_t  bDescriptorSubtype; /*!< HEADER descriptor subtype; 0x1 \hideinitializer           */
@@ -168,7 +169,8 @@ typedef struct ac_if_header {           /*! Audio Class-Specific AC Interface He
 /*-----------------------------------------------------------------------------------
  *  UAC Input Terminal Descriptor
  */
-typedef struct ac_itd_t {               /*! Audio Class-Specific Input Terminal Descriptor \hideinitializer  */
+typedef struct ac_itd_t                 /*! Audio Class-Specific Input Terminal Descriptor \hideinitializer  */
+{
     __packed uint8_t  bLength;          /*!< Size of this descriptor, in bytes: 12 \hideinitializer  */
     __packed uint8_t  bDescriptorType;  /*!< CS_INTERFACE descriptor type; 0x24 \hideinitializer    */
     __packed uint8_t  bDescriptorSubtype; /*!< INPUT_TERMINAL descriptor subtype; 0x2 \hideinitializer           */
@@ -185,7 +187,8 @@ typedef struct ac_itd_t {               /*! Audio Class-Specific Input Terminal 
 /*-----------------------------------------------------------------------------------
  *  UAC Output Terminal Descriptor
  */
-typedef struct ac_otd_t {
+typedef struct ac_otd_t
+{
     __packed uint8_t  bLength;
     __packed uint8_t  bDescriptorType;
     __packed uint8_t  bDescriptorSubtype;
@@ -225,7 +228,8 @@ typedef struct ac_otd_t {
 /*-----------------------------------------------------------------------------------
  *  UAC Mixer Unit Descriptor
  */
-typedef struct ac_mxr_t {
+typedef struct ac_mxr_t
+{
     __packed uint8_t  bLength;
     __packed uint8_t  bDescriptorType;
     __packed uint8_t  bDescriptorSubtype;
@@ -237,7 +241,8 @@ typedef struct ac_mxr_t {
 /*-----------------------------------------------------------------------------------
  *  UAC Selector Unit Descriptor
  */
-typedef struct ac_su_t {
+typedef struct ac_su_t
+{
     __packed uint8_t  bLength;
     __packed uint8_t  bDescriptorType;
     __packed uint8_t  bDescriptorSubtype;
@@ -249,7 +254,8 @@ typedef struct ac_su_t {
 /*-----------------------------------------------------------------------------------
  *  UAC Feature Unit Descriptor
  */
-typedef struct ac_fu_t {
+typedef struct ac_fu_t
+{
     __packed uint8_t  bLength;
     __packed uint8_t  bDescriptorType;
     __packed uint8_t  bDescriptorSubtype;
@@ -275,7 +281,8 @@ typedef struct ac_fu_t {
 /*-----------------------------------------------------------------------------------
  *  UAC AS Isochronous Audio Data Endpoint Descriptor
  */
-typedef struct as_gen_t {
+typedef struct as_gen_t
+{
     __packed uint8_t  bLength;
     __packed uint8_t  bDescriptorType;
     __packed uint8_t  bDescriptorSubtype;
@@ -288,7 +295,8 @@ typedef struct as_gen_t {
 /*-----------------------------------------------------------------------------------
  *  UAC Processing Unit Descriptor
  */
-typedef struct ac_pu_t {
+typedef struct ac_pu_t
+{
     __packed uint8_t  bLength;
     __packed uint8_t  bDescriptorType;
     __packed uint8_t  bDescriptorSubtype;
@@ -301,7 +309,8 @@ typedef struct ac_pu_t {
 /*-----------------------------------------------------------------------------------
  *  UAC Class-Specific AS Isochronous Audio Data Endpoint Descriptor
  */
-typedef struct as_ep_t {
+typedef struct as_ep_t
+{
     __packed uint8_t  bLength;
     __packed uint8_t  bDescriptorType;
     __packed uint8_t  bDescriptorSubtype;
@@ -314,7 +323,8 @@ typedef struct as_ep_t {
 /*-----------------------------------------------------------------------------------
  *  UAC Type I Format Type Descriptor
  */
-typedef struct ac_ft1_t {
+typedef struct ac_ft1_t
+{
     __packed uint8_t  bLength;
     __packed uint8_t  bDescriptorType;
     __packed uint8_t  bDescriptorSubtype;
@@ -329,7 +339,8 @@ typedef struct ac_ft1_t {
 /*-----------------------------------------------------------------------------------
  *  UAC Type 2 Format Type Descriptor
  */
-typedef struct ac_ft2_t {
+typedef struct ac_ft2_t
+{
     __packed uint8_t  bLength;
     __packed uint8_t  bDescriptorType;
     __packed uint8_t  bDescriptorSubtype;
@@ -342,7 +353,8 @@ typedef struct ac_ft2_t {
 /*-----------------------------------------------------------------------------------
  *  UAC Type 3 Format Type Descriptor
  */
-typedef struct ac_ft3_t {
+typedef struct ac_ft3_t
+{
     __packed uint8_t  bLength;
     __packed uint8_t  bDescriptorType;
     __packed uint8_t  bDescriptorSubtype;
@@ -356,7 +368,8 @@ typedef struct ac_ft3_t {
 } AC_FT3_T;
 
 
-typedef struct uac_info_t {
+typedef struct uac_info_t
+{
     uint8_t    cfg_desc[MAX_CFG_DESC_SIZE];
 
     USB_IF_DESC_T  *last_ifd;

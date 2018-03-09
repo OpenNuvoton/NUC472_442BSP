@@ -13,14 +13,16 @@
 #include "NUC472_442.h"
 #include "i2c_gpio.h"
 
-struct NT_RegValue {
+struct NT_RegValue
+{
     uint16_t    u16RegAddr;            /* Sensor Register Address */
     uint8_t        u8Value;            /* Sensor Register Data */
 };
 
 
 /* NT99141, VGA, YUV422 */
-static struct NT_RegValue g_sNT99141_VGA_RegValue[]= {
+static struct NT_RegValue g_sNT99141_VGA_RegValue[]=
+{
     //{0x3021, 0x60},
 #if 1
     /* [Inti] */
@@ -92,13 +94,15 @@ int InitNT99141_VGA_YUV422(void)
     /* switch I2C pin function, to do... */
     SWI2C_Open(eDRVGPIO_GPIOB,eDRVGPIO_PIN6,eDRVGPIO_GPIOB,eDRVGPIO_PIN7,Delay);
     printf("NT_RegNum=%3d\n",sizeof(g_sNT99141_VGA_RegValue)/sizeof(struct NT_RegValue));
-    for(i=0; i<sizeof(g_sNT99141_VGA_RegValue)/sizeof(struct NT_RegValue); i++) {
+    for(i=0; i<sizeof(g_sNT99141_VGA_RegValue)/sizeof(struct NT_RegValue); i++)
+    {
         SWI2C_Write_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID,g_sNT99141_VGA_RegValue[i].u16RegAddr,g_sNT99141_VGA_RegValue[i].u8Value);
     }
     u8ID[0]=SWI2C_Read_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID,0x3000);  /* Chip_Version_H 0x14 */
     u8ID[1]=SWI2C_Read_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID,0x3001);  /* Chip_Version_L 0x10 */
     printf("Sensor Chip_Version_H = 0x%02x(0x14) Chip_Version_L = 0x%02x(0x10)\n", u8ID[0],u8ID[1]);
-    if(u8ID[0]!=0x14 || u8ID[1]!=0x10 ) {
+    if(u8ID[0]!=0x14 || u8ID[1]!=0x10 )
+    {
         printf("NT99141 init failed!!\n");
         return 0;
     }

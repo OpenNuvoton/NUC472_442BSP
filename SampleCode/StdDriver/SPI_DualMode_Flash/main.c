@@ -141,10 +141,12 @@ void SpiFlash_WaitReady(void)
 {
     uint8_t ReturnValue;
 
-    do {
+    do
+    {
         ReturnValue = SpiFlash_ReadStatusReg();
         ReturnValue = ReturnValue & 1;
-    } while(ReturnValue!=0); // check the BUSY bit
+    }
+    while(ReturnValue!=0);   // check the BUSY bit
 }
 
 void SpiFlash_NormalPageProgram(uint32_t StartAddress, uint8_t *u8DataBuffer)
@@ -176,8 +178,10 @@ void SpiFlash_NormalPageProgram(uint32_t StartAddress, uint8_t *u8DataBuffer)
     SPI_WRITE_TX(SPI_FLASH_PORT, StartAddress       & 0xFF);
 
     // write data
-    while(1) {
-        if(!SPI_GET_TX_FIFO_FULL_FLAG(SPI_FLASH_PORT)) {
+    while(1)
+    {
+        if(!SPI_GET_TX_FIFO_FULL_FLAG(SPI_FLASH_PORT))
+        {
             SPI_WRITE_TX(SPI_FLASH_PORT, u8DataBuffer[i++]);
             if(i >= 255) break;
         }
@@ -219,7 +223,8 @@ void SpiFlash_DualFastRead(uint32_t StartAddress, uint8_t *u8DataBuffer)
     SPI_ENABLE_DUAL_INPUT_MODE(SPI_FLASH_PORT);
 
     // read data
-    for(i=0; i<256; i++) {
+    for(i=0; i<256; i++)
+    {
         SPI_WRITE_TX(SPI_FLASH_PORT, 0x00);
         while(SPI_IS_BUSY(SPI_FLASH_PORT));
         u8DataBuffer[i] = SPI_READ_RX(SPI_FLASH_PORT);
@@ -317,10 +322,12 @@ int main(void)
     /* Wait ready */
     SpiFlash_WaitReady();
 
-    if((u16ID = SpiFlash_ReadMidDid()) != 0x1C14) {
+    if((u16ID = SpiFlash_ReadMidDid()) != 0x1C14)
+    {
         printf("Wrong ID, 0x%x\n", u16ID);
         return -1;
-    } else
+    }
+    else
         printf("Flash found: EN25QH16 ...\n");
 
     printf("Erase chip ...");
@@ -334,14 +341,16 @@ int main(void)
     printf("[OK]\n");
 
     /* init source data buffer */
-    for(u32ByteCount=0; u32ByteCount<TEST_LENGTH; u32ByteCount++) {
+    for(u32ByteCount=0; u32ByteCount<TEST_LENGTH; u32ByteCount++)
+    {
         SrcArray[u32ByteCount] = u32ByteCount;
     }
 
     printf("Start to normal write data to Flash ...");
     /* Program SPI flash */
     u32FlashAddress = 0;
-    for(u32PageNumber=0; u32PageNumber<TEST_NUMBER; u32PageNumber++) {
+    for(u32PageNumber=0; u32PageNumber<TEST_NUMBER; u32PageNumber++)
+    {
         /* page program */
         SpiFlash_NormalPageProgram(u32FlashAddress, SrcArray);
         SpiFlash_WaitReady();
@@ -351,7 +360,8 @@ int main(void)
     printf("[OK]\n");
 
     /* clear destination data buffer */
-    for(u32ByteCount=0; u32ByteCount<TEST_LENGTH; u32ByteCount++) {
+    for(u32ByteCount=0; u32ByteCount<TEST_LENGTH; u32ByteCount++)
+    {
         DestArray[u32ByteCount] = 0;
     }
 
@@ -359,12 +369,14 @@ int main(void)
 
     /* Read SPI flash */
     u32FlashAddress = 0;
-    for(u32PageNumber=0; u32PageNumber<TEST_NUMBER; u32PageNumber++) {
+    for(u32PageNumber=0; u32PageNumber<TEST_NUMBER; u32PageNumber++)
+    {
         /* page read */
         SpiFlash_DualFastRead(u32FlashAddress, DestArray);
         u32FlashAddress += 0x100;
 
-        for(u32ByteCount=0; u32ByteCount<TEST_LENGTH; u32ByteCount++) {
+        for(u32ByteCount=0; u32ByteCount<TEST_LENGTH; u32ByteCount++)
+        {
             if(DestArray[u32ByteCount] != SrcArray[u32ByteCount])
                 nError ++;
         }

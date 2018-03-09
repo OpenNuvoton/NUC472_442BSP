@@ -192,7 +192,8 @@
 
 
 /* copied from scatterlist.h, and remove scatterlist.h */
-typedef struct scatterlist {
+typedef struct scatterlist
+{
     char    *address;                  /* Location data is to be transferred to */
     char    *alt_address;              /* Location of actual if address is a
                                         * dma indirect buffer.  NULL otherwise */
@@ -397,7 +398,8 @@ struct umas_data;
  * paging, 'bh' is NULL, and the semaphore is used to wait
  * for read/write completion.
  */
-struct request {
+struct request
+{
     int     cmd;                /* READ or WRITE */
     int     errors;
     uint32_t  start_time;
@@ -419,7 +421,8 @@ struct request {
  * The SCSI_CMD_T structure is used by scsi.c internally, and for communication
  * with low level drivers that support multiple outstanding commands.
  */
-typedef struct scsi_pointer {
+typedef struct scsi_pointer
+{
     char *ptr;              /* data pointer */
     int this_residual;      /* left in this buffer */
     struct scatterlist *buffer;     /* which buffer */
@@ -442,7 +445,8 @@ typedef struct scsi_pointer {
  * As time goes on and as people have the stomach for it, it should be possible to
  * go back and retrofit at least some of the elements here with with the prefix.
  */
-typedef struct scsi_cmnd {
+typedef struct scsi_cmnd
+{
     struct umas_data  *umas;
 
     /*

@@ -32,7 +32,8 @@ DSTATUS disk_initialize (
     BYTE pdrv               /* Physical drive number (0..) */
 )
 {
-    switch (pdrv) {
+    switch (pdrv)
+    {
 
 #ifdef SUPPORT_USBH
     case DRV_USBH :
@@ -57,7 +58,8 @@ DSTATUS disk_status (
     BYTE pdrv       /* Physical drive number (0..) */
 )
 {
-    switch (pdrv) {
+    switch (pdrv)
+    {
 
 #ifdef SUPPORT_USBH
     case DRV_USBH :
@@ -83,7 +85,8 @@ DRESULT disk_read (
     UINT count      /* Number of sectors to read (1..128) */
 )
 {
-    switch (pdrv) {
+    switch (pdrv)
+    {
 
 #ifdef SUPPORT_USBH
     case DRV_USBH :
@@ -111,7 +114,8 @@ DRESULT disk_write (
     UINT count          /* Number of sectors to write (1..128) */
 )
 {
-    switch (pdrv) {
+    switch (pdrv)
+    {
 
 #ifdef SUPPORT_USBH
     case DRV_USBH :
@@ -137,7 +141,8 @@ DRESULT disk_ioctl (
     void *buff      /* Buffer to send/receive control data */
 )
 {
-    switch (pdrv) {
+    switch (pdrv)
+    {
 
 #ifdef SUPPORT_USBH
     case DRV_USBH :

@@ -20,7 +20,8 @@ uint32_t PllClock         = PLL_CLOCK;
 
 
 /* TDES Key:  1e4678a17f2c8a33 800e15ac47891a4c a011453291c23340 */
-uint32_t au8MyTDESKey[3][2] = {
+uint32_t au8MyTDESKey[3][2] =
+{
     { 0x1e4678a1, 0x7f2c8a33 },
     { 0x800e15ac, 0x47891a4c },
     { 0xa0114532, 0x91c23340 }
@@ -31,9 +32,11 @@ uint32_t au32MyTDESIV[2] = {  0x00000000, 0x00000000 };
 
 #ifdef __ICCARM__
 #pragma data_alignment=4
-uint8_t au8InputData[] = {
+uint8_t au8InputData[] =
+{
 #else
-__align(4) uint8_t au8InputData[] = {
+__align(4) uint8_t au8InputData[] =
+{
 #endif
     0x12, 0x34, 0x56, 0x78, 0xAB, 0xCD, 0xEF
 };
@@ -50,7 +53,8 @@ static volatile int  g_TDES_done;
 
 void CRYPTO_IRQHandler()
 {
-    if (TDES_GET_INT_FLAG()) {
+    if (TDES_GET_INT_FLAG())
+    {
         g_TDES_done = 1;
         TDES_CLR_INT_FLAG();
     }
@@ -62,12 +66,14 @@ void  dump_buff_hex(uint8_t *pucBuff, int nBytes)
     int     nIdx, i;
 
     nIdx = 0;
-    while (nBytes > 0) {
+    while (nBytes > 0)
+    {
         printf("0x%04X  ", nIdx);
         for (i = 0; i < 16; i++)
             printf("%02x ", pucBuff[nIdx + i]);
         printf("  ");
-        for (i = 0; i < 16; i++) {
+        for (i = 0; i < 16; i++)
+        {
             if ((pucBuff[nIdx + i] >= 0x20) && (pucBuff[nIdx + i] < 127))
                 printf("%c", pucBuff[nIdx + i]);
             else

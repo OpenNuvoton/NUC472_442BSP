@@ -40,7 +40,8 @@ BYTE SD_Drv = 0; // select SD0
 
 void Delay(uint32_t delayCnt)
 {
-    while(delayCnt--) {
+    while(delayCnt--)
+    {
         __NOP();
         __NOP();
     }
@@ -75,14 +76,17 @@ int xatoi (         /* 0:Failed, 1:Successful */
     *res = 0;
     while ((c = **str) == ' ') (*str)++;    /* Skip leading spaces */
 
-    if (c == '-') {     /* negative? */
+    if (c == '-')       /* negative? */
+    {
         s = 1;
         c = *(++(*str));
     }
 
-    if (c == '0') {
+    if (c == '0')
+    {
         c = *(++(*str));
-        switch (c) {
+        switch (c)
+        {
         case 'x':       /* hexadecimal */
             r = 16;
             c = *(++(*str));
@@ -96,16 +100,20 @@ int xatoi (         /* 0:Failed, 1:Successful */
             if (c < '0' || c > '9') return 0;   /* invalid char */
             r = 8;      /* octal */
         }
-    } else {
+    }
+    else
+    {
         if (c < '0' || c > '9') return 0;   /* EOL or invalid char */
         r = 10;         /* decimal */
     }
 
     val = 0;
-    while (c > ' ') {
+    while (c > ' ')
+    {
         if (c >= 'a') c -= 0x20;
         c -= '0';
-        if (c >= 17) {
+        if (c >= 17)
+        {
             c -= 7;
             if (c <= 9) return 0;   /* invalid char */
         }
@@ -160,23 +168,28 @@ FRESULT scan_files (
     char *fn;
 
 
-    if ((res = f_opendir(&dirs, path)) == FR_OK) {
+    if ((res = f_opendir(&dirs, path)) == FR_OK)
+    {
         i = strlen(path);
-        while (((res = f_readdir(&dirs, &Finfo)) == FR_OK) && Finfo.fname[0]) {
+        while (((res = f_readdir(&dirs, &Finfo)) == FR_OK) && Finfo.fname[0])
+        {
             if (_FS_RPATH && Finfo.fname[0] == '.') continue;
 #if _USE_LFN
             fn = *Finfo.lfname ? Finfo.lfname : Finfo.fname;
 #else
             fn = Finfo.fname;
 #endif
-            if (Finfo.fattrib & AM_DIR) {
+            if (Finfo.fattrib & AM_DIR)
+            {
                 acc_dirs++;
                 *(path+i) = '/';
                 strcpy(path+i+1, fn);
                 res = scan_files(path);
                 *(path+i) = '\0';
                 if (res != FR_OK) break;
-            } else {
+            }
+            else
+            {
                 /*              printf("%s/%s\n", path, fn); */
                 acc_files++;
                 acc_size += Finfo.fsize;
@@ -198,7 +211,8 @@ void put_rc (FRESULT rc)
         _T("NOT_ENOUGH_CORE\0TOO_MANY_OPEN_FILES\0");
 
     uint32_t i;
-    for (i = 0; (i != (UINT)rc) && *p; i++) {
+    for (i = 0; (i != (UINT)rc) && *p; i++)
+    {
         while(*p++) ;
     }
     printf(_T("rc=%u FR_%s\n"), (UINT)rc, p);
@@ -215,7 +229,8 @@ void get_line (char *buff, int len)
 
 
 
-    for (;;) {
+    for (;;)
+    {
         c = getchar();
         putchar(c);
         if (c == '\r') break;
@@ -238,7 +253,8 @@ void SD0_Handler(void)
     unsigned int volatile ier;
 
     // FMI data abort interrupt
-    if (SD->FMIISR & SD_FMIISR_DTA_IE_Msk) {
+    if (SD->FMIISR & SD_FMIISR_DTA_IE_Msk)
+    {
         /* ResetAllEngine() */
         SD->FMICR |= SD_FMICR_SW_RST_Msk;
         SD->FMIISR = SD_FMIISR_DTA_IE_Msk;
@@ -246,13 +262,15 @@ void SD0_Handler(void)
 
     //----- SD interrupt status
     isr = SD->SDISR;
-    if (isr & SD_SDISR_BLKD_IF_Msk) {   // block down
+    if (isr & SD_SDISR_BLKD_IF_Msk)     // block down
+    {
         extern uint8_t volatile _sd_SDDataReady;
         _sd_SDDataReady = TRUE;
         SD->SDISR = SD_SDISR_BLKD_IF_Msk;
     }
 
-    if (isr & SD_SDISR_CD0_IF_Msk) { // port 0 card detect
+    if (isr & SD_SDISR_CD0_IF_Msk)   // port 0 card detect
+    {
         //----- SD interrupt status
         // it is work to delay 50 times for SD_CLK = 200KHz
         {
@@ -262,17 +280,23 @@ void SD0_Handler(void)
         }
 
 #ifdef _USE_DAT3_DETECT_
-        if (!(isr & SD_SDISR_CDPS0_Msk)) {
+        if (!(isr & SD_SDISR_CDPS0_Msk))
+        {
             SD0.IsCardInsert = FALSE;
             SD_Close_(0);
-        } else {
+        }
+        else
+        {
             disk_initialize(SD_Drv);
         }
 #else
-        if (isr & SD_SDISR_CDPS0_Msk) {
+        if (isr & SD_SDISR_CDPS0_Msk)
+        {
             SD0.IsCardInsert = FALSE;   // SDISR_CD_Card = 1 means card remove for GPIO mode
             SD_Close_(0);
-        } else {
+        }
+        else
+        {
             disk_initialize(SD_Drv);
         }
 #endif
@@ -281,13 +305,18 @@ void SD0_Handler(void)
     }
 
     // CRC error interrupt
-    if (isr & SD_SDISR_CRC_IF_Msk) {
-        if (!(isr & SD_SDISR_CRC_16_Msk)) {
+    if (isr & SD_SDISR_CRC_IF_Msk)
+    {
+        if (!(isr & SD_SDISR_CRC_16_Msk))
+        {
             //printf("***** ISR sdioIntHandler(): CRC_16 error !\n");
             // handle CRC error
-        } else if (!(isr & SD_SDISR_CRC_7_Msk)) {
+        }
+        else if (!(isr & SD_SDISR_CRC_7_Msk))
+        {
             extern uint32_t _sd_uR3_CMD;
-            if (! _sd_uR3_CMD) {
+            if (! _sd_uR3_CMD)
+            {
                 //printf("***** ISR sdioIntHandler(): CRC_7 error !\n");
                 // handle CRC error
             }
@@ -302,9 +331,12 @@ void SD0_Handler(void)
 void SD_IRQHandler(void)
 {
 
-    if( ((SD->SDCR & SD_SDCR_SDPORT_Msk) >> (SD_SDCR_SDPORT_Pos)) == 0 ) {
+    if( ((SD->SDCR & SD_SDCR_SDPORT_Msk) >> (SD_SDCR_SDPORT_Pos)) == 0 )
+    {
         SD0_Handler();
-    } else if( ((SD->SDCR & SD_SDCR_SDPORT_Msk) >> (SD_SDCR_SDPORT_Pos)) == 1 ) {
+    }
+    else if( ((SD->SDCR & SD_SDCR_SDPORT_Msk) >> (SD_SDCR_SDPORT_Pos)) == 1 )
+    {
         //SD1_Handler();
     }
 
@@ -408,21 +440,25 @@ int32_t main(void)
     disk_read(SD_Drv, Buff, 2, 1);
     f_mount(&FatFs[0], 0, 1);
 
-    for (;;) {
+    for (;;)
+    {
         printf(_T(">"));
         ptr = Line;
         get_line(ptr, sizeof(Line));
-        switch (*ptr++) {
+        switch (*ptr++)
+        {
 
         case 'q' :  /* Exit program */
             return 0;
 
         case 'd' :
-            switch (*ptr++) {
+            switch (*ptr++)
+            {
             case 'd' :  /* dd [<lba>] - Dump sector */
                 if (!xatoi(&ptr, &p2)) p2 = sect;
                 res = (FRESULT)disk_read(SD_Drv, Buff, p2, 1);
-                if (res) {
+                if (res)
+                {
                     printf("rc=%d\n", (WORD)res);
                     break;
                 }
@@ -441,7 +477,8 @@ int32_t main(void)
             break;
 
         case 'b' :
-            switch (*ptr++) {
+            switch (*ptr++)
+            {
             case 'd' :  /* bd <addr> - Dump R/W buffer */
                 if (!xatoi(&ptr, &p1)) break;
                 for (ptr=(char*)&Buff[p1], ofs = p1, cnt = 32; cnt; cnt--, ptr+=16, ofs+=16)
@@ -450,18 +487,23 @@ int32_t main(void)
 
             case 'e' :  /* be <addr> [<data>] ... - Edit R/W buffer */
                 if (!xatoi(&ptr, &p1)) break;
-                if (xatoi(&ptr, &p2)) {
-                    do {
+                if (xatoi(&ptr, &p2))
+                {
+                    do
+                    {
                         Buff[p1++] = (BYTE)p2;
-                    } while (xatoi(&ptr, &p2));
+                    }
+                    while (xatoi(&ptr, &p2));
                     break;
                 }
-                for (;;) {
+                for (;;)
+                {
                     printf("%04X %02X-", (WORD)p1, Buff[p1]);
                     get_line(Line, sizeof(Line));
                     ptr = Line;
                     if (*ptr == '.') break;
-                    if (*ptr < ' ') {
+                    if (*ptr < ' ')
+                    {
                         p1++;
                         continue;
                     }
@@ -495,14 +537,16 @@ int32_t main(void)
 
 
         case 'f' :
-            switch (*ptr++) {
+            switch (*ptr++)
+            {
             case 'i' :  /* fi - Force initialized the logical drive */
                 put_rc(f_mount(&FatFs[0], 0, 1));
                 break;
 
             case 's' :  /* fs - Show logical drive status */
                 res = f_getfree("", (DWORD*)&p2, &fs);
-                if (res) {
+                if (res)
+                {
                     put_rc(res);
                     break;
                 }
@@ -519,7 +563,8 @@ int32_t main(void)
                 Finfo.lfsize = sizeof(Lfname);
 #endif
                 res = scan_files(ptr);
-                if (res) {
+                if (res)
+                {
                     put_rc(res);
                     break;
                 }
@@ -532,17 +577,22 @@ int32_t main(void)
             case 'l' :  /* fl [<path>] - Directory listing */
                 while (*ptr == ' ') ptr++;
                 res = f_opendir(&dir, ptr);
-                if (res) {
+                if (res)
+                {
                     put_rc(res);
                     break;
                 }
                 p1 = s1 = s2 = 0;
-                for(;;) {
+                for(;;)
+                {
                     res = f_readdir(&dir, &Finfo);
                     if ((res != FR_OK) || !Finfo.fname[0]) break;
-                    if (Finfo.fattrib & AM_DIR) {
+                    if (Finfo.fattrib & AM_DIR)
+                    {
                         s2++;
-                    } else {
+                    }
+                    else
+                    {
                         s1++;
                         p1 += Finfo.fsize;
                     }
@@ -589,16 +639,21 @@ int32_t main(void)
             case 'd' :  /* fd <len> - read and dump file from current fp */
                 if (!xatoi(&ptr, &p1)) break;
                 ofs = file1.fptr;
-                while (p1) {
-                    if ((UINT)p1 >= 16) {
+                while (p1)
+                {
+                    if ((UINT)p1 >= 16)
+                    {
                         cnt = 16;
                         p1 -= 16;
-                    } else                {
+                    }
+                    else
+                    {
                         cnt = p1;
                         p1 = 0;
                     }
                     res = f_read(&file1, Buff, cnt, &cnt);
-                    if (res != FR_OK) {
+                    if (res != FR_OK)
+                    {
                         put_rc(res);
                         break;
                     }
@@ -612,16 +667,21 @@ int32_t main(void)
                 if (!xatoi(&ptr, &p1)) break;
                 p2 = 0;
                 Timer = 0;
-                while (p1) {
-                    if ((UINT)p1 >= blen) {
+                while (p1)
+                {
+                    if ((UINT)p1 >= blen)
+                    {
                         cnt = blen;
                         p1 -= blen;
-                    } else {
+                    }
+                    else
+                    {
                         cnt = p1;
                         p1 = 0;
                     }
                     res = f_read(&file1, Buff, cnt, &s2);
-                    if (res != FR_OK) {
+                    if (res != FR_OK)
+                    {
                         put_rc(res);
                         break;
                     }
@@ -637,16 +697,21 @@ int32_t main(void)
                 memset(Buff, (BYTE)p2, sizeof(Buff));
                 p2 = 0;
                 Timer = 0;
-                while (p1) {
-                    if ((UINT)p1 >= blen) {
+                while (p1)
+                {
+                    if ((UINT)p1 >= blen)
+                    {
                         cnt = blen;
                         p1 -= blen;
-                    } else {
+                    }
+                    else
+                    {
                         cnt = p1;
                         p1 = 0;
                     }
                     res = f_write(&file1, Buff, cnt, &s2);
-                    if (res != FR_OK) {
+                    if (res != FR_OK)
+                    {
                         put_rc(res);
                         break;
                     }
@@ -702,21 +767,24 @@ int32_t main(void)
                 printf("Opening \"%s\"", ptr);
                 res = f_open(&file1, ptr, FA_OPEN_EXISTING | FA_READ);
                 putchar('\n');
-                if (res) {
+                if (res)
+                {
                     put_rc(res);
                     break;
                 }
                 printf("Creating \"%s\"", ptr2);
                 res = f_open(&file2, ptr2, FA_CREATE_ALWAYS | FA_WRITE);
                 putchar('\n');
-                if (res) {
+                if (res)
+                {
                     put_rc(res);
                     f_close(&file1);
                     break;
                 }
                 printf("Copying...");
                 p1 = 0;
-                for (;;) {
+                for (;;)
+                {
                     res = f_read(&file1, Buff, sizeof(Buff), &s1);
                     if (res || s1 == 0) break;   /* error or eof */
                     res = f_write(&file2, Buff, s1, &s2);
@@ -734,7 +802,8 @@ int32_t main(void)
                 break;
 
             case 'j' :  /* fj <drive#> - Change current drive */
-                if (xatoi(&ptr, &p1)) {
+                if (xatoi(&ptr, &p1))
+                {
                     put_rc(f_chdrive((BYTE)p1));
                 }
                 break;

@@ -119,14 +119,16 @@ int32_t main (void)
     /*-------------------------------------------------------------
      *  Modify CBS to 11b (boot from APROM)
      *------------------------------------------------------------*/
-    if (FMC_ReadConfig(au32Config, 3) < 0) {
+    if (FMC_ReadConfig(au32Config, 3) < 0)
+    {
         printf("\n\nFailed to read Config!\n\n");
         return -1;
     }
     cbs = (au32Config[0] >> 6) & 0x3;
     printf("Config0 = 0x%x, Config1 = 0x%x, CBS=%d\n\n", au32Config[0], au32Config[1], cbs);
 
-    if (cbs != 0x3) {
+    if (cbs != 0x3)
+    {
         printf("\n\nChange boot setting to [Boot from APROM].\n");
         FMC_ENABLE_CFG_UPDATE();
         au32Config[0] |= 0xc0;          /* set CBS to 11b */
@@ -147,7 +149,8 @@ int32_t main (void)
     printf("Writing fmc_ld_boot.bin image to LDROM...\n");
     FMC_ENABLE_LD_UPDATE();
     if (load_image_to_flash((uint32_t)&loaderImage1Base, (uint32_t)&loaderImage1Limit,
-                            FMC_LDROM_BASE, FMC_LDROM_SIZE) != 0) {
+                            FMC_LDROM_BASE, FMC_LDROM_SIZE) != 0)
+    {
         printf("Load image to LDROM failed!\n");
         return -1;
     }
@@ -159,14 +162,16 @@ int32_t main (void)
     printf("Writing fmc_isp.bin image to APROM address 0x%x...\n", ISP_CODE_BASE);
     FMC_ENABLE_AP_UPDATE();
     if (load_image_to_flash((uint32_t)&loaderImage2Base, (uint32_t)&loaderImage2Limit,
-                            ISP_CODE_BASE, ISP_CODE_MAX_SIZE) != 0) {
+                            ISP_CODE_BASE, ISP_CODE_MAX_SIZE) != 0)
+    {
         printf("Load image to APROM failed!\n");
         return -1;
     }
     FMC_DISABLE_LD_UPDATE();
 
     printf("\n\nWill change boot setting to [Boot from LDROM with IAP]...(Yes/No?)");
-    while (1) {
+    while (1)
+    {
         ch = getchar();
         if ((ch == 'N') || (ch == 'n')) while (1);
         if ((ch == 'Y') || (ch == 'y')) break;
@@ -176,14 +181,16 @@ int32_t main (void)
     /*-------------------------------------------------------------
      *  Modify CBS to 00b (boot from LDROM with IAP)
      *------------------------------------------------------------*/
-    if (FMC_ReadConfig(au32Config, 3) < 0) {
+    if (FMC_ReadConfig(au32Config, 3) < 0)
+    {
         printf("\n\nFailed to read Config!\n\n");
         return -1;
     }
     cbs = (au32Config[0] >> 6) & 0x3;
     printf("Config0 = 0x%x, Config1 = 0x%x, CBS=%d\n\n", au32Config[0], au32Config[1], cbs);
 
-    if ((cbs != 0) || !(au32Config[0] & 0x1)) {
+    if ((cbs != 0) || !(au32Config[0] & 0x1))
+    {
         FMC_ENABLE_CFG_UPDATE();
         au32Config[0] &= ~0xc0;         /* set CBS to 00b */
         au32Config[0] |= 0x1;           /* disable Data Flash */
@@ -205,25 +212,30 @@ static int  load_image_to_flash(uint32_t image_base, uint32_t image_limit, uint3
     uint32_t   i, j, u32Data, u32ImageSize, *pu32Loader;
 
     u32ImageSize = image_limit - image_base;
-    if (u32ImageSize == 0) {
+    if (u32ImageSize == 0)
+    {
         printf("  ERROR: Loader Image is 0 bytes!\n");
         return -1;
     }
 
-    if (u32ImageSize > max_size) {
+    if (u32ImageSize > max_size)
+    {
         printf("  ERROR: Loader Image is larger than %d KBytes!\n", max_size/1024);
         return -1;
     }
 
     printf("Program image to flash address 0x%x...", flash_addr);
     pu32Loader = (uint32_t *)image_base;
-    for (i = 0; i < u32ImageSize; i += FMC_FLASH_PAGE_SIZE) {
-        if (FMC_Erase(flash_addr + i)) {
+    for (i = 0; i < u32ImageSize; i += FMC_FLASH_PAGE_SIZE)
+    {
+        if (FMC_Erase(flash_addr + i))
+        {
             printf("Erase failed on 0x%x\n", flash_addr + i);
             return -1;
         }
 
-        for (j = 0; j < FMC_FLASH_PAGE_SIZE; j += 4) {
+        for (j = 0; j < FMC_FLASH_PAGE_SIZE; j += 4)
+        {
             FMC_Write(flash_addr + i + j, pu32Loader[(i + j) / 4]);
         }
     }
@@ -232,10 +244,13 @@ static int  load_image_to_flash(uint32_t image_base, uint32_t image_limit, uint3
     printf("Verify ...");
 
     /* Verify loader */
-    for (i = 0; i < u32ImageSize; i += FMC_FLASH_PAGE_SIZE) {
-        for (j = 0; j < FMC_FLASH_PAGE_SIZE; j += 4) {
+    for (i = 0; i < u32ImageSize; i += FMC_FLASH_PAGE_SIZE)
+    {
+        for (j = 0; j < FMC_FLASH_PAGE_SIZE; j += 4)
+        {
             u32Data = FMC_Read(flash_addr + i + j);
-            if (u32Data != pu32Loader[(i+j)/4]) {
+            if (u32Data != pu32Loader[(i+j)/4])
+            {
                 printf("data mismatch on 0x%x, [0x%x], [0x%x]\n", flash_addr + i + j, u32Data, pu32Loader[(i+j)/4]);
                 return -1;
             }

@@ -32,15 +32,19 @@ void PDMA_IRQHandler(void)
 {
     uint32_t status = PDMA_GET_INT_STATUS();
 
-    if (status & 0x1) { /* abort */
+    if (status & 0x1)   /* abort */
+    {
         if (PDMA_GET_ABORT_STS() & 0x4)
             u32IsTestOver = 2;
         PDMA_CLR_ABORT_FLAG(PDMA_ABTSTS_ABTIF_Msk);
-    } else if (status & 0x2) { /* done */
+    }
+    else if (status & 0x2)     /* done */
+    {
         if (PDMA_GET_TD_STS() & 0x4)
             u32IsTestOver = 1;
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF_Msk);
-    } else
+    }
+    else
         printf("unknown interrupt !!\n");
 }
 

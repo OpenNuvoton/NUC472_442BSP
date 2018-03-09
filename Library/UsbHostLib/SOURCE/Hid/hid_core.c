@@ -86,7 +86,8 @@ int32_t  HID_HidGetReportDescriptor(HID_DEV_T *hdev, uint8_t *desc_buf, int buf_
                               (char*)desc_buf, buf_max_len,
                               USB_TIMEOUT);
 
-    if (len < 0) {
+    if (len < 0)
+    {
         HID_DBGMSG("failed to get HID descriptor.\n");
         return HID_RET_IO_ERR;
     }
@@ -105,7 +106,8 @@ int32_t  HID_HidGetReportDescriptor(HID_DEV_T *hdev, uint8_t *desc_buf, int buf_
                               (char*)desc_buf, len,
                               USB_TIMEOUT);
 
-    if (len < 0) {
+    if (len < 0)
+    {
         HID_DBGMSG("failed to get HID descriptor.\n");
         return HID_RET_IO_ERR;
     }
@@ -142,7 +144,8 @@ int32_t  HID_HidGetReport(HID_DEV_T *hdev, int rtp_typ, int rtp_id,
                               hdev->ifnum,
                               (char *)data, len, USB_TIMEOUT);
 
-    if (len < 0) {
+    if (len < 0)
+    {
         HID_DBGMSG("failed to get report!\n");
         return HID_RET_IO_ERR;
     }
@@ -177,7 +180,8 @@ int32_t  HID_HidSetReport(HID_DEV_T *hdev, int rtp_typ, int rtp_id,
                               hdev->ifnum,
                               (char *)data, len, USB_TIMEOUT);
 
-    if (len < 0) {
+    if (len < 0)
+    {
         HID_DBGMSG("failed to set report!\n");
         return HID_RET_IO_ERR;
     }
@@ -207,7 +211,8 @@ int32_t  HID_HidGetIdle(HID_DEV_T *hdev, int rtp_id, uint8_t *idle_rate)
                               hdev->ifnum,
                               (char *)idle_rate, 1, USB_TIMEOUT);
 
-    if (len != 1) {
+    if (len != 1)
+    {
         HID_DBGMSG("failed to get idle rate! %d\n", len);
         return HID_RET_IO_ERR;
     }
@@ -239,7 +244,8 @@ int32_t  HID_HidSetIdle(HID_DEV_T *hdev, int rtp_id, uint8_t idle_rate)
                               hdev->ifnum,
                               NULL, 0, USB_TIMEOUT);
 
-    if (ret < 0) {
+    if (ret < 0)
+    {
         HID_DBGMSG("failed to set idle rate! %d\n", ret);
         return HID_RET_IO_ERR;
     }
@@ -269,7 +275,8 @@ int32_t  HID_HidGetProtocol(HID_DEV_T *hdev, uint8_t *protocol)
                               hdev->ifnum,
                               (char *)protocol, 1, USB_TIMEOUT);
 
-    if (len != 1) {
+    if (len != 1)
+    {
         HID_DBGMSG("failed to get protocol! %d\n", len);
         return HID_RET_IO_ERR;
     }
@@ -299,7 +306,8 @@ int32_t  HID_HidSetProtocol(HID_DEV_T *hdev, uint8_t protocol)
                               hdev->ifnum,
                               NULL, 0, USB_TIMEOUT);
 
-    if (ret < 0) {
+    if (ret < 0)
+    {
         HID_DBGMSG("failed to set protocol! %d\n", ret);
         return HID_RET_IO_ERR;
     }
@@ -322,7 +330,8 @@ static void  hid_read_irq(URB_T *urb)
     if (hdev == NULL)
         return;
 
-    if (urb->status) {
+    if (urb->status)
+    {
         HID_DBGMSG("hid_read_irq - has error: 0x%x\n", urb->status);
         return;
     }
@@ -344,7 +353,8 @@ static void  hid_write_irq(URB_T *urb)
     if (hdev == NULL)
         return;
 
-    if (urb->status) {
+    if (urb->status)
+    {
         HID_DBGMSG("hid_write_irq - has error: 0x%x\n", urb->status);
         return;
     }
@@ -381,13 +391,15 @@ int32_t USBH_HidStartIntReadPipe(HID_DEV_T *hdev, HID_IR_FUNC *func)
         return HID_RET_OUT_OF_MEMORY;
 
     ep_info = hid_get_ep_info(udev, hdev->ifnum, USB_DIR_IN);
-    if (ep_info == NULL) {
+    if (ep_info == NULL)
+    {
         HID_DBGMSG("Interrupt-in endpoint not found in this device!\n");
         return HID_RET_NOT_SUPPORTED;
     }
 
     urb = USBH_AllocUrb();
-    if (urb == NULL) {
+    if (urb == NULL)
+    {
         HID_DBGMSG("Failed to allocated URB!\n");
         return HID_RET_OUT_OF_MEMORY;
     }
@@ -404,7 +416,8 @@ int32_t USBH_HidStartIntReadPipe(HID_DEV_T *hdev, HID_IR_FUNC *func)
     hdev->read_func = func;
 
     ret = USBH_SubmitUrb(urb);
-    if (ret) {
+    if (ret)
+    {
         HID_DBGMSG("Error - failed to submit interrupt read request (%d)", ret);
         USBH_FreeUrb(urb);
         hdev->urbin = NULL;
@@ -439,13 +452,15 @@ int32_t USBH_HidStartIntWritePipe(HID_DEV_T *hdev, HID_IW_FUNC *func)
         return HID_RET_OUT_OF_MEMORY;
 
     ep_info = hid_get_ep_info(hdev->udev, hdev->ifnum, USB_DIR_OUT);
-    if (ep_info == NULL) {
+    if (ep_info == NULL)
+    {
         HID_DBGMSG("Assigned endpoint address 0x%x not found in this device!\n", ep_info->bEndpointAddress);
         return HID_RET_INVALID_PARAMETER;
     }
 
     urb = USBH_AllocUrb();
-    if (urb == NULL) {
+    if (urb == NULL)
+    {
         HID_DBGMSG("Failed to allocated URB!\n");
         return HID_RET_OUT_OF_MEMORY;
     }
@@ -464,7 +479,8 @@ int32_t USBH_HidStartIntWritePipe(HID_DEV_T *hdev, HID_IW_FUNC *func)
     hdev->write_func = func;
 
     ret = USBH_SubmitUrb(urb);
-    if (ret) {
+    if (ret)
+    {
         HID_DBGMSG("Error - failed to submit interrupt read request (%d)", ret);
         USBH_FreeUrb(urb);
         hdev->urbout = NULL;

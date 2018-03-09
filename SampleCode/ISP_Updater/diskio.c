@@ -33,11 +33,13 @@ DSTATUS disk_initialize (
     BYTE pdrv               /* Physical drive number (0..) */
 )
 {
-    switch (pdrv) {
+    switch (pdrv)
+    {
 
 #ifdef SUPPORT_USBH
     case DRV_USBH :
-        if ((usbh_probe_port(0) == 0) || (usbh_probe_port(1) == 0)) {
+        if ((usbh_probe_port(0) == 0) || (usbh_probe_port(1) == 0))
+        {
             usbh_probe_umass();
         }
         // translate the result code here
@@ -60,7 +62,8 @@ DSTATUS disk_status (
     BYTE pdrv       /* Physical drive number (0..) */
 )
 {
-    switch (pdrv) {
+    switch (pdrv)
+    {
 
 #ifdef SUPPORT_USBH
     case DRV_USBH :
@@ -90,7 +93,8 @@ DRESULT disk_read (
 #endif
 )
 {
-    switch (pdrv) {
+    switch (pdrv)
+    {
 
 #ifdef SUPPORT_USBH
     case DRV_USBH :
@@ -122,7 +126,8 @@ DRESULT disk_write (
 #endif
 )
 {
-    switch (pdrv) {
+    switch (pdrv)
+    {
 
 #ifdef SUPPORT_USBH
     case DRV_USBH :
@@ -148,7 +153,8 @@ DRESULT disk_ioctl (
     void *buff      /* Buffer to send/receive control data */
 )
 {
-    switch (pdrv) {
+    switch (pdrv)
+    {
 
 #ifdef SUPPORT_USBH
     case DRV_USBH :

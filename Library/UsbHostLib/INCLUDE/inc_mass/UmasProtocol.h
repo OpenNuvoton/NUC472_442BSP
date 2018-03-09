@@ -58,7 +58,8 @@
 #define USB_STOR_SCSI_SENSE_10_HDRSZ   8
 
 
-struct usb_stor_scsi_sense_hdr {
+struct usb_stor_scsi_sense_hdr
+{
     uint8_t   *dataLength;
     uint8_t   *mediumType;
     uint8_t   *devSpecParms;
@@ -67,7 +68,8 @@ struct usb_stor_scsi_sense_hdr {
 
 typedef struct usb_stor_scsi_sense_hdr Usb_Stor_Scsi_Sense_Hdr;
 
-union usb_stor_scsi_sense_hdr_u {
+union usb_stor_scsi_sense_hdr_u
+{
     Usb_Stor_Scsi_Sense_Hdr hdr;
     uint8_t   *array[USB_STOR_SCSI_SENSE_HDRSZ];
 };
@@ -75,7 +77,8 @@ union usb_stor_scsi_sense_hdr_u {
 
 typedef union usb_stor_scsi_sense_hdr_u Usb_Stor_Scsi_Sense_Hdr_u;
 
-struct usb_stor_scsi_sense_hdr_10 {
+struct usb_stor_scsi_sense_hdr_10
+{
     uint8_t   *dataLengthMSB;
     uint8_t   *dataLengthLSB;
     uint8_t   *mediumType;
@@ -88,7 +91,8 @@ struct usb_stor_scsi_sense_hdr_10 {
 
 typedef struct usb_stor_scsi_sense_hdr_10 Usb_Stor_Scsi_Sense_Hdr_10;
 
-union usb_stor_scsi_sense_hdr_10_u {
+union usb_stor_scsi_sense_hdr_10_u
+{
     Usb_Stor_Scsi_Sense_Hdr_10 hdr;
     uint8_t   *array[USB_STOR_SCSI_SENSE_10_HDRSZ];
 };

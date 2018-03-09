@@ -118,7 +118,8 @@
 
 // Tx/Rx buffer descriptor structure
 struct eth_descriptor;
-struct eth_descriptor {
+struct eth_descriptor
+{
     u32_t  status1;
     u8_t *buf;
     u32_t  status2;

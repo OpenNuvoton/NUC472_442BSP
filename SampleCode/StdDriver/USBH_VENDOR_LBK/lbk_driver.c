@@ -35,7 +35,8 @@ static int  lbk_probe(USB_DEV_T *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T *id
 
     LBK_DBGMSG("lbk_probe - dev=0x%x\n", (int)dev);
 
-    if (g_lbk_dev.connected) {
+    if (g_lbk_dev.connected)
+    {
         LBK_DBGMSG("There's an LBK device connected. The other LBK device will be ignored.\n");
         return -1;
     }
@@ -46,11 +47,13 @@ static int  lbk_probe(USB_DEV_T *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T *id
     ifnum = ifd->bInterfaceNumber;
     g_lbk_dev.ifnum = ifnum;
 
-    for (i = 0; i < dev->ep_list_cnt; i++) {
+    for (i = 0; i < dev->ep_list_cnt; i++)
+    {
         if (dev->ep_list[i].ifnum != ifnum)
             continue;
 
-        switch (dev->ep_list[i].bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) {
+        switch (dev->ep_list[i].bmAttributes & USB_ENDPOINT_XFERTYPE_MASK)
+        {
         case USB_ENDPOINT_XFER_INT:
             if (dev->ep_list[i].bEndpointAddress & USB_ENDPOINT_DIR_MASK)
                 g_lbk_dev.int_in = &dev->ep_list[i];
@@ -75,7 +78,8 @@ static int  lbk_probe(USB_DEV_T *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T *id
     }
 
     if (!g_lbk_dev.int_in || !g_lbk_dev.int_out || !g_lbk_dev.iso_in ||
-            !g_lbk_dev.iso_out || !g_lbk_dev.bulk_in || !g_lbk_dev.bulk_out) {
+            !g_lbk_dev.iso_out || !g_lbk_dev.bulk_in || !g_lbk_dev.bulk_out)
+    {
         LBK_DBGMSG("Expected endpoints not found!\n");
         return -1;
     }
@@ -93,24 +97,29 @@ static void  lbk_disconnect(USB_DEV_T *dev)
 
     LBK_DBGMSG("LBK device disconnected!\n");
 
-    if (g_lbk_dev.urb_int_in) {
+    if (g_lbk_dev.urb_int_in)
+    {
         USBH_UnlinkUrb(g_lbk_dev.urb_int_in);
         USBH_FreeUrb(g_lbk_dev.urb_int_in);
     }
 
-    if (g_lbk_dev.urb_int_out) {
+    if (g_lbk_dev.urb_int_out)
+    {
         USBH_UnlinkUrb(g_lbk_dev.urb_int_out);
         USBH_FreeUrb(g_lbk_dev.urb_int_out);
     }
 
-    for (i = 0; i < ISO_URB_COUNT; i++) {
-        if (g_lbk_dev.urb_iso_in[i]) {
+    for (i = 0; i < ISO_URB_COUNT; i++)
+    {
+        if (g_lbk_dev.urb_iso_in[i])
+        {
             USBH_UnlinkUrb(g_lbk_dev.urb_iso_in[i]);
             USBH_FreeUrb(g_lbk_dev.urb_iso_in[i]);
             g_lbk_dev.urb_iso_in[i] = NULL;
         }
 
-        if (g_lbk_dev.urb_iso_out[i]) {
+        if (g_lbk_dev.urb_iso_out[i])
+        {
             USBH_UnlinkUrb(g_lbk_dev.urb_iso_out[i]);
             USBH_FreeUrb(g_lbk_dev.urb_iso_out[i]);
             g_lbk_dev.urb_iso_out[i] = NULL;
@@ -119,14 +128,16 @@ static void  lbk_disconnect(USB_DEV_T *dev)
 }
 
 
-static USB_DEV_ID_T  lbk_id_table[] = {
+static USB_DEV_ID_T  lbk_id_table[] =
+{
     USB_DEVICE_ID_MATCH_VENDOR | USB_DEVICE_ID_MATCH_PRODUCT,     /* match_flags */
     LBKDEV_VID, LBKDEV_PID,
     0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 
-static USB_DRIVER_T  lbk_driver = {
+static USB_DRIVER_T  lbk_driver =
+{
     "vendor class LBK driver",
     lbk_probe,
     lbk_disconnect,
@@ -168,7 +179,8 @@ int LBK_CtrlSetData(uint8_t *buff)
                          0,                /* wValue: not used in this command */
                          buff,
                          64,               /* wLength: this command always send 64 bytes */
-                         1000) != 64) {    /* return value must be 64, the actual transferred data length */
+                         1000) != 64)      /* return value must be 64, the actual transferred data length */
+    {
         LBK_DBGMSG("REQ_SET_DATA command failed!\n");
         return -1;
     }
@@ -199,7 +211,8 @@ int LBK_CtrlGetData(uint8_t *buff)
                          0,                /* wValue: not used in this command */
                          buff,
                          64,               /* wLength: this command always send 64 bytes */
-                         1000) != 64) {    /* return value must be 64, the actual transferred data length */
+                         1000) != 64)      /* return value must be 64, the actual transferred data length */
+    {
         LBK_DBGMSG("REQ_GET_DATA command failed!\n");
         return -1;
     }
@@ -235,7 +248,8 @@ int LBK_BulkWriteData(uint8_t *buff, int len)
     ep_info = g_lbk_dev.bulk_out;
 
     urb = USBH_AllocUrb();
-    if (urb == NULL) {
+    if (urb == NULL)
+    {
         LBK_DBGMSG("No free URB!\n");
         return -1;
     }
@@ -247,14 +261,16 @@ int LBK_BulkWriteData(uint8_t *buff, int len)
     bulk_out_done = 0;
 
     ret = USBH_SubmitUrb(urb);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         LBK_DBGMSG("Failed to submit Bulk out transfer!\n");
         goto err_out;
     }
 
     for (timeout = 0x1000000 ; (timeout > 0) && (bulk_out_done == 0) ; timeout--);
 
-    if (timeout <= 0) {
+    if (timeout <= 0)
+    {
         USBH_UnlinkUrb(urb);
         LBK_DBGMSG("Bulk out xfer time-out!\n");
         goto err_out;
@@ -297,7 +313,8 @@ int LBK_BulkReadData(uint8_t *buff, int len)
     ep_info = g_lbk_dev.bulk_in;
 
     urb = USBH_AllocUrb();
-    if (urb == NULL) {
+    if (urb == NULL)
+    {
         LBK_DBGMSG("No free URB!\n");
         return -1;
     }
@@ -309,14 +326,16 @@ int LBK_BulkReadData(uint8_t *buff, int len)
     bulk_in_done = 0;
 
     ret = USBH_SubmitUrb(urb);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         LBK_DBGMSG("Failed to submit Bulk in transfer!\n");
         goto err_out;
     }
 
     for (timeout = 0x1000000 ; (timeout > 0) && (bulk_in_done == 0) ; timeout--);
 
-    if (timeout <= 0) {
+    if (timeout <= 0)
+    {
         USBH_UnlinkUrb(urb);
         LBK_DBGMSG("Bulk in xfer time-out!\n");
         goto err_out;
@@ -332,11 +351,13 @@ err_out:
 
 static void  int_in_irq(URB_T *urb)
 {
-    if (urb->status) {
+    if (urb->status)
+    {
         LBK_DBGMSG("int_in_irq - has error: 0x%x\n", urb->status);
         return;
     }
-    if (g_lbk_dev.int_in_func) {
+    if (g_lbk_dev.int_in_func)
+    {
         g_lbk_dev.int_in_func(urb->transfer_buffer, &urb->actual_length);
     }
 }
@@ -365,13 +386,15 @@ int LBK_StartIntInPipe()
     if (g_lbk_dev.urb_int_in)
         return 0;    // Interrupt in pipe should has been started.
 
-    if (!g_lbk_dev.int_in_func) {
+    if (!g_lbk_dev.int_in_func)
+    {
         LBK_DBGMSG("LBK_StartIntInPipe - Must install an Interrupt-In callback first!\n");
         return -1;
     }
 
     urb = USBH_AllocUrb();
-    if (urb == NULL) {
+    if (urb == NULL)
+    {
         LBK_DBGMSG("LBK_StartIntInPipe - failed to allocated URB!\n");
         return -1;
     }
@@ -390,7 +413,8 @@ int LBK_StartIntInPipe()
     g_lbk_dev.urb_int_in = urb;
 
     ret = USBH_SubmitUrb(urb);
-    if (ret) {
+    if (ret)
+    {
         LBK_DBGMSG("LBK_StartIntInPipe - failed to submit interrupt in request (%d)", ret);
         USBH_FreeUrb(urb);
         g_lbk_dev.urb_int_in = NULL;
@@ -417,11 +441,13 @@ void LBK_StopIntInPipe()
 
 static void  int_out_irq(URB_T *urb)
 {
-    if (urb->status) {
+    if (urb->status)
+    {
         LBK_DBGMSG("int_out_irq - has error: 0x%x\n", urb->status);
         return;
     }
-    if (g_lbk_dev.int_out_func) {
+    if (g_lbk_dev.int_out_func)
+    {
         urb->transfer_buffer_length = 8;
         g_lbk_dev.int_out_func(urb->transfer_buffer, &urb->transfer_buffer_length);
     }
@@ -451,13 +477,15 @@ int32_t LBK_StartIntOutPipe()
     if (g_lbk_dev.urb_int_out)
         return 0;    // Interrupt out pipe should has been started.
 
-    if (!g_lbk_dev.int_out_func) {
+    if (!g_lbk_dev.int_out_func)
+    {
         LBK_DBGMSG("LBK_StartIntOutPipe - Must install an Interrupt-Out callback first!\n");
         return -1;
     }
 
     urb = USBH_AllocUrb();
-    if (urb == NULL) {
+    if (urb == NULL)
+    {
         LBK_DBGMSG("LBK_StartIntOutPipe - failed to allocated URB!\n");
         return -1;
     }
@@ -478,7 +506,8 @@ int32_t LBK_StartIntOutPipe()
     g_lbk_dev.urb_int_out = urb;
 
     ret = USBH_SubmitUrb(urb);
-    if (ret) {
+    if (ret)
+    {
         LBK_DBGMSG("LBK_StartIntOutPipe - failed to submit interrupt in request (%d)", ret);
         USBH_FreeUrb(urb);
         g_lbk_dev.urb_int_out = NULL;
@@ -522,7 +551,8 @@ static void  iso_in_irq(URB_T *urb)
     urb->status = 0;
     urb->transfer_flags = USB_ISO_ASAP;
     urb->transfer_buffer_length = ISO_MAX_PKSZ * FRAMES_PER_DESC;
-    for (j=k=0; j < FRAMES_PER_DESC; j++, k += ISO_MAX_PKSZ) {
+    for (j=k=0; j < FRAMES_PER_DESC; j++, k += ISO_MAX_PKSZ)
+    {
         g_lbk_dev.iso_in_func((uint8_t *)urb->transfer_buffer + k, urb->iso_frame_desc[j].actual_length);
         urb->iso_frame_desc[j].status = 0;
         urb->iso_frame_desc[j].actual_length = 0;
@@ -556,16 +586,19 @@ int32_t LBK_StartIsoInPipe()
     if (g_lbk_dev.urb_iso_in[0])
         return 0;    // Interrupt in pipe should has been started.
 
-    if (!g_lbk_dev.iso_in_func) {
+    if (!g_lbk_dev.iso_in_func)
+    {
         LBK_DBGMSG("LBK_StartIsoInPipe - Must install an Isochronous-In callback first!\n");
         return -1;
     }
 
     g_lbk_dev.stop_iso_in = 0;
 
-    for (i = 0; i < ISO_URB_COUNT; i++) {
+    for (i = 0; i < ISO_URB_COUNT; i++)
+    {
         urb = USBH_AllocUrb();
-        if (urb == NULL) {
+        if (urb == NULL)
+        {
             LBK_DBGMSG("LBK_StartIsoInPipe - failed to allocated URB!\n");
             goto err_out;
         }
@@ -583,7 +616,8 @@ int32_t LBK_StartIsoInPipe()
         urb->transfer_buffer = &(g_lbk_dev.iso_in_buff[i][0]);
         urb->transfer_buffer_length = ISO_MAX_PKSZ * FRAMES_PER_DESC;
 
-        for (j=k=0; j < FRAMES_PER_DESC; j++, k += ISO_MAX_PKSZ) {
+        for (j=k=0; j < FRAMES_PER_DESC; j++, k += ISO_MAX_PKSZ)
+        {
             urb->iso_frame_desc[j].status = 0;
             urb->iso_frame_desc[j].offset = k;
             urb->iso_frame_desc[j].length = ISO_MAX_PKSZ;
@@ -592,7 +626,8 @@ int32_t LBK_StartIsoInPipe()
         g_lbk_dev.urb_iso_in[i] = urb;
 
         ret = USBH_SubmitUrb(urb);
-        if (ret) {
+        if (ret)
+        {
             LBK_DBGMSG("LBK_StartIsoInPipe - failed to submit interrupt in request (%d)", ret);
             USBH_FreeUrb(urb);
             goto err_out;
@@ -601,8 +636,10 @@ int32_t LBK_StartIsoInPipe()
     return 0;
 
 err_out:
-    for (i = 0; i < ISO_URB_COUNT; i++) {
-        if (g_lbk_dev.urb_iso_in[i]) {
+    for (i = 0; i < ISO_URB_COUNT; i++)
+    {
+        if (g_lbk_dev.urb_iso_in[i])
+        {
             USBH_UnlinkUrb(g_lbk_dev.urb_iso_in[i]);
             USBH_FreeUrb(g_lbk_dev.urb_iso_in[i]);
             g_lbk_dev.urb_iso_in[i] = NULL;
@@ -646,7 +683,8 @@ static void  iso_out_irq(URB_T *urb)
     urb->status = 0;
     urb->transfer_flags = USB_ISO_ASAP;
     urb->transfer_buffer_length = ISO_MAX_PKSZ * FRAMES_PER_DESC;
-    for (j=k=0; j < FRAMES_PER_DESC; j++, k += ISO_MAX_PKSZ) {
+    for (j=k=0; j < FRAMES_PER_DESC; j++, k += ISO_MAX_PKSZ)
+    {
         urb->iso_frame_desc[j].status = 0;
         urb->iso_frame_desc[j].actual_length = 0;
         urb->iso_frame_desc[j].offset = k;
@@ -681,16 +719,19 @@ int32_t LBK_StartIsoOutPipe()
     if (g_lbk_dev.urb_iso_out[0])
         return 0;    // Isochronous out pipe should has been started.
 
-    if (!g_lbk_dev.iso_out_func) {
+    if (!g_lbk_dev.iso_out_func)
+    {
         LBK_DBGMSG("LBK_StartIsoOutPipe - Must install an Isochronous-Out callback first!\n");
         return -1;
     }
 
     g_lbk_dev.stop_iso_out = 0;
 
-    for (i = 0; i < ISO_URB_COUNT; i++) {
+    for (i = 0; i < ISO_URB_COUNT; i++)
+    {
         urb = USBH_AllocUrb();
-        if (urb == NULL) {
+        if (urb == NULL)
+        {
             LBK_DBGMSG("LBK_StartIsoOutPipe - failed to allocated URB!\n");
             goto err_out;
         }
@@ -708,7 +749,8 @@ int32_t LBK_StartIsoOutPipe()
         urb->transfer_buffer = &(g_lbk_dev.iso_out_buff[i][0]);
         urb->transfer_buffer_length = ISO_MAX_PKSZ * FRAMES_PER_DESC;
 
-        for (j=k=0; j < FRAMES_PER_DESC; j++, k += ISO_MAX_PKSZ) {
+        for (j=k=0; j < FRAMES_PER_DESC; j++, k += ISO_MAX_PKSZ)
+        {
             urb->iso_frame_desc[j].offset = k;
             urb->iso_frame_desc[j].length = ISO_MAX_PKSZ;
             g_lbk_dev.iso_out_func((uint8_t *)urb->transfer_buffer + k, urb->iso_frame_desc[j].length);
@@ -717,7 +759,8 @@ int32_t LBK_StartIsoOutPipe()
         g_lbk_dev.urb_iso_out[i] = urb;
 
         ret = USBH_SubmitUrb(urb);
-        if (ret) {
+        if (ret)
+        {
             LBK_DBGMSG("LBK_StartIsoOutPipe - failed to submit interrupt in request (%d)", ret);
             USBH_FreeUrb(urb);
             goto err_out;
@@ -726,8 +769,10 @@ int32_t LBK_StartIsoOutPipe()
     return 0;
 
 err_out:
-    for (i = 0; i < ISO_URB_COUNT; i++) {
-        if (g_lbk_dev.urb_iso_out[i]) {
+    for (i = 0; i < ISO_URB_COUNT; i++)
+    {
+        if (g_lbk_dev.urb_iso_out[i])
+        {
             USBH_UnlinkUrb(g_lbk_dev.urb_iso_out[i]);
             USBH_FreeUrb(g_lbk_dev.urb_iso_out[i]);
             g_lbk_dev.urb_iso_out[i] = NULL;

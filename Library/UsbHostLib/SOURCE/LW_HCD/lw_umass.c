@@ -69,7 +69,8 @@ int umas_bulk_xfer(uint16_t ep_addr, uint8_t *toggle,
 {
     int  ret, retry = 3;
 
-    for ( ; retry; retry--) {
+    for ( ; retry; retry--)
+    {
         ret = usbh_drv_bulk_xfer(ep_addr, toggle, data_buff, data_len, timeout);
         if (ret == 0)
             return 0;
@@ -90,7 +91,8 @@ static void get_max_lun()
     /*------------------------------------------------------------------------------------*/
 
     ret = usbh_drv_ctrl_req(0xA1, 0xFE, 0, 0, 1, 1, buff, 0);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         umass_dbg_msg("Get Max Lun command failed!\n");
         if (ret == USBH_RET_STALL)
             usbh_clear_halt(0);
@@ -109,7 +111,8 @@ static void umass_reset()
     printf("Reset UMAS device...\n");
 
     ret = usbh_drv_ctrl_req(0x21, 0xFF, 0, 0, 1, 1, NULL, 1);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         umass_dbg_msg("UAMSS reset request failed!\n");
         return;
     }
@@ -133,7 +136,8 @@ static int  umass_run_command(uint8_t *buff, int data_len, int is_data_in, int t
     if (ret < 0)
         return ret;
 
-    if (data_len > 0) {
+    if (data_len > 0)
+    {
         if (is_data_in)
             ret = umas_bulk_xfer(bulk_in_ep_addr, &bulk_in_toggle, buff, data_len, timeout);
         else
@@ -147,7 +151,8 @@ static int  umass_run_command(uint8_t *buff, int data_len, int is_data_in, int t
     if (ret < 0)
         return ret;
 
-    if (g_cs.Status != 0) {
+    if (g_cs.Status != 0)
+    {
         umass_dbg_msg("CSW status error.\n");
         return USBH_RET_ERR_CLASS_CMD;
     }
@@ -172,10 +177,13 @@ static int  umass_inquiry()
     g_cb.CDB[4] = 36;
 
     ret = umass_run_command(_transfer_buffer, 36, 1, 10000);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         umass_dbg_msg("INQUIRY command failed. [%d]\n", ret);
         return ret;
-    } else {
+    }
+    else
+    {
         umass_dbg_msg("INQUIRY command success.\n");
     }
     return ret;
@@ -196,14 +204,18 @@ static int  umass_request_sense()
     g_cb.CDB[4] = 18;
 
     ret = umass_run_command(_transfer_buffer, 18, 1, 10000);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         umass_dbg_msg("REQUEST_SENSE command failed.\n");
         if (ret == USBH_RET_STALL)
             umass_reset();
         return ret;
-    } else {
+    }
+    else
+    {
         umass_dbg_msg("REQUEST_SENSE command success.\n");
-        if (_transfer_buffer[2] != 0x6) {
+        if (_transfer_buffer[2] != 0x6)
+        {
             umass_dbg_msg("Device is still not attention. 0x%x\n", _transfer_buffer[2]);
             return -1;
         }
@@ -226,11 +238,14 @@ static int  umass_test_unit_ready()
     g_cb.CDB[1] = g_disk_lun << 5;
 
     ret = umass_run_command(NULL, 0, 1, 10000);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         if (ret == USBH_RET_STALL)
             umass_reset();
         return ret;
-    } else {
+    }
+    else
+    {
         umass_dbg_msg("TEST_UNIT_READY command success.\n");
     }
     return ret;
@@ -256,7 +271,8 @@ DRESULT  usbh_umas_read(uint8_t *buff, uint32_t sector_no, int number_of_sector)
     g_cb.CDB[8] = number_of_sector & 0xFF;
 
     ret = umass_run_command(buff, number_of_sector * 512, 1, 3000);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         umass_dbg_msg("usbh_umas_read failed!\n");
         return RES_ERROR;
     }
@@ -281,7 +297,8 @@ DRESULT  usbh_umas_write(uint8_t *buff, uint32_t sector_no, int number_of_sector
     g_cb.CDB[8] = number_of_sector & 0xFF;
 
     ret = umass_run_command(buff, number_of_sector * 512, 0, 3000);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         umass_dbg_msg("usbh_umas_write failed!\n");
         return RES_ERROR;
     }
@@ -291,7 +308,8 @@ DRESULT  usbh_umas_write(uint8_t *buff, uint32_t sector_no, int number_of_sector
 
 DRESULT  usbh_umas_ioctl(int cmd, void *buff)
 {
-    switch (cmd) {
+    switch (cmd)
+    {
     case CTRL_SYNC:
         return RES_OK;
 
@@ -334,20 +352,24 @@ static int  umass_init_device(void)
     volatile int    i;
     int8_t          bHasMedia = 0;
 
-    for (g_disk_lun = 0; g_disk_lun <= g_max_lun; g_disk_lun++) {
+    for (g_disk_lun = 0; g_disk_lun <= g_max_lun; g_disk_lun++)
+    {
         umass_dbg_msg("\n\n\n******* Read lun %d ******\n\n", g_disk_lun);
 
         bHasMedia = 0;
-        for (retries = 0; retries < 3; retries++) {
+        for (retries = 0; retries < 3; retries++)
+        {
             if (umass_inquiry() == USBH_RET_STALL)
                 umass_reset();
 
-            if (umass_test_unit_ready() == USBH_RET_NO_ERR) {
+            if (umass_test_unit_ready() == USBH_RET_NO_ERR)
+            {
                 bHasMedia = 1;
                 break;
             }
 
-            if (umass_request_sense() == USBH_RET_NO_ERR) {
+            if (umass_request_sense() == USBH_RET_NO_ERR)
+            {
                 bHasMedia = 1;
                 break;
             }
@@ -358,7 +380,8 @@ static int  umass_init_device(void)
         if (!bHasMedia)
             continue;
 
-        for (retries = 0; retries < 3; retries++) {
+        for (retries = 0; retries < 3; retries++)
+        {
             umass_dbg_msg("READ CAPACITY ==>\n");
 
             memset((uint8_t *)&g_cb, 0, sizeof(g_cb));
@@ -368,12 +391,14 @@ static int  umass_init_device(void)
             g_cb.CDB[1] = g_disk_lun << 5;
 
             ret = umass_run_command(_transfer_buffer, 8, 1, 1000);
-            if (ret < 0) {
+            if (ret < 0)
+            {
                 umass_dbg_msg("READ_CAPACITY failed!\n");
                 if (ret == USBH_RET_STALL)
                     umass_reset();
                 continue;
-            } else
+            }
+            else
                 break;
         }
 
@@ -388,7 +413,8 @@ static int  umass_init_device(void)
         break;
     }
 
-    if (bHasMedia) {
+    if (bHasMedia)
+    {
         umass_dbg_msg("g_disk_lun = %d\n", g_disk_lun);
         return 0;
     }
@@ -417,7 +443,8 @@ int usbh_probe_umass(void)
     /* Issue GET DESCRIPTOR command to get configuration descriptor                       */
     /*------------------------------------------------------------------------------------*/
     ret = get_config_descriptor(_transfer_buffer);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         umass_dbg_msg("GET Config Descriptor command failed!!\n");
         return ret;
     }
@@ -433,15 +460,18 @@ int usbh_probe_umass(void)
     tlen = cfg_desc->wTotalLength;
     bptr = (uint8_t *)cfg_desc;
 
-    while (tlen > 0) {
-        switch (bptr[1]) {
+    while (tlen > 0)
+    {
+        switch (bptr[1])
+        {
         case USB_DT_INTERFACE:
             if_desc = (USB_IF_DESC_T *)bptr;
             if ((if_desc->bInterfaceClass == USB_CLASS_MASS_STORAGE) &&
                     ((if_desc->bInterfaceSubClass == UMAS_SC_SCSI) || (if_desc->bInterfaceSubClass == UMAS_SC_8070)) &&
                     (if_desc->bInterfaceProtocol == UMAS_PR_BULK))
                 iface_num = if_desc->bInterfaceNumber;
-            else {
+            else
+            {
                 iface_num = -1;
                 bulk_in_ep_addr = 0;
                 bulk_out_ep_addr = 0;
@@ -450,7 +480,8 @@ int usbh_probe_umass(void)
 
         case USB_DT_ENDPOINT:
             ep_desc = (USB_EP_DESC_T *)bptr;
-            if ((iface_num != -1) && ((ep_desc->bmAttributes & 0x3) == 0x2)) {
+            if ((iface_num != -1) && ((ep_desc->bmAttributes & 0x3) == 0x2))
+            {
                 if (ep_desc->bEndpointAddress & 0x80)
                     bulk_in_ep_addr = ep_desc->bEndpointAddress;
                 else

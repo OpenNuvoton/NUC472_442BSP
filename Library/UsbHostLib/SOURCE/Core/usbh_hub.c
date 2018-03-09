@@ -129,7 +129,8 @@ static void  hub_irq(URB_T *urb)
     //USB_debug("hub_irq!!\n");
 
     /* Cause a hub reset after 10 consecutive errors */
-    if (urb->status) {
+    if (urb->status)
+    {
         if (urb->status == USB_ERR_NOENT)
             return;
         USB_warning("nonzero status in irq %d\n", urb->status);
@@ -142,7 +143,8 @@ static void  hub_irq(URB_T *urb)
     /* Something happened, let khubd figure it out */
 
     /* Add the hub to the event queue */
-    if (list_empty(&hub->event_list)) {
+    if (list_empty(&hub->event_list))
+    {
         list_add(&hub->event_list, &_HubEventList);
     }
 }
@@ -153,7 +155,8 @@ static void usb_hub_power_on(USB_HUB_T *hub)
     int   i;
 
     /* Enable power to the ports */
-    for (i = 0; i < hub->descriptor.bNbrPorts; i++) {
+    for (i = 0; i < hub->descriptor.bNbrPorts; i++)
+    {
         USB_info("enable port:%d of hub:%d\n", i+1, hub->dev->devnum);
         usb_set_port_feature(hub->dev, i + 1, USB_PORT_FEAT_POWER);
     }
@@ -177,7 +180,8 @@ static int usb_hub_configure(USB_HUB_T *hub, EP_INFO_T *ep_info)
 
     /* <hub->descriptor> is large enough for a hub with 127 ports;
      * the hub can/will return fewer bytes here. */
-    if (ret < 0) {
+    if (ret < 0)
+    {
         USB_error("Erro - Unable to get hub descriptor (err = %d)\n", ret);
         return ret;
     }
@@ -188,14 +192,18 @@ static int usb_hub_configure(USB_HUB_T *hub, EP_INFO_T *ep_info)
     USB_info("%d port%s detected\n", hub->descriptor.bNbrPorts, (hub->descriptor.bNbrPorts == 1) ? "" : "s");
 
     /* D2: Identifying a Compound Device */
-    if (hub->descriptor.wHubCharacteristics & HUB_CHAR_COMPOUND) {
+    if (hub->descriptor.wHubCharacteristics & HUB_CHAR_COMPOUND)
+    {
         USB_info("part of a compound device\n");
-    } else {
+    }
+    else
+    {
         USB_info("standalone hub\n");
     }
 
     /* D1..D0: Logical Power Switching Mode */
-    switch (hub->descriptor.wHubCharacteristics & HUB_CHAR_LPSM) {
+    switch (hub->descriptor.wHubCharacteristics & HUB_CHAR_LPSM)
+    {
     case 0x00:
         USB_info("ganged power switching\n");
         break;
@@ -209,7 +217,8 @@ static int usb_hub_configure(USB_HUB_T *hub, EP_INFO_T *ep_info)
     }
 
     /* D4..D3: Over-current Protection Mode */
-    switch (hub->descriptor.wHubCharacteristics & HUB_CHAR_OCPM) {
+    switch (hub->descriptor.wHubCharacteristics & HUB_CHAR_OCPM)
+    {
     case 0x00:
         USB_info("global over-current protection\n");
         break;
@@ -222,7 +231,8 @@ static int usb_hub_configure(USB_HUB_T *hub, EP_INFO_T *ep_info)
         break;
     }
 
-    switch (dev->descriptor.bDeviceProtocol) {
+    switch (dev->descriptor.bDeviceProtocol)
+    {
     case 0:
         break;
     case 1:
@@ -241,7 +251,8 @@ static int usb_hub_configure(USB_HUB_T *hub, EP_INFO_T *ep_info)
 #endif
 
     ret = usb_get_hub_status(dev, &hubstatus);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         USB_error("Unable to get hub %d status (err = %d)\n", hub->dev->devnum, ret);
         return ret;
     }
@@ -250,16 +261,22 @@ static int usb_hub_configure(USB_HUB_T *hub, EP_INFO_T *ep_info)
 
 #ifdef USB_VERBOSE_DEBUG
     /* Hub status bit 0, Local Power Source */
-    if (hubstatus.wHubStatus & HUB_STATUS_LOCAL_POWER) {
+    if (hubstatus.wHubStatus & HUB_STATUS_LOCAL_POWER)
+    {
         USB_info("local power source is lost (inactive)\n");
-    } else {
+    }
+    else
+    {
         USB_info("local power source is good\n");
     }
 
     /* Hub status bit 1, Over-current Indicator */
-    if (hubstatus.wHubStatus & HUB_STATUS_OVERCURRENT) {
+    if (hubstatus.wHubStatus & HUB_STATUS_OVERCURRENT)
+    {
         USB_info("!! over-current\n");
-    } else {
+    }
+    else
+    {
         USB_info("No over-current.\n");
     }
 #endif
@@ -272,7 +289,8 @@ static int usb_hub_configure(USB_HUB_T *hub, EP_INFO_T *ep_info)
         maxp = sizeof(hub->buffer);
 
     hub->urb = USBH_AllocUrb();
-    if (!hub->urb) {
+    if (!hub->urb)
+    {
         USB_error("Error - couldn't allocate interrupt urb");
         return USB_ERR_NOMEM;
     }
@@ -284,7 +302,8 @@ static int usb_hub_configure(USB_HUB_T *hub, EP_INFO_T *ep_info)
     FILL_INT_URB(hub->urb, dev, pipe, hub->buffer, maxp, hub_irq,
                  hub, ep_info->bInterval);
     ret = USBH_SubmitUrb(hub->urb);
-    if (ret) {
+    if (ret)
+    {
         USB_error("Error - USBH_SubmitUrb failed (%d)", ret);
         USBH_FreeUrb(hub->urb);
         return ret;
@@ -311,26 +330,31 @@ static int  hub_probe(USB_DEV_T *dev, USB_IF_DESC_T *ifd, const USB_DEV_ID_T *id
         return USB_ERR_NODEV;
 
     ep_info = NULL;
-    for (i = 0; i < dev->ep_list_cnt; i++) {
+    for (i = 0; i < dev->ep_list_cnt; i++)
+    {
         if ((dev->ep_list[i].ifnum == ifnum) &&
-                ((dev->ep_list[i].bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_INT)) {
+                ((dev->ep_list[i].bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_INT))
+        {
             ep_info = &dev->ep_list[i];
             break;
         }
     }
-    if (ep_info == NULL) {
+    if (ep_info == NULL)
+    {
         USB_error("hub int ep not found!\n");
         return USB_ERR_NODEV;
     }
 
     /* Output endpoint? Curiousier and curiousier.. */
-    if (!(ep_info->bEndpointAddress & USB_DIR_IN)) {
+    if (!(ep_info->bEndpointAddress & USB_DIR_IN))
+    {
         USB_error("Error - Device #%d is hub class, but has output endpoint?\n", dev->devnum);
         return USB_ERR_NODEV;
     }
 
     /* If it's not an interrupt endpoint, we'd better punt! */
-    if ((ep_info->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) != USB_ENDPOINT_XFER_INT) {
+    if ((ep_info->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) != USB_ENDPOINT_XFER_INT)
+    {
         USB_error("Error - Device #%d is hub class, but has endpoint other than interrupt?\n", dev->devnum);
         return USB_ERR_NODEV;
     }
@@ -365,7 +389,8 @@ static void  hub_disconnect(USB_DEV_T *dev)
 
     hub = usbh_get_hub_by_dev(dev);
 
-    if (hub == NULL) {
+    if (hub == NULL)
+    {
         USB_warning("hub_disconnect - hub device not found!\n");
         return;
     }
@@ -374,7 +399,8 @@ static void  hub_disconnect(USB_DEV_T *dev)
     list_del(&hub->event_list);
     INIT_LIST_HEAD(&hub->event_list);
 
-    if (hub->urb) {
+    if (hub->urb)
+    {
         USBH_UnlinkUrb(hub->urb);
         USBH_FreeUrb(hub->urb);
         hub->urb = NULL;
@@ -396,13 +422,15 @@ static int  usb_hub_port_wait_reset(USB_DEV_T *hub, int port,
     uint16_t    portchange, portstatus;
     USB_PORT_STATUS_T  portsts;
 
-    for (delay_time = 0; delay_time < HUB_RESET_TIMEOUT; delay_time += delay) {
+    for (delay_time = 0; delay_time < HUB_RESET_TIMEOUT; delay_time += delay)
+    {
         /* wait to give the device a chance to reset */
         usbh_mdelay(delay);
 
         /* read and decode port status */
         ret = usb_get_port_status(hub, port + 1, &portsts);
-        if (ret < 0) {
+        if (ret < 0)
+        {
             USB_error("Error - get_port_status(%d) failed (err = %d)\n", port + 1, ret);
             return -1;
         }
@@ -420,14 +448,20 @@ static int  usb_hub_port_wait_reset(USB_DEV_T *hub, int port,
 
         /* if we have finished resetting, then break out of the loop */
         if (!(portstatus & USB_PORT_STAT_RESET) &&
-                (portstatus & USB_PORT_STAT_ENABLE)) {
-            if (portstatus & USB_PORT_STAT_HIGH_SPEED) {
+                (portstatus & USB_PORT_STAT_ENABLE))
+        {
+            if (portstatus & USB_PORT_STAT_HIGH_SPEED)
+            {
                 USB_debug("Device is high speed!\n");
                 dev->speed = USB_SPEED_HIGH;
-            } else if (portstatus & USB_PORT_STAT_LOW_SPEED) {
+            }
+            else if (portstatus & USB_PORT_STAT_LOW_SPEED)
+            {
                 USB_debug("Device is low speed!\n");
                 dev->speed = USB_SPEED_LOW;
-            } else {
+            }
+            else
+            {
                 USB_debug("Device is full speed!\n");
                 dev->speed = USB_SPEED_FULL;
             }
@@ -454,10 +488,12 @@ static int  usb_hub_port_reset(USB_DEV_T *hub, int port,
     USB_info("usb_hub_port_reset: hub:%d, port:%d dev:%x\n", hub->devnum, port+1, (int)dev);
 
     /* Reset the port */
-    for (i = 0; i < HUB_RESET_TRIES; i++) { /* retry loop */
+    for (i = 0; i < HUB_RESET_TRIES; i++)   /* retry loop */
+    {
         usb_set_port_feature(hub, port + 1, USB_PORT_FEAT_RESET);
         /* return success if the port reset OK */
-        if (!usb_hub_port_wait_reset(hub, port, dev, delay)) {
+        if (!usb_hub_port_wait_reset(hub, port, dev, delay))
+        {
             usb_clear_port_feature(hub, port + 1, USB_PORT_FEAT_C_RESET);
             return 0;
         }
@@ -505,28 +541,33 @@ static void  usb_hub_port_connect_change(USB_HUB_T *hubstate, USB_DEV_T *hub, in
         usbh_disconnect_device(&hub->children[port]);
 
     /* Return now if nothing is connected */
-    if (!(portstatus & USB_PORT_STAT_CONNECTION)) {
+    if (!(portstatus & USB_PORT_STAT_CONNECTION))
+    {
         if (portstatus & USB_PORT_STAT_ENABLE)
             usb_hub_port_disable(hub, port);
         return;
     }
 
-    if (portstatus & USB_PORT_STAT_LOW_SPEED) {
+    if (portstatus & USB_PORT_STAT_LOW_SPEED)
+    {
         usbh_mdelay(400);
         delay = HUB_LONG_RESET_TIME;
     }
 
-    for (i = 0; i < HUB_PROBE_TRIES; i++) {
+    for (i = 0; i < HUB_PROBE_TRIES; i++)
+    {
         /* Allocate a new device struct */
         dev = usbh_alloc_device(hub, hub->bus);
-        if (!dev) {
+        if (!dev)
+        {
             USB_error("Error - couldn't allocate usb_device\n");
             break;
         }
         dev->hub_port = port;
         hub->children[port] = dev;
 
-        if (usb_hub_port_reset(hub, port, dev, delay)) {
+        if (usb_hub_port_reset(hub, port, dev, delay))
+        {
             usbh_free_device(dev);
             break;
         }
@@ -571,7 +612,8 @@ int  usb_hub_events(void)
      *  safe since we delete the hub from the event list.
      *  Not the most efficient, but avoids deadlocks.
      */
-    while (1) {
+    while (1)
+    {
         if (list_empty(&_HubEventList))
             break;
 
@@ -584,21 +626,24 @@ int  usb_hub_events(void)
         list_del(tmp);
         INIT_LIST_HEAD(tmp);
 
-        if (hub->error) {
+        if (hub->error)
+        {
             USB_error("hub error %d!!\n", hub->error);
         }
 
         /* added by YCHuang */
         if (hub->urb->transfer_buffer_length == 1)
             irq_data = *(uint8_t *)hub->urb->transfer_buffer;
-        else {
+        else
+        {
             /* BIGBIG */
             //irq_data = *(uint16_t *)hub->urb->transfer_buffer;  /* FIX DEBUG, not verified */
             irq_data = (*((uint8_t *)hub->urb->transfer_buffer+1) << 8) |
                        *(uint8_t *)hub->urb->transfer_buffer;
         }
 
-        for (i = 0; i < hub->descriptor.bNbrPorts; i++) {
+        for (i = 0; i < hub->descriptor.bNbrPorts; i++)
+        {
             USB_PORT_STATUS_T  portsts;
             uint16_t    portstatus, portchange;
 
@@ -607,7 +652,8 @@ int  usb_hub_events(void)
 
             USB_info("usb_hub_events - hub:%d, get port status...\n", hub->dev->devnum);
             ret = usb_get_port_status(dev, i+1, &portsts);
-            if (ret < 0) {
+            if (ret < 0)
+            {
                 USB_error("Error - get_hub %d port %d status failed (err = %d)\n", hub->dev->devnum, i+1, ret);
                 continue;
             }
@@ -616,10 +662,13 @@ int  usb_hub_events(void)
             portchange = portsts.wPortChange;
             USB_debug("portstatus = %x, portchange = %x\n", portstatus, portchange);
 
-            if (portchange & USB_PORT_STAT_C_CONNECTION) {
+            if (portchange & USB_PORT_STAT_C_CONNECTION)
+            {
                 USB_info("port %d of hub %d connection change\n", i + 1, hub->dev->devnum);
                 usb_hub_port_connect_change(hub, dev, i, &portsts);
-            } else if (portchange & USB_PORT_STAT_C_ENABLE) {
+            }
+            else if (portchange & USB_PORT_STAT_C_ENABLE)
+            {
                 USB_info("port %d of hub %d enable change, status %x\n", i + 1, portstatus, hub->dev->devnum);
                 usb_clear_port_feature(dev, i + 1, USB_PORT_FEAT_C_ENABLE);
 
@@ -630,24 +679,28 @@ int  usb_hub_events(void)
                  */
                 if (!(portstatus & USB_PORT_STAT_ENABLE) &&
                         (portstatus & USB_PORT_STAT_CONNECTION) &&
-                        (dev->children[i])) {
+                        (dev->children[i]))
+                {
                     USB_error("Error - already running port %i disabled by hub (EMI?), re-enabling...\n",  i + 1);
                     usb_hub_port_connect_change(hub, dev, i, &portsts);
                 }
             }
 
-            if (portchange & USB_PORT_STAT_C_SUSPEND) {
+            if (portchange & USB_PORT_STAT_C_SUSPEND)
+            {
                 USB_info("port %d of hub %d suspend change\n", i + 1, hub->dev->devnum);
                 usb_clear_port_feature(dev, i + 1,  USB_PORT_FEAT_C_SUSPEND);
             }
 
-            if (portchange & USB_PORT_STAT_C_OVERCURRENT) {
+            if (portchange & USB_PORT_STAT_C_OVERCURRENT)
+            {
                 USB_warning("!! port %d of hub %d over-current change\n", i + 1, hub->dev->devnum);
                 usb_clear_port_feature(dev, i + 1, USB_PORT_FEAT_C_OVER_CURRENT);
                 usb_hub_power_on(hub);
             }
 
-            if (portchange & USB_PORT_STAT_C_RESET) {
+            if (portchange & USB_PORT_STAT_C_RESET)
+            {
                 USB_info("port %d of hub %d reset change\n", i + 1, hub->dev->devnum);
                 usb_clear_port_feature(dev, i + 1, USB_PORT_FEAT_C_RESET);
             }
@@ -656,14 +709,17 @@ int  usb_hub_events(void)
         /* deal with hub status changes */
         if (usb_get_hub_status(dev, &hubsts) < 0)
             USB_error("Error - get_hub_status failed\n");
-        else {
+        else
+        {
             //hubstatus = USB_SWAP16(hubsts.wHubStatus);
             hubchange = USB_SWAP16(hubsts.wHubChange);
-            if (hubchange & HUB_CHANGE_LOCAL_POWER) {
+            if (hubchange & HUB_CHANGE_LOCAL_POWER)
+            {
                 USB_debug("hub power change\n");
                 usb_clear_hub_feature(dev, C_HUB_LOCAL_POWER);
             }
-            if (hubchange & HUB_CHANGE_OVERCURRENT) {
+            if (hubchange & HUB_CHANGE_OVERCURRENT)
+            {
                 USB_error("!!hub overcurrent change\n");
                 usbh_mdelay(500);   /* Cool down */
                 usb_clear_hub_feature(dev, C_HUB_OVER_CURRENT);
@@ -677,7 +733,8 @@ int  usb_hub_events(void)
 }
 
 
-static USB_DEV_ID_T  hub_id_table[] = {
+static USB_DEV_ID_T  hub_id_table[] =
+{
     USB_DEVICE_ID_MATCH_INT_CLASS,     /* match_flags */
     0, 0, 0, 0, 0, 0, 0,
     USB_CLASS_HUB,                     /* bInterfaceClass */
@@ -685,7 +742,8 @@ static USB_DEV_ID_T  hub_id_table[] = {
 };
 
 
-static USB_DRIVER_T  hub_driver = {
+static USB_DRIVER_T  hub_driver =
+{
     "hub driver",
     hub_probe,
     hub_disconnect,

@@ -142,8 +142,10 @@ int32_t main (void)
     NVIC_SetPriority (USBD_IRQn, (1<<__NVIC_PRIO_BITS) - 2);
     NVIC_EnableIRQ(USBD_IRQn);
     USBD_Start();
-    while(1) {
-        if (g_usbd_UsbAudioState == UAC_START_AUDIO_RECORD && g_usbd_txflag) {
+    while(1)
+    {
+        if (g_usbd_UsbAudioState == UAC_START_AUDIO_RECORD && g_usbd_txflag)
+        {
             UAC_SendRecData();
         }
     }

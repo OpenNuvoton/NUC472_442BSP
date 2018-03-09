@@ -48,7 +48,8 @@ int  ctrl_cnt, int_in_cnt, int_out_cnt, iso_in_cnt, iso_out_cnt, bulk_cnt;
 
 void Delay(uint32_t delayCnt)
 {
-    while(delayCnt--) {
+    while(delayCnt--)
+    {
         __NOP();
         __NOP();
     }
@@ -281,10 +282,13 @@ void iso_xfer_read(uint8_t *data_buff, int data_len)
  */
 void bulk_in_xfer_status(int status)
 {
-    if (status == 0) {
+    if (status == 0)
+    {
         bulk_cnt++;
         g_BulkInBusy = 0;
-    } else {
+    }
+    else
+    {
         printf("Bulk-In transfer failed, status=%d\n", status);
     }
 }
@@ -330,11 +334,14 @@ int32_t main(void)
     connected = 0;
     ctrl_cnt = int_in_cnt = int_out_cnt = iso_in_cnt = iso_out_cnt = bulk_cnt = 0;
 
-    for (loop = 0; ; loop++) {
+    for (loop = 0; ; loop++)
+    {
         USBH_ProcessHubEvents();
 
-        if (LBK_IsConnected()) {
-            if (!connected) {
+        if (LBK_IsConnected())
+        {
+            if (!connected)
+            {
 #ifdef DO_INT_XFER
                 LBK_InstallIntInFunc(int_xfer_read);
                 LBK_InstallIntOutFunc(int_xfer_write);
@@ -350,7 +357,9 @@ int32_t main(void)
 #endif
                 connected = 1;
             }
-        } else {
+        }
+        else
+        {
             connected = 0;
             ctrl_cnt = int_in_cnt = int_out_cnt = iso_in_cnt = iso_out_cnt = bulk_cnt = 0;
             continue;
@@ -390,7 +399,8 @@ int32_t main(void)
         bulk_cnt++;
 #endif
 
-        if ((int_in_cnt % 100) == 1) {
+        if ((int_in_cnt % 100) == 1)
+        {
             printf("Transfer count: C:%d, Ii:%d, Io: %d, Si:%d, So:%d, B:%d\n",
                    ctrl_cnt, int_in_cnt, int_out_cnt, iso_in_cnt, iso_out_cnt, bulk_cnt);
         }

@@ -105,20 +105,25 @@ int32_t main (void)
     /* Start transaction */
     USBD_Start();
 
-    while(1) {
-        if (LBK_BulkInXferDone()) {
+    while(1)
+    {
+        if (LBK_BulkInXferDone())
+        {
             LBK_BulkInPushData((uint32_t)g_BulkLbkBuff, BULK_BUFF_SIZE);
         }
 
-        if (LBK_IsoInXferDone()) {
+        if (LBK_IsoInXferDone())
+        {
             LBK_IsoInPushData((uint32_t)g_IsoLbkBuff, EPC_MAX_PKT_SIZE);
         }
 
-        if (LBK_HasBulkOutReq()) {
+        if (LBK_HasBulkOutReq())
+        {
             LBK_BulkOut((uint32_t)g_BulkLbkBuff, BULK_BUFF_SIZE);
         }
 
-        if (LBK_HasIsoOutReq()) {
+        if (LBK_HasIsoOutReq())
+        {
             LBK_IsoOut((uint32_t)g_IsoLbkBuff, EPD_MAX_PKT_SIZE);
         }
     }

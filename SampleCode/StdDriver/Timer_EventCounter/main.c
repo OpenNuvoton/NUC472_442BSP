@@ -110,7 +110,8 @@ int main(void)
     NVIC_EnableIRQ(TMR0_IRQn);
 
 
-    for(i = 0; i < 1000; i++) {
+    for(i = 0; i < 1000; i++)
+    {
         PB->DOUT &= ~(1 << GPIO_DOUT_DOUT3_Pos); // low
         PB->DOUT |= (1 << GPIO_DOUT_DOUT3_Pos);  // high
     }

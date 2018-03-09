@@ -19,9 +19,11 @@
 /*!<USB Device Descriptor */
 #ifdef __ICCARM__
 #pragma data_alignment=4
-uint8_t gu8DeviceDescriptor[] = {
+uint8_t gu8DeviceDescriptor[] =
+{
 #else
-__align(4) uint8_t gu8DeviceDescriptor[] = {
+__align(4) uint8_t gu8DeviceDescriptor[] =
+{
 #endif
     LEN_DEVICE,     /* bLength */
     DESC_DEVICE,    /* bDescriptorType */
@@ -46,9 +48,11 @@ __align(4) uint8_t gu8DeviceDescriptor[] = {
 /*!<USB Qualifier Descriptor */
 #ifdef __ICCARM__
 #pragma data_alignment=4
-uint8_t gu8QualifierDescriptor[] = {
+uint8_t gu8QualifierDescriptor[] =
+{
 #else
-__align(4) uint8_t gu8QualifierDescriptor[] = {
+__align(4) uint8_t gu8QualifierDescriptor[] =
+{
 #endif
     LEN_QUALIFIER,  /* bLength */
     DESC_QUALIFIER, /* bDescriptorType */
@@ -64,9 +68,11 @@ __align(4) uint8_t gu8QualifierDescriptor[] = {
 /*!<USB Configure Descriptor */
 #ifdef __ICCARM__
 #pragma data_alignment=4
-uint8_t gu8ConfigDescriptor[] = {
+uint8_t gu8ConfigDescriptor[] =
+{
 #else
-__align(4) uint8_t gu8ConfigDescriptor[] = {
+__align(4) uint8_t gu8ConfigDescriptor[] =
+{
 #endif
     LEN_CONFIG,                        /* bLength */
     DESC_CONFIG,                       /* bDescriptorType */
@@ -148,9 +154,11 @@ __align(4) uint8_t gu8ConfigDescriptor[] = {
 /*!<USB Other Speed Configure Descriptor */
 #ifdef __ICCARM__
 #pragma data_alignment=4
-uint8_t gu8OtherConfigDescriptor[] = {
+uint8_t gu8OtherConfigDescriptor[] =
+{
 #else
-__align(4) uint8_t gu8OtherConfigDescriptor[] = {
+__align(4) uint8_t gu8OtherConfigDescriptor[] =
+{
 #endif
     LEN_CONFIG,                        /* bLength */
     DESC_CONFIG,                       /* bDescriptorType */
@@ -233,9 +241,11 @@ __align(4) uint8_t gu8OtherConfigDescriptor[] = {
 /*!<USB Language String Descriptor */
 #ifdef __ICCARM__
 #pragma data_alignment=4
-uint8_t gu8StringLang[4] = {
+uint8_t gu8StringLang[4] =
+{
 #else
-__align(4) uint8_t gu8StringLang[4] = {
+__align(4) uint8_t gu8StringLang[4] =
+{
 #endif
     4,              /* bLength */
     DESC_STRING,    /* bDescriptorType */
@@ -245,9 +255,11 @@ __align(4) uint8_t gu8StringLang[4] = {
 /*!<USB Vendor String Descriptor */
 #ifdef __ICCARM__
 #pragma data_alignment=4
-uint8_t gu8VendorStringDesc[] = {
+uint8_t gu8VendorStringDesc[] =
+{
 #else
-__align(4) uint8_t gu8VendorStringDesc[] = {
+__align(4) uint8_t gu8VendorStringDesc[] =
+{
 #endif
     16,
     DESC_STRING,
@@ -257,35 +269,41 @@ __align(4) uint8_t gu8VendorStringDesc[] = {
 /*!<USB Product String Descriptor */
 #ifdef __ICCARM__
 #pragma data_alignment=4
-uint8_t gu8ProductStringDesc[] = {
+uint8_t gu8ProductStringDesc[] =
+{
 #else
-__align(4) uint8_t gu8ProductStringDesc[] = {
+__align(4) uint8_t gu8ProductStringDesc[] =
+{
 #endif
     32,
     DESC_STRING,
     'V', 0, 'e', 0, 'n', 0, 'd', 0, 'o', 0, 'r', 0, ' ', 0, 'L', 0, 'o', 0, 'o', 0, 'p', 0, 'b', 0, 'a', 0, 'c', 0, 'k', 0
 };
 
-uint8_t *gpu8UsbString[4] = {
+uint8_t *gpu8UsbString[4] =
+{
     gu8StringLang,
     gu8VendorStringDesc,
     gu8ProductStringDesc,
     NULL,
 };
 
-uint8_t *gu8UsbHidReport[3] = {
+uint8_t *gu8UsbHidReport[3] =
+{
     NULL,
     NULL,
     NULL,
 };
 
-uint32_t gu32UsbHidReportLen[3] = {
+uint32_t gu32UsbHidReportLen[3] =
+{
     0,
     0,
     0,
 };
 
-S_USBD_INFO_T gsInfo = {
+S_USBD_INFO_T gsInfo =
+{
     gu8DeviceDescriptor,
     gu8ConfigDescriptor,
     gpu8UsbString,

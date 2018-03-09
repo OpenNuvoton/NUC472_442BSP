@@ -51,7 +51,8 @@ void EMAC_TX_IRQHandler(void)
   */
 void EMAC_RX_IRQHandler(void)
 {
-    while(1) {
+    while(1)
+    {
         // Get all recv data
         if(EMAC_RecvPkt(rxbuf, (uint32_t *)&u32PktLen) == 0)
             break;
@@ -123,12 +124,12 @@ void SYS_Init(void)
     SYS->GPG_MFPL |= SYS_GPG_MFPL_PG1MFP_UART0_RXD | SYS_GPG_MFPL_PG2MFP_UART0_TXD ;
     // Configure RMII pins
     SYS->GPC_MFPL |= SYS_GPC_MFPL_PC0MFP_EMAC_REFCLK |
-                    SYS_GPC_MFPL_PC1MFP_EMAC_MII_RXERR |
-                    SYS_GPC_MFPL_PC2MFP_EMAC_MII_RXDV |
-                    SYS_GPC_MFPL_PC3MFP_EMAC_MII_RXD1 |
-                    SYS_GPC_MFPL_PC4MFP_EMAC_MII_RXD0 |
-                    SYS_GPC_MFPL_PC6MFP_EMAC_MII_TXD0 |
-                    SYS_GPC_MFPL_PC7MFP_EMAC_MII_TXD1;
+                     SYS_GPC_MFPL_PC1MFP_EMAC_MII_RXERR |
+                     SYS_GPC_MFPL_PC2MFP_EMAC_MII_RXDV |
+                     SYS_GPC_MFPL_PC3MFP_EMAC_MII_RXD1 |
+                     SYS_GPC_MFPL_PC4MFP_EMAC_MII_RXD0 |
+                     SYS_GPC_MFPL_PC6MFP_EMAC_MII_TXD0 |
+                     SYS_GPC_MFPL_PC7MFP_EMAC_MII_TXD1;
 
 
     SYS->GPC_MFPH |= SYS_GPC_MFPH_PC8MFP_EMAC_MII_TXEN;
@@ -150,17 +151,21 @@ uint32_t uip_read(void)
     int len = 0;
 
     while((curTime == prevTime) && u32PktLen == 0);
-    if(u32PktLen != 0) {
+    if(u32PktLen != 0)
+    {
         NVIC_DisableIRQ(EMAC_RX_IRQn);
 
-        if(u32PktLen != 0) {
+        if(u32PktLen != 0)
+        {
             memcpy(uip_buf, rxbuf, u32PktLen);
             len = u32PktLen;
             u32PktLen = 0;
         }
 
         NVIC_EnableIRQ(EMAC_RX_IRQn);
-    } else {
+    }
+    else
+    {
         prevTime++;
     }
     return len;
@@ -212,32 +217,38 @@ int main(void)
     uip_setethaddr(ethaddr);
     telnetd_init();
 
-    while(1) {
+    while(1)
+    {
         /* Let the network device driver read an entire IP packet
            into the uip_buf. If it must wait for more than 0.5 seconds, it
            will return with the return value 0. If so, we know that it is
            time to call upon the uip_periodic(). Otherwise, the EMAC has
            received an IP packet that is to be processed by uIP. */
         uip_len = uip_read();
-        if(uip_len == 0) {
-            for(i = 0; i < UIP_CONNS; i++) {
+        if(uip_len == 0)
+        {
+            for(i = 0; i < UIP_CONNS; i++)
+            {
                 uip_periodic(i);
                 /* If the above function invocation resulted in data that
                    should be sent out on the network, the global variable
                    uip_len is set to a value > 0. */
-                if(uip_len > 0) {
+                if(uip_len > 0)
+                {
                     uip_arp_out();
                     uip_write();
                 }
             }
 
 #if UIP_UDP
-            for(i = 0; i < UIP_UDP_CONNS; i++) {
+            for(i = 0; i < UIP_UDP_CONNS; i++)
+            {
                 uip_udp_periodic(i);
                 /* If the above function invocation resulted in data that
                    should be sent out on the network, the global variable
                    uip_len is set to a value > 0. */
-                if(uip_len > 0) {
+                if(uip_len > 0)
+                {
                     uip_arp_out();
                     uip_write();
                 }
@@ -245,28 +256,36 @@ int main(void)
 #endif /* UIP_UDP */
 
             /* Call the ARP timer function every 10 seconds. */
-            if(++arptimer == 20) {
+            if(++arptimer == 20)
+            {
                 uip_arp_timer();
                 arptimer = 0;
             }
 
-        } else {
-            if(BUF->type == htons(UIP_ETHTYPE_IP)) {
+        }
+        else
+        {
+            if(BUF->type == htons(UIP_ETHTYPE_IP))
+            {
                 uip_arp_ipin();
                 uip_input();
                 /* If the above function invocation resulted in data that
                    should be sent out on the network, the global variable
                    uip_len is set to a value > 0. */
-                if(uip_len > 0) {
+                if(uip_len > 0)
+                {
                     uip_arp_out();
                     uip_write();
                 }
-            } else if(BUF->type == htons(UIP_ETHTYPE_ARP)) {
+            }
+            else if(BUF->type == htons(UIP_ETHTYPE_ARP))
+            {
                 uip_arp_arpin();
                 /* If the above function invocation resulted in data that
                    should be sent out on the network, the global variable
                    uip_len is set to a value > 0. */
-                if(uip_len > 0) {
+                if(uip_len > 0)
+                {
                     uip_write();
                 }
             }

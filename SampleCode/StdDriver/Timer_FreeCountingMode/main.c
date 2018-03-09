@@ -21,18 +21,26 @@ void TMR0_IRQHandler(void)
     static int cnt = 0;
     static uint32_t t0, t1;
 
-    if(cnt == 0) {
+    if(cnt == 0)
+    {
         t0 = TIMER_GetCaptureData(TIMER0);
         cnt++;
-    } else if(cnt == 1) {
+    }
+    else if(cnt == 1)
+    {
         t1 = TIMER_GetCaptureData(TIMER0);
         cnt++;
-        if(t0 > t1) {
+        if(t0 > t1)
+        {
             // over run, drop this data and do nothing
-        } else {
+        }
+        else
+        {
             printf("Input frequency is %dHz\n", 1000000 / (t1 - t0));
         }
-    } else {
+    }
+    else
+    {
         cnt = 0;
     }
 

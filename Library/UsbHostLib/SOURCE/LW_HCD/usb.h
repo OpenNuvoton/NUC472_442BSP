@@ -4,7 +4,8 @@
 
 /// @cond HIDDEN_SYMBOLS
 
-enum OCHI_CC_CODE {
+enum OCHI_CC_CODE
+{
 /* mapping of the OHCI CC status to error codes */
 /* No  Error  */               CC_NOERROR,
 /* CRC Error  */               CC_CRC,
@@ -32,7 +33,8 @@ enum OCHI_CC_CODE {
 #define ED_URB_DEL      0x08
 
 /* usb_ohci_ed */
-typedef struct ed {
+typedef struct ed
+{
     uint32_t    hwINFO;
     uint32_t    hwTailP;
     uint32_t    hwHeadP;
@@ -61,7 +63,8 @@ typedef struct ed {
 
 #define MAXPSW             8
 
-typedef struct td {
+typedef struct td
+{
     uint32_t    hwINFO;
     uint32_t    hwCBP;            /* Current Buffer Pointer */
     uint32_t    hwNextTD;         /* Next TD Pointer */
@@ -77,7 +80,8 @@ typedef struct td {
 
 #define NUM_INTS                32     /* part of the OHCI standard */
 
-typedef struct ohci_hcca {
+typedef struct ohci_hcca
+{
     uint32_t   int_table[NUM_INTS];    /* Interrupt ED table */
 #ifdef __BIG_ENDIAN
     uint16_t   pad1;                   /* set to 0 on each frame_no change */
@@ -137,7 +141,8 @@ typedef struct ohci_hcca {
 #define USB_REQ_SET_CONFIGURATION       0x09
 #define USB_REQ_SET_INTERFACE           0x0B
 
-typedef struct {
+typedef struct
+{
     __packed uint8_t  requesttype;
     __packed uint8_t  request;
     __packed uint16_t value;
@@ -149,7 +154,8 @@ typedef struct {
 /*-----------------------------------------------------------------------------------
  *  USB device descriptor
  */
-typedef struct usb_device_descriptor {  /*!< device descriptor structure            */
+typedef struct usb_device_descriptor    /*!< device descriptor structure            */
+{
     __packed uint8_t  bLength;          /*!< Length of device descriptor            */
     __packed uint8_t  bDescriptorType;  /*!< Device descriptor type                 */
     __packed uint16_t bcdUSB;           /*!< USB version number                     */
@@ -170,7 +176,8 @@ typedef struct usb_device_descriptor {  /*!< device descriptor structure        
 /*-----------------------------------------------------------------------------------
  *  Configuration descriptor
  */
-typedef struct usb_config_descriptor {  /*!< Configuration descriptor structure     */
+typedef struct usb_config_descriptor    /*!< Configuration descriptor structure     */
+{
     __packed uint8_t   bLength;         /*!< Length of configuration descriptor     */
     __packed uint8_t   bDescriptorType; /*!< Descriptor type                        */
     __packed uint16_t  wTotalLength;    /*!< Total length of this configuration     */
@@ -185,7 +192,8 @@ typedef struct usb_config_descriptor {  /*!< Configuration descriptor structure 
 /*-----------------------------------------------------------------------------------
  *  USB interface descriptor
  */
-typedef struct usb_interface_descriptor { /*!< Interface descriptor structure         */
+typedef struct usb_interface_descriptor   /*!< Interface descriptor structure         */
+{
     __packed uint8_t  bLength;          /*!< Length of interface descriptor         */
     __packed uint8_t  bDescriptorType;  /*!< Descriptor type                        */
     __packed uint8_t  bInterfaceNumber; /*!< Interface number                       */
@@ -201,7 +209,8 @@ typedef struct usb_interface_descriptor { /*!< Interface descriptor structure   
 /*-----------------------------------------------------------------------------------
  *  USB endpoint descriptor
  */
-typedef struct usb_endpoint_descriptor { /*!< Endpoint descriptor structure          */
+typedef struct usb_endpoint_descriptor   /*!< Endpoint descriptor structure          */
+{
     __packed uint8_t  bLength;          /*!< Length of endpoint descriptor          */
     __packed uint8_t  bDescriptorType;  /*!< Descriptor type                        */
     __packed uint8_t  bEndpointAddress; /*!< Endpoint address                       */

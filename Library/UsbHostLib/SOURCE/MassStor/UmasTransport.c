@@ -221,8 +221,10 @@ static uint32_t  usb_stor_transfer_length(SCSI_CMD_T *srb)
 
     if (srb->sc_data_direction == SCSI_DATA_WRITE)
         doDefault = 1;
-    else {
-        switch (lengths[srb->cmnd[0]]) {
+    else
+    {
+        switch (lengths[srb->cmnd[0]])
+        {
         case 'L':
             len = srb->cmnd[4];
             break;
@@ -301,15 +303,18 @@ static uint32_t  usb_stor_transfer_length(SCSI_CMD_T *srb)
         } /* end of switch */
     }
 
-    if (doDefault == 1) {
+    if (doDefault == 1)
+    {
         /* Are we going to scatter gather? */
-        if (srb->use_sg) {
+        if (srb->use_sg)
+        {
             /* Add up the sizes of all the sg segments */
             sg = (SCATTER_LIST_T *) srb->request_buff;
             for (i=0; i<srb->use_sg; i++)
                 total += sg[i].length;
             len = total;
-        } else
+        }
+        else
             /* Just return the length of the buffer */
             len = srb->request_bufflen;
     }
@@ -332,7 +337,8 @@ static int  clear_halt(USB_DEV_T *dev, int pipe)
                               USB_REQ_CLEAR_FEATURE, USB_RECIP_ENDPOINT, 0,
                               endp, NULL, 0, 0);
     /* this is a failure case */
-    if (result < 0) {
+    if (result < 0)
+    {
         UMAS_DEBUG("clear_halt failed!!\n");
         return result;
     }
@@ -406,14 +412,16 @@ static int  usb_stor_control_msg(UMAS_DATA_T *umas, uint32_t pipe,
 
     /* wait for the completion of the URB */
 #if 1
-    for (t0 = 0; t0 < 0x8000000; t0++) {
+    for (t0 = 0; t0 < 0x8000000; t0++)
+    {
         if (is_urb_completed())
             break;
     }
     if (t0 >= 0x8000000)
 #else
     t0 = umas_get_ticks();
-    while (umas_get_ticks() - t0 < 300) {
+    while (umas_get_ticks() - t0 < 300)
+    {
         if (is_urb_completed())
             break;
     }
@@ -460,14 +468,16 @@ static int  usb_stor_bulk_msg(UMAS_DATA_T *umas, void *data, int pipe,
         return status;
 
 #if 1
-    for (t0 = 0; t0 < 0x1000000; t0++) {
+    for (t0 = 0; t0 < 0x1000000; t0++)
+    {
         if (is_urb_completed())
             break;
     }
     if (t0 >= 0x8000000)
 #else
     t0 = umas_get_ticks();
-    while (umas_get_ticks() - t0 < 500) {
+    while (umas_get_ticks() - t0 < 500)
+    {
         if (is_urb_completed())
             break;
     }
@@ -516,27 +526,32 @@ static int  usb_stor_transfer_partial(UMAS_DATA_T *umas, char *buf, int length)
     //UMAS_DEBUG("usb_stor_bulk_msg() returned %d xferred %d/%d\n", result, partial, length);
 
     /* if we stall, we need to clear it before we go on */
-    if (result == USB_ERR_PIPE) {
+    if (result == USB_ERR_PIPE)
+    {
         UMAS_DEBUG("usb_stor_transfer_partial - clearing endpoint halt for pipe 0x%x\n", pipe);
         clear_halt(umas->pusb_dev, pipe);
     }
 
     /* did we send all the data? */
-    if (partial == length) {
+    if (partial == length)
+    {
         UMAS_VDEBUG("usb_stor_transfer_partial - transfer complete\n");
         return UMAS_BULK_TRANSFER_GOOD;
     }
 
     /* uh oh... we have an error code, so something went wrong. */
-    if (result) {
+    if (result)
+    {
         /* NAK - that means we've retried a few times already */
-        if (result == USB_ERR_TIMEOUT) {
+        if (result == USB_ERR_TIMEOUT)
+        {
             UMAS_DEBUG("usb_stor_transfer_partial - device NAKed\n");
             return UMAS_BULK_TRANSFER_FAILED;
         }
 
         /* USB_ERR_NOENT -- we canceled this transfer */
-        if (result == USB_ERR_NOENT) {
+        if (result == USB_ERR_NOENT)
+        {
             UMAS_DEBUG("usb_stor_transfer_partial - transfer aborted\n");
             return UMAS_BULK_TRANSFER_ABORTED;
         }
@@ -575,25 +590,30 @@ static void  us_transfer(SCSI_CMD_T *srb, UMAS_DATA_T* umas)
         transfer_amount = srb->request_bufflen;
 
     /* are we scatter-gathering? */
-    if (srb->use_sg) {
+    if (srb->use_sg)
+    {
         /*
          * loop over all the scatter gather structures and
          * make the appropriate requests for each, until done
          */
         sg = (SCATTER_LIST_T *) srb->request_buff;
-        for (i = 0; i < srb->use_sg; i++) {
+        for (i = 0; i < srb->use_sg; i++)
+        {
             /* transfer the lesser of the next buffer or the remaining data */
-            if (transfer_amount - total_transferred >= sg[i].length) {
+            if (transfer_amount - total_transferred >= sg[i].length)
+            {
                 result = usb_stor_transfer_partial(umas, sg[i].address, sg[i].length);
                 total_transferred += sg[i].length;
-            } else
+            }
+            else
                 result = usb_stor_transfer_partial(umas, sg[i].address,
                                                    transfer_amount - total_transferred);
             /* if we get an error, end the loop here */
             if (result)
                 break;
         }
-    } else /* no scatter-gather, just make the request */
+    }
+    else   /* no scatter-gather, just make the request */
         result = usb_stor_transfer_partial(umas, (char *)srb->request_buff, transfer_amount);
 
     /* return the result in the data structure itself */
@@ -624,7 +644,8 @@ void  UMAS_InvokeTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
      * If the command gets aborted by the higher layers, we need to
      * short-circuit all other processing
      */
-    if (result == USB_STOR_TRANSPORT_ABORTED) {
+    if (result == USB_STOR_TRANSPORT_ABORTED)
+    {
         UMAS_DEBUG("UMAS_InvokeTransport - transport indicates command was aborted\n");
         srb->result = DID_ABORT << 16;
         return;
@@ -643,7 +664,8 @@ void  UMAS_InvokeTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
      * of determining status on it's own, we need to auto-sense almost
      * every time.
      */
-    if ((umas->protocol == UMAS_PR_CB) || (umas->protocol == UMAS_PR_DPCM_USB)) {
+    if ((umas->protocol == UMAS_PR_CB) || (umas->protocol == UMAS_PR_DPCM_USB))
+    {
         UMAS_VDEBUG("UMAS_InvokeTransport - CB transport device requiring auto-sense\n");
         need_auto_sense = 1;
 
@@ -653,7 +675,8 @@ void  UMAS_InvokeTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
          * then it is impossible to truly determine status.
          */
         if ((umas->subclass == UMAS_SC_UFI) &&
-                ((srb->cmnd[0] == REQUEST_SENSE) || (srb->cmnd[0] == INQUIRY))) {
+                ((srb->cmnd[0] == REQUEST_SENSE) || (srb->cmnd[0] == INQUIRY)))
+        {
             UMAS_DEBUG("UMAS_InvokeTransport - no auto-sense for a special command\n");
             need_auto_sense = 0;
         }
@@ -664,11 +687,13 @@ void  UMAS_InvokeTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
      * automatically.  Note that we differentiate between a command
      * "failure" and an "error" in the transport mechanism.
      */
-    if (result == USB_STOR_TRANSPORT_FAILED) {
+    if (result == USB_STOR_TRANSPORT_FAILED)
+    {
         UMAS_VDEBUG("UMAS_InvokeTransport - transport indicates command failure\n");
         need_auto_sense = 1;
     }
-    if (result == USB_STOR_TRANSPORT_ERROR) {
+    if (result == USB_STOR_TRANSPORT_ERROR)
+    {
 #if 1  /* YCHuang, 2003.06.30 */
         umas->transport_reset(umas);
         UMAS_DEBUG("UMAS_InvokeTransport - transport indicates transport error\n");
@@ -687,13 +712,15 @@ void  UMAS_InvokeTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
               (srb->cmnd[0] == INQUIRY) ||
               (srb->cmnd[0] == MODE_SENSE) ||
               (srb->cmnd[0] == LOG_SENSE) ||
-              (srb->cmnd[0] == MODE_SENSE_10))) {
+              (srb->cmnd[0] == MODE_SENSE_10)))
+    {
         UMAS_DEBUG("UMAS_InvokeTransport - unexpectedly short transfer\n");
         need_auto_sense = 1;
     }
 
     /* Now, if we need to do the auto-sense, let's do it */
-    if (need_auto_sense) {
+    if (need_auto_sense)
+    {
         int     temp_result;
         void    *old_request_buffer;
         uint16_t  old_sg;
@@ -732,7 +759,8 @@ void  UMAS_InvokeTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
 
         /* issue the auto-sense command */
         temp_result = umas->transport(&umas->srb, umas);
-        if (temp_result != USB_STOR_TRANSPORT_GOOD) {
+        if (temp_result != USB_STOR_TRANSPORT_GOOD)
+        {
             UMAS_DEBUG("-- auto-sense failure\n");
 
             /*
@@ -740,7 +768,8 @@ void  UMAS_InvokeTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
              * multi-target device, since failure of an
              * auto-sense is perfectly valid
              */
-            if (!(umas->flags & UMAS_FL_SCM_MULT_TARG)) {
+            if (!(umas->flags & UMAS_FL_SCM_MULT_TARG))
+            {
                 umas->transport_reset(umas);
             }
             srb->result = DID_ERROR << 16;
@@ -765,7 +794,8 @@ void  UMAS_InvokeTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
         /* If things are really okay, then let's show that */
         if ((srb->sense_buffer[2] & 0xf) == 0x0)
             srb->result = GOOD << 1;
-    } else /* if (need_auto_sense) */
+    }
+    else   /* if (need_auto_sense) */
         srb->result = GOOD << 1;
 
     /*
@@ -797,26 +827,30 @@ void  UMAS_CbiIrq(URB_T *urb)
     UMAS_DATA_T  *umas = (UMAS_DATA_T *)urb->context;
 
     /* reject improper IRQs */
-    if (urb->actual_length != 2) {
+    if (urb->actual_length != 2)
+    {
         UMAS_DEBUG("-- IRQ too short\n");
         return;
     }
 
     /* is the device removed? */
-    if (urb->status == USB_ERR_NOENT) {
+    if (urb->status == USB_ERR_NOENT)
+    {
         UMAS_DEBUG("-- device has been removed\n");
         return;
     }
 
     /* was this a command-completion interrupt? */
-    if (umas->irqbuf[0] && (umas->subclass != UMAS_SC_UFI)) {
+    if (umas->irqbuf[0] && (umas->subclass != UMAS_SC_UFI))
+    {
         UMAS_DEBUG("-- not a command-completion IRQ\n");
         return;
     }
 
 #if 0
     /* was this a wanted interrupt? */
-    if (!umas->ip_wanted) {
+    if (!umas->ip_wanted)
+    {
         UMAS_DEBUG("ERROR: Unwanted interrupt received!\n");
         return;
     }
@@ -849,13 +883,15 @@ int  UMAS_CbiTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
 
     /* check the return code for the command */
     UMAS_VDEBUG("Call to usb_stor_control_msg() returned %d\n", result);
-    if (result < 0) {
+    if (result < 0)
+    {
         /* if the command was aborted, indicate that */
         if (result == USB_ERR_NOENT)
             return USB_STOR_TRANSPORT_ABORTED;
 
         /* STALL must be cleared when they are detected */
-        if (result == USB_ERR_PIPE) {
+        if (result == USB_ERR_PIPE)
+        {
             UMAS_VDEBUG("-- Stall on control pipe. Clearing\n");
             result = clear_halt(umas->pusb_dev,  usb_sndctrlpipe(umas->pusb_dev, 0));
             UMAS_VDEBUG("-- clear_halt() returns %d\n", result);
@@ -868,7 +904,8 @@ int  UMAS_CbiTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
 
     /* DATA STAGE */
     /* transfer the data payload for this command, if one exists*/
-    if (usb_stor_transfer_length(srb)) {
+    if (usb_stor_transfer_length(srb))
+    {
         us_transfer(srb, umas);
         UMAS_VDEBUG("CBI data stage result is 0x%x\n", srb->result);
 
@@ -883,7 +920,8 @@ int  UMAS_CbiTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
     //UMAS_VDEBUG("Current value of ip_waitq is: %d\n", umas->ip_waitq.count);
 
     /* if we were woken up by an abort instead of the actual interrupt */
-    if (umas->ip_wanted) {
+    if (umas->ip_wanted)
+    {
         UMAS_DEBUG("Did not get interrupt on CBI\n");
         umas->ip_wanted = 0;
         return USB_STOR_TRANSPORT_ABORTED;
@@ -899,10 +937,12 @@ int  UMAS_CbiTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
      *  that this means we could be ignoring a real error on these
      *  commands, but that can't be helped.
      */
-    if (umas->subclass == UMAS_SC_UFI) {
+    if (umas->subclass == UMAS_SC_UFI)
+    {
         if ((srb->cmnd[0] == REQUEST_SENSE) || (srb->cmnd[0] == INQUIRY))
             return USB_STOR_TRANSPORT_GOOD;
-        else {
+        else
+        {
             if (((uint8_t*)umas->irq_urb->transfer_buffer)[0])
                 return USB_STOR_TRANSPORT_FAILED;
             else
@@ -915,12 +955,14 @@ int  UMAS_CbiTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
      *  The first byte should always be a 0x0
      *  The second byte & 0x0F should be 0x0 for good, otherwise error
      */
-    if (umas->irqdata[0]) {
+    if (umas->irqdata[0])
+    {
         UMAS_VDEBUG("CBI IRQ data showed reserved bType %d\n", umas->irqdata[0]);
         return USB_STOR_TRANSPORT_ERROR;
     }
 
-    switch (umas->irqdata[1] & 0x0F) {
+    switch (umas->irqdata[1] & 0x0F)
+    {
     case 0x00:
         return USB_STOR_TRANSPORT_GOOD;
     case 0x01:
@@ -948,13 +990,15 @@ int  UMAS_CbTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
 
     /* check the return code for the command */
     UMAS_VDEBUG("UMAS_CbTransport - Call to usb_stor_control_msg() returned %d\n", result);
-    if (result < 0) {
+    if (result < 0)
+    {
         /* if the command was aborted, indicate that */
         if (result == USB_ERR_NOENT)
             return USB_STOR_TRANSPORT_ABORTED;
 
         /* a stall is a fatal condition from the device */
-        if (result == USB_ERR_PIPE) {
+        if (result == USB_ERR_PIPE)
+        {
             UMAS_DEBUG("UMAS_CbTransport - Stall on control pipe. Clearing\n");
             result = clear_halt(umas->pusb_dev, usb_sndctrlpipe(umas->pusb_dev, 0));
             UMAS_DEBUG("UMAS_CbTransport - clear_halt() returns %d\n", result);
@@ -967,7 +1011,8 @@ int  UMAS_CbTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
 
     /* DATA STAGE */
     /* transfer the data payload for this command, if one exists */
-    if (usb_stor_transfer_length(srb)) {
+    if (usb_stor_transfer_length(srb))
+    {
         us_transfer(srb, umas);
         UMAS_VDEBUG("UMAS_CbTransport - CB data stage result is 0x%x\n", srb->result);
 
@@ -1012,7 +1057,8 @@ int  UMAS_BulkMaxLun(UMAS_DATA_T *umas)
         return data;
 
     /* if we get a STALL, clear the stall */
-    if (result == USB_ERR_PIPE) {
+    if (result == USB_ERR_PIPE)
+    {
         UMAS_DEBUG("clearing endpoint halt for pipe 0x%x\n", pipe);
         clear_halt(umas->pusb_dev, pipe);
     }
@@ -1065,23 +1111,29 @@ int  UMAS_BulkTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
         return USB_STOR_TRANSPORT_ABORTED;
 
     /* if we stall, we need to clear it before we go on */
-    if (result == USB_ERR_PIPE) {
+    if (result == USB_ERR_PIPE)
+    {
         UMAS_DEBUG("UMAS_BulkTransport - 1 clearing endpoint halt for pipe 0x%x\n", pipe);
         clear_halt(umas->pusb_dev, pipe);
-    } else if (result) {
+    }
+    else if (result)
+    {
         /* unknown error -- we've got a problem */
         status = USB_STOR_TRANSPORT_ERROR;
         goto bulk_error;
     }
 
     /* if the command transferred well, then we go to the data stage */
-    if (result == 0) {
+    if (result == 0)
+    {
         /* send/receive data payload, if there is any */
-        if (bcb.DataTransferLength) {
+        if (bcb.DataTransferLength)
+        {
             us_transfer(srb, umas);
 
             /* if it was aborted, we need to indicate that */
-            if (srb->result == USB_STOR_TRANSPORT_ABORTED) {
+            if (srb->result == USB_STOR_TRANSPORT_ABORTED)
+            {
                 status = USB_STOR_TRANSPORT_ABORTED;
                 goto bulk_error;
             }
@@ -1101,13 +1153,15 @@ int  UMAS_BulkTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
     result = usb_stor_bulk_msg(umas, (char *)&bcs, pipe, UMAS_BULK_CS_WRAP_LEN, &partial);
 
     /* if the command was aborted, indicate that */
-    if (result == USB_ERR_NOENT) {
+    if (result == USB_ERR_NOENT)
+    {
         status = USB_STOR_TRANSPORT_ABORTED;
         goto bulk_error;
     }
 
     /* did the attempt to read the CSW fail? */
-    if (result == USB_ERR_PIPE) {
+    if (result == USB_ERR_PIPE)
+    {
         UMAS_DEBUG("get CSW failed - clearing endpoint halt for pipe 0x%x\n", pipe);
         clear_halt(umas->pusb_dev, pipe);
 
@@ -1116,14 +1170,16 @@ int  UMAS_BulkTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
         result = usb_stor_bulk_msg(umas, &bcs, pipe, UMAS_BULK_CS_WRAP_LEN, &partial);
 
         /* if the command was aborted, indicate that */
-        if (result == USB_ERR_NOENT) {
+        if (result == USB_ERR_NOENT)
+        {
             UMAS_DEBUG("get CSW Command was aborted!\n");
             status = USB_STOR_TRANSPORT_ABORTED;
             goto bulk_error;
         }
 
         /* if it fails again, we need a reset and return an error*/
-        if (result == USB_ERR_PIPE) {
+        if (result == USB_ERR_PIPE)
+        {
             UMAS_DEBUG("get CSW command 2nd try failed - clearing halt for pipe 0x%x\n", pipe);
             clear_halt(umas->pusb_dev, pipe);
             status = USB_STOR_TRANSPORT_ERROR;
@@ -1133,7 +1189,8 @@ int  UMAS_BulkTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
 
     /* if we still have a failure at this point, we're in trouble */
     UMAS_VDEBUG("Bulk status result = %d\n", result);
-    if (result) {
+    if (result)
+    {
         status = USB_STOR_TRANSPORT_ERROR;
         goto bulk_error;
     }
@@ -1142,7 +1199,8 @@ int  UMAS_BulkTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
     UMAS_VDEBUG("Bulk status Sig 0x%x T 0x%x R %d Stat 0x%x\n",
                 USB_SWAP32(bcs.Signature), bcs.Tag, bcs.Residue, bcs.Status);
     if ((bcs.Signature != UMAS_BULK_CS_SIGN) || (bcs.Tag != bcb.Tag) ||
-            (bcs.Status > UMAS_BULK_STAT_PHASE) || (partial != 13)) {
+            (bcs.Status > UMAS_BULK_STAT_PHASE) || (partial != 13))
+    {
         UMAS_DEBUG("Bulk status Sig 0x%x T 0x%x R %d Stat 0x%x\n",
                    USB_SWAP32(bcs.Signature), bcs.Tag, bcs.Residue, bcs.Status);
         status = USB_STOR_TRANSPORT_ERROR;
@@ -1150,7 +1208,8 @@ int  UMAS_BulkTransport(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
     }
 
     /* based on the status code, we report good or bad */
-    switch (bcs.Status) {
+    switch (bcs.Status)
+    {
     case UMAS_BULK_STAT_OK:
         /* command good -- note that data could be short */
         return USB_STOR_TRANSPORT_GOOD;
@@ -1198,7 +1257,8 @@ int  UMAS_CbReset(UMAS_DATA_T *umas)
     result = USBH_SendCtrlMsg(umas->pusb_dev, usb_sndctrlpipe(umas->pusb_dev,0),
                               US_CBI_ADSC, USB_TYPE_CLASS | USB_RECIP_INTERFACE,
                               0, umas->ifnum, cmd, sizeof(cmd), 0);
-    if (result < 0) {
+    if (result < 0)
+    {
         UMAS_DEBUG("UMAS_CbReset - CB[I] soft reset failed %d\n", result);
         return FAILED;
     }
@@ -1233,7 +1293,8 @@ int  UMAS_BulkReset(UMAS_DATA_T *umas)
                               usb_sndctrlpipe(umas->pusb_dev,0), UMAS_BULK_RESET_REQUEST,
                               USB_TYPE_CLASS | USB_RECIP_INTERFACE, 0, umas->ifnum,
                               NULL, 0, 0);
-    if (result < 0) {
+    if (result < 0)
+    {
         UMAS_DEBUG("Bulk soft reset failed %d\n", result);
         return FAILED;
     }

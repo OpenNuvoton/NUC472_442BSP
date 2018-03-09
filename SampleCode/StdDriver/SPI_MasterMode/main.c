@@ -78,12 +78,14 @@ void SPI0_IRQHandler(void)
 {
     uint32_t temp;
 
-    while((SPI_GET_STATUS(SPI0) & SPI_STATUS_RXEMPTY_Msk)==0) {
+    while((SPI_GET_STATUS(SPI0) & SPI_STATUS_RXEMPTY_Msk)==0)
+    {
         temp = SPI_READ_RX(SPI0);
         g_au32DestinationData[g_u32RxDataCount++] = temp;
     }
 
-    while( ((SPI_GET_STATUS(SPI0) & SPI_STATUS_TXFULL_Msk)==0) && (g_u32TxDataCount<TEST_COUNT) ) {
+    while( ((SPI_GET_STATUS(SPI0) & SPI_STATUS_TXFULL_Msk)==0) && (g_u32TxDataCount<TEST_COUNT) )
+    {
         SPI_WRITE_TX(SPI0, g_au32SourceData[g_u32TxDataCount++]);
     }
 
@@ -91,8 +93,10 @@ void SPI0_IRQHandler(void)
         SPI_DisableInt(SPI0, SPI_FIFO_TXTHIEN_MASK); /* Disable TX FIFO threshold interrupt */
 
     /* Check the Rx FIFO time-out interrupt flag */
-    if( SPI_GET_STATUS(SPI0) & SPI_STATUS_RXTOIF_Msk ) {
-        while((SPI_GET_STATUS(SPI0) & SPI_STATUS_RXEMPTY_Msk)==0) {
+    if( SPI_GET_STATUS(SPI0) & SPI_STATUS_RXTOIF_Msk )
+    {
+        while((SPI_GET_STATUS(SPI0) & SPI_STATUS_RXEMPTY_Msk)==0)
+        {
             temp = SPI_READ_RX(SPI0);
             g_au32DestinationData[g_u32RxDataCount++] = temp;
         }
@@ -128,7 +132,8 @@ int main(void)
     printf("After the transfer is done, the %d received data will be printed out.\n", TEST_COUNT);
     printf("The SPI master configuration is ready.\n");
 
-    for(u32DataCount=0; u32DataCount<TEST_COUNT; u32DataCount++) {
+    for(u32DataCount=0; u32DataCount<TEST_COUNT; u32DataCount++)
+    {
         g_au32SourceData[u32DataCount] = 0x00550000 + u32DataCount;
         g_au32DestinationData[u32DataCount] = 0;
     }
@@ -152,7 +157,8 @@ int main(void)
     while(g_u32RxDataCount<TEST_COUNT);
 
     printf("Received data:\n");
-    for(u32DataCount=0; u32DataCount<TEST_COUNT; u32DataCount++) {
+    for(u32DataCount=0; u32DataCount<TEST_COUNT; u32DataCount++)
+    {
         printf("%d:\t0x%08X\n", u32DataCount, g_au32DestinationData[u32DataCount]);
     }
     /* Disable Tx FIFO threshold interrupt and RX FIFO time-out interrupt */

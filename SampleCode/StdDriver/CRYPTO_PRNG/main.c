@@ -26,7 +26,8 @@ static volatile int  g_PRNG_done;
 
 void CRYPTO_IRQHandler()
 {
-    if (PRNG_GET_INT_FLAG()) {
+    if (PRNG_GET_INT_FLAG())
+    {
         g_PRNG_done = 1;
         PRNG_CLR_INT_FLAG();
     }
@@ -126,14 +127,16 @@ int32_t main (void)
     NVIC_EnableIRQ(CRPT_IRQn);
     PRNG_ENABLE_INT();
 
-    for (u32KeySize = PRNG_KEY_SIZE_64; u32KeySize <= PRNG_KEY_SIZE_256; u32KeySize++) {
+    for (u32KeySize = PRNG_KEY_SIZE_64; u32KeySize <= PRNG_KEY_SIZE_256; u32KeySize++)
+    {
         printf("\n\nPRNG Key size = %s\n\n",(u32KeySize == PRNG_KEY_SIZE_64) ? "64" :
                (u32KeySize == PRNG_KEY_SIZE_128) ? "128" :
                (u32KeySize == PRNG_KEY_SIZE_192) ? "192" :
                (u32KeySize == PRNG_KEY_SIZE_256) ? "256" : "unknown");
         PRNG_Open(u32KeySize, 0, 0);
 
-        for (i = 0; i < GENERATE_COUNT; i++) {
+        for (i = 0; i < GENERATE_COUNT; i++)
+        {
             g_PRNG_done = 0;
             PRNG_Start();
             while (!g_PRNG_done);

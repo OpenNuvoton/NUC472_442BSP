@@ -92,9 +92,11 @@ int32_t main (void)
     // WDT timeout every 2^14 WDT clock, disable system reset, disable wake up system
     WDT_Open(WDT_TIMEOUT_2POW14, 0, FALSE, FALSE);
 
-    while(1) {
+    while(1)
+    {
         // WDT timeout flag set
-        if(WDT_GET_TIMEOUT_INT_FLAG()) {
+        if(WDT_GET_TIMEOUT_INT_FLAG())
+        {
             // Reset WDT and clear time out flag
             WDT_CLEAR_TIMEOUT_INT_FLAG();
             printf("Reset WDT counter\n");

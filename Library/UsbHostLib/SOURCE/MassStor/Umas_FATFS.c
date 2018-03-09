@@ -26,7 +26,8 @@ static uint32_t     g_sector_size, g_total_sector_num;
 
 
 
-static uint8_t usb_stor_sense_notready[18] = {
+static uint8_t usb_stor_sense_notready[18] =
+{
     0x70/* current error */, 0, 0x02/* not ready */, 0 , 0,
     0x0a/* additional length */, 0, 0, 0, 0,
     0x04/* not ready */, 0x03 /* manual intervention */
@@ -37,7 +38,8 @@ static uint8_t usb_stor_sense_notready[18] = {
 static int  run_scsi_command(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
 {
     /* reject the command if the direction indicator is UNKNOWN */
-    if (srb->sc_data_direction == SCSI_DATA_UNKNOWN) {
+    if (srb->sc_data_direction == SCSI_DATA_UNKNOWN)
+    {
         UMAS_DEBUG("run_scsi_command - UNKNOWN data direction\n");
         umas->srb.result = DID_ERROR << 16;
         return -1;
@@ -45,43 +47,52 @@ static int  run_scsi_command(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
 
 #if 0
     /* reject if target != 0 or if LUN is higher than the maximum known LUN */
-    if (umas->srb.target && (!(umas->flags & UMAS_FL_SCM_MULT_TARG))) {
+    if (umas->srb.target && (!(umas->flags & UMAS_FL_SCM_MULT_TARG)))
+    {
         UMAS_DEBUG("run_scsi_command - Bad target number (%d/%d)\n", umas->srb.target, umas->srb.lun);
         umas->srb.result = DID_BAD_TARGET << 16;
         return -1;
     }
 #endif
 
-    if (umas->srb.lun > umas->max_lun) {
+    if (umas->srb.lun > umas->max_lun)
+    {
         UMAS_DEBUG("run_scsi_command - Bad LUN (%d/%d)\n", srb->target, srb->lun);
         umas->srb.result = DID_BAD_TARGET << 16;
         return -1;
     }
 
     /* handle those devices which can't do a START_STOP */
-    if ((srb->cmnd[0] == START_STOP) && (umas->flags & UMAS_FL_START_STOP)) {
+    if ((srb->cmnd[0] == START_STOP) && (umas->flags & UMAS_FL_START_STOP))
+    {
         UMAS_DEBUG("run_scsi_command - Skipping START_STOP command\n");
         umas->srb.result = GOOD << 1;
         return -1;
     }
 
     /* our device has gone - pretend not ready */
-    if (!umas->pusb_dev) {
+    if (!umas->pusb_dev)
+    {
         UMAS_DEBUG("run_scsi_command - Request is for removed device\n");
         /*
          * For REQUEST_SENSE, it's the data.  But for anything else,
          * it should look like we auto-sensed for it.
          */
-        if (umas->srb.cmnd[0] == REQUEST_SENSE) {
+        if (umas->srb.cmnd[0] == REQUEST_SENSE)
+        {
             memcpy(srb->request_buff,
                    usb_stor_sense_notready, sizeof(usb_stor_sense_notready));
             srb->result = GOOD << 1;
-        } else {
+        }
+        else
+        {
             memcpy(srb->sense_buffer,
                    usb_stor_sense_notready, sizeof(usb_stor_sense_notready));
             srb->result = CHECK_CONDITION << 1;
         }
-    } else { /* !umas->pusb_dev */
+    }
+    else     /* !umas->pusb_dev */
+    {
 #ifdef UMAS_VERBOSE_DEBUG
         UMAS_DEBUG_ShowCommand(srb);
 #endif
@@ -90,9 +101,12 @@ static int  run_scsi_command(SCSI_CMD_T *srb, UMAS_DATA_T *umas)
     }
 
     /* indicate that the command is done */
-    if (umas->srb.result != DID_ABORT << 16) {
+    if (umas->srb.result != DID_ABORT << 16)
+    {
         UMAS_VDEBUG("run_scsi_command - scsi cmd done, result=0x%x\n", srb->result);
-    } else {
+    }
+    else
+    {
         UMAS_DEBUG("run_scsi_command - scsi command aborted\n");
     }
 
@@ -137,7 +151,8 @@ int try_test_unit_ready(UMAS_DATA_T *umas)
 {
     int  retries;
 
-    for (retries = 0; retries < 10; retries++) {
+    for (retries = 0; retries < 10; retries++)
+    {
         if (test_unit_ready(umas, 0) == 0)
             return 0;
     }
@@ -161,7 +176,8 @@ int  usbh_umas_disk_status(void)
 
 DRESULT  usbh_umas_ioctl(int cmd, void *buff)
 {
-    switch (cmd) {
+    switch (cmd)
+    {
     case CTRL_SYNC:
         return RES_OK;
 
@@ -198,7 +214,8 @@ DRESULT  usbh_umas_read(uint8_t *buff, uint32_t sector_no, int number_of_sector)
         return RES_ERROR;
 
     //UMAS_DEBUG("usbh_umas_read - buff=0x%x, sector=%d, count=%d\n", (int)buff, sector_no, number_of_sector);
-    if (sector_no >= g_total_sector_num) {
+    if (sector_no >= g_total_sector_num)
+    {
         UMAS_DEBUG("usbh_umas_read - exceed disk size! (%d/%d)\n", sector_no, g_total_sector_num);
         return RES_ERROR;
     }
@@ -225,8 +242,10 @@ do_retry:
     srb->use_sg = 0;
     srb->sc_data_direction = SCSI_DATA_READ;
 
-    if (run_scsi_command(srb, g_umas) != 0) {
-        if (retry > 0) {
+    if (run_scsi_command(srb, g_umas) != 0)
+    {
+        if (retry > 0)
+        {
             retry--;
             goto do_retry;
         }
@@ -247,7 +266,8 @@ DRESULT  usbh_umas_write(uint8_t *buff, uint32_t sector_no, int number_of_sector
     if (g_umas == NULL)
         return RES_ERROR;
 
-    if (sector_no >= g_total_sector_num) {
+    if (sector_no >= g_total_sector_num)
+    {
         UMAS_DEBUG("usbh_umas_write - exceed disk size! (%d/%d)\n", sector_no, g_total_sector_num);
         return RES_ERROR;
     }
@@ -274,8 +294,10 @@ do_retry:
     srb->use_sg = 0;
     srb->sc_data_direction = SCSI_DATA_WRITE;
 
-    if (run_scsi_command(srb, g_umas) != 0) {
-        if (retry > 0) {
+    if (run_scsi_command(srb, g_umas) != 0)
+    {
+        if (retry > 0)
+        {
             retry--;
             goto do_retry;
         }
@@ -298,7 +320,8 @@ int  UMAS_InitUmasDevice(UMAS_DATA_T *umas)
     srb->request_buff = (void *)&stack_buff[0];
     memset(srb->request_buff, 0, 256);
 
-    for (g_disk_lun = umas->max_lun; g_disk_lun >= 0; g_disk_lun--) {
+    for (g_disk_lun = umas->max_lun; g_disk_lun >= 0; g_disk_lun--)
+    {
         UMAS_DEBUG("\n\n\n******* Read lun %d ******\n\n", g_disk_lun);
 
         UMAS_DEBUG("INQUIRY ==>\n");
@@ -316,16 +339,21 @@ int  UMAS_InitUmasDevice(UMAS_DATA_T *umas)
 
         UMAS_DEBUG("TEST UNIT READY ==>\n");
         bHasMedia = FALSE;
-        for (retries = 0; retries < 3; retries++) {
-            if (test_unit_ready(umas, g_disk_lun) != 0) {
+        for (retries = 0; retries < 3; retries++)
+        {
+            if (test_unit_ready(umas, g_disk_lun) != 0)
+            {
                 //UMAS_DEBUG("TEST_UNIT_READY - command failed\n");
                 //break;
-            } else if (srb->result == 0) {
+            }
+            else if (srb->result == 0)
+            {
                 bHasMedia = TRUE;
                 break;
             }
 
-            if ((srb->result < 0) || (srb->sense_buffer[2] != UNIT_ATTENTION)) {
+            if ((srb->result < 0) || (srb->sense_buffer[2] != UNIT_ATTENTION))
+            {
                 UMAS_DEBUG("TEST_UNIT_READY not UNIT_ATTENTION!\n");
                 //break;
             }
@@ -337,14 +365,16 @@ int  UMAS_InitUmasDevice(UMAS_DATA_T *umas)
              */
             if ((srb->result < 0) &&
                     (srb->sense_buffer[2] == UNIT_ATTENTION) &&
-                    (srb->sense_buffer[12] == 0x3A)) {
+                    (srb->sense_buffer[12] == 0x3A))
+            {
                 UMAS_DEBUG("TEST_UNIT_READY - no media\n");
                 //break;
             }
 
             /* Look for non-removable devices that return NOT_READY.
              * Issue command to spin up drive for these cases. */
-            if ((srb->result < 0) && (srb->sense_buffer[2] == NOT_READY)) {
+            if ((srb->result < 0) && (srb->sense_buffer[2] == NOT_READY))
+            {
                 UMAS_DEBUG("TEST_UNIT_READY - not ready, will retry.\n");
             }
             usbh_mdelay(100);
@@ -355,13 +385,15 @@ int  UMAS_InitUmasDevice(UMAS_DATA_T *umas)
 
         UMAS_DEBUG("REQUEST SENSE ==>\n");
 
-        if (request_sense(umas, g_disk_lun) == 0) {
+        if (request_sense(umas, g_disk_lun) == 0)
+        {
             //HexDumpBuffer("REQUEST_SENSE result", srb->request_buff, 256);
             if ((srb->request_buff[16] == 0) && (srb->request_buff[17] == 0))
                 UMAS_DEBUG("REQUEST_SENSE - no sense\n");
             else
                 UMAS_DEBUG("REQUEST_SENSE - attention %02x %02x\n", srb->request_buff[16], srb->request_buff[17]);
-        } else
+        }
+        else
             UMAS_DEBUG("REQUEST_SENSE failed!\n");;
 
         UMAS_DEBUG("READ CAPACITY ==>\n");
@@ -372,7 +404,8 @@ int  UMAS_InitUmasDevice(UMAS_DATA_T *umas)
         srb->sense_buffer[0] = 0;
         srb->sense_buffer[2] = 0;
         srb->sc_data_direction = SCSI_DATA_READ;
-        if (run_scsi_command(srb, umas) != 0) {
+        if (run_scsi_command(srb, umas) != 0)
+        {
             UMAS_DEBUG("READ_CAPACITY failed!\n");
             continue;
         }

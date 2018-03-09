@@ -27,12 +27,16 @@ void PDMA_IRQHandler(void)
 {
     uint32_t u32Status = PDMA_GET_INT_STATUS();
 
-    if (u32Status & 0x1) { /* abort */
+    if (u32Status & 0x1)   /* abort */
+    {
         if (PDMA_GET_ABORT_STS() & 0x4)
             PDMA_CLR_ABORT_FLAG(PDMA_ABTSTS_ABTIF_Msk);
         printf("Abort!!\n");
-    } else if (u32Status & 0x2) {
-        if (PDMA_GET_TD_STS() & 0x4) {          /* channel 2 done, Rx */
+    }
+    else if (u32Status & 0x2)
+    {
+        if (PDMA_GET_TD_STS() & 0x4)            /* channel 2 done, Rx */
+        {
             /* Reset PDMA Scatter-Gather table */
             PDMA_ResetRxSGTable(u8PDMARxIdx);
 
@@ -46,7 +50,9 @@ void PDMA_IRQHandler(void)
         }
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF_Msk);
 
-    } else {    /* unknown interrupt */
+    }
+    else        /* unknown interrupt */
+    {
         printf("unknown interrupt, status=0x%x!!\n", u32Status);
     }
 }
@@ -78,7 +84,8 @@ void PDMA_WriteRxSGTable(void)
     uint16_t i;
 
     /* Use PDMA_RXBUFFER_CNT scatter-gather tables and link with each other */
-    for(i=0; i<PDMA_RXBUFFER_CNT; i++) {
+    for(i=0; i<PDMA_RXBUFFER_CNT; i++)
+    {
         DMA_RXDESC[i].ctl = (((RX_BUFF_LEN/4)-1)<<PDMA_DSCT_CTL_TXCNT_Pos)|PDMA_WIDTH_32|PDMA_SAR_FIX|PDMA_DAR_INC|PDMA_REQ_SINGLE|PDMA_OP_SCATTER;
         DMA_RXDESC[i].endsrc = (uint32_t)&I2S1->RX;
         DMA_RXDESC[i].enddest = (uint32_t)&PcmRecBuff[i] + RX_BUFF_LEN;

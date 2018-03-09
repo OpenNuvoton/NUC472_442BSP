@@ -88,7 +88,8 @@ typedef void (HID_IW_FUNC)(struct usbhid_dev *hdev, uint8_t **wbuff, int *buff_s
  *  HID device
  */
 /*! HID device structure \hideinitializer             */
-typedef struct usbhid_dev {
+typedef struct usbhid_dev
+{
     USB_DEV_T           *udev;          /*!< USB device pointer of HID_DEV_T \hideinitializer  */
     int                 ifnum;          /*!< Interface numder \hideinitializer                 */
     uint8_t             bSubClassCode;  /*!< Interface subclass code \hideinitializer          */

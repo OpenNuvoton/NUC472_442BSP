@@ -65,7 +65,8 @@ void  UMAS_DEBUG_ShowCommand(SCSI_CMD_T *srb)
     int     i;
     char    *what = NULL;
 
-    switch (srb->cmnd[0]) {
+    switch (srb->cmnd[0])
+    {
     case TEST_UNIT_READY:
 
         what = "TEST_UNIT_READY";
@@ -440,7 +441,8 @@ void  UMAS_DEBUG_PrintScsiCommand(SCSI_CMD_T *cmd)
                MODE_SENSE, MODE_SENSE_10 );
 
     UMAS_DEBUG("buffer is %p with length %d.\n", buffer, bufferSize );
-    for (i = 0; i < bufferSize; i += 16) {
+    for (i = 0; i < bufferSize; i += 16)
+    {
         UMAS_DEBUG("%02x %02x %02x %02x %02x %02x %02x %02x\n",
                    buffer[i], buffer[i+1], buffer[i+2], buffer[i+3],
                    buffer[i+4], buffer[i+5], buffer[i+6], buffer[i+7]);
@@ -450,7 +452,8 @@ void  UMAS_DEBUG_PrintScsiCommand(SCSI_CMD_T *cmd)
     }
 
     UMAS_DEBUG("Buffer has %d scatterlists.\n", cmd->use_sg );
-    for (i = 0; i < cmd->use_sg; i++ ) {
+    for (i = 0; i < cmd->use_sg; i++ )
+    {
         UMAS_DEBUG("Length of scatterlist %d is %d.\n",i,sg[i].length);
         UMAS_DEBUG("%02x %02x %02x %02x %02x %02x %02x %02x\n",
                    sg[i].address[0], sg[i].address[1], sg[i].address[2], sg[i].address[3],

@@ -23,8 +23,10 @@ void PDMA_IRQHandler(void)
 {
     uint32_t u32Status = PDMA_GET_INT_STATUS();
 
-    if (u32Status & 0x2) { /* done */
-        if (PDMA_GET_TD_STS() & 0x4) {
+    if (u32Status & 0x2)   /* done */
+    {
+        if (PDMA_GET_TD_STS() & 0x4)
+        {
             aPCMBuffer_Full[u8PCMBuffer_Playing] = 0;       //set empty flag
             PDMA_Reset_SCTable(u8PCMBuffer_Playing);
             u8PCMBuffer_Playing ^= 1;

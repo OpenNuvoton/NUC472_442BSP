@@ -41,7 +41,8 @@
  * Hub Status and Hub Change results
  * See USB 2.0 spec Table 11-19 and Table 11-20
  */
-typedef struct usb_port_status {
+typedef struct usb_port_status
+{
     uint16_t  wPortStatus;
     uint16_t  wPortChange;
 } USB_PORT_STATUS_T;
@@ -84,7 +85,8 @@ typedef struct usb_port_status {
 #define HUB_CHAR_TTTT                   0x0060 /* D6 .. D5 */
 #define HUB_CHAR_PORTIND                0x0080 /* D7       */
 
-typedef struct usb_hub_status {
+typedef struct usb_hub_status
+{
     __packed uint16_t wHubStatus;
     __packed uint16_t wHubChange;
 } USB_HUB_STATUS_T;
@@ -115,7 +117,8 @@ typedef struct usb_hub_status {
  * Hub descriptor
  * See USB 2.0 spec Table 11-13
  */
-typedef struct usb_hub_descriptor {
+typedef struct usb_hub_descriptor
+{
     __packed uint8_t  bDescLength;
     __packed uint8_t  bDescriptorType;
     __packed uint8_t  bNbrPorts;
@@ -127,7 +130,8 @@ typedef struct usb_hub_descriptor {
 } USB_HUB_DESC_T;
 
 
-typedef struct usb_hub {
+typedef struct usb_hub
+{
     USB_DEV_T       *dev;
     URB_T           *urb;               /* Interrupt polling pipe */
     short           error;

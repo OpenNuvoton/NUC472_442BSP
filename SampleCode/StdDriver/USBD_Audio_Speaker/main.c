@@ -152,10 +152,13 @@ int32_t main (void)
     NVIC_SetPriority (USBD_IRQn, (1<<__NVIC_PRIO_BITS) - 2);
     NVIC_EnableIRQ(USBD_IRQn);
     USBD_Start();
-    while(1) {
-        if (g_usbd_rxflag) {
+    while(1)
+    {
+        if (g_usbd_rxflag)
+        {
             UAC_GetPlayData();
-        } else if(u8AudioPlaying && (u8DataCntInBuffer < 1))
+        }
+        else if(u8AudioPlaying && (u8DataCntInBuffer < 1))
             UAC_DeviceDisable();
     }
 }

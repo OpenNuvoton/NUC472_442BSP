@@ -27,8 +27,10 @@ void _SWI2C_SDA_SETIN(uint32_t PortIndex, uint32_t PinMask)
     uint32_t u32pin = 0;
     uint32_t u32Idx = 1;
     uint32_t u32ModMask;
-    for(u32pin=0; u32pin<16; u32pin=u32pin+1) {
-        if(PinMask == u32Idx) {
+    for(u32pin=0; u32pin<16; u32pin=u32pin+1)
+    {
+        if(PinMask == u32Idx)
+        {
             break;
         }
         u32Idx = u32Idx << 1;
@@ -41,8 +43,10 @@ void _SWI2C_SCK_SETOUT(uint32_t PortIndex, uint32_t PinMask)
     uint32_t u32pin = 0;
     uint32_t u32Idx = 1;
     uint32_t u32ModMask, u32Out;
-    for(u32pin=0; u32pin<16; u32pin=u32pin+1) {
-        if(PinMask == u32Idx) {
+    for(u32pin=0; u32pin<16; u32pin=u32pin+1)
+    {
+        if(PinMask == u32Idx)
+        {
             break;
         }
         u32Idx = u32Idx << 1;
@@ -56,8 +60,10 @@ void _SWI2C_SDA_SETOUT(uint32_t PortIndex, uint32_t PinMask)
     uint32_t u32pin = 0;
     uint32_t u32Idx = 1;
     uint32_t u32ModMask, u32Out;
-    for(u32pin=0; u32pin<16; u32pin=u32pin+1) {
-        if(PinMask == u32Idx) {
+    for(u32pin=0; u32pin<16; u32pin=u32pin+1)
+    {
+        if(PinMask == u32Idx)
+        {
             break;
         }
         u32Idx = u32Idx << 1;
@@ -71,9 +77,12 @@ static void _SWI2C_Delay(
 )
 {
     volatile uint32_t i;
-    if (pfntimedelay!=NULL) {
+    if (pfntimedelay!=NULL)
+    {
         pfntimedelay(nCount);
-    } else {
+    }
+    else
+    {
         for(; nCount!=0; nCount--)
             for(i=0; i<200; i++);
     }
@@ -173,7 +182,8 @@ SWI2C_WriteByte(
     uint32_t     i32HoldPinValue;
     _SWI2C_SDA_SETOUT(s_sChannel.u32SDAPortIndex, s_sChannel.u32SDAPinMask);
     // Write data to device and the most signification bit(MSB) first
-    for ( u8DataCount=0; u8DataCount<u8Length; u8DataCount++ ) {
+    for ( u8DataCount=0; u8DataCount<u8Length; u8DataCount++ )
+    {
         if ( u8Data&0x80 )
             _SWI2C_SDA_SETHIGH(s_sChannel.u32SDAPortIndex, s_sChannel.u32SDAPinMask);
         else
@@ -216,7 +226,8 @@ SWI2C_ReadByte(
 
     _SWI2C_SDA_SETIN(s_sChannel.u32SDAPortIndex, s_sChannel.u32SDAPinMask);
     // Read data from slave device and the most signification bit(MSB) first
-    for ( u8DataCount=0; u8DataCount<u8Length; u8DataCount++ ) {
+    for ( u8DataCount=0; u8DataCount<u8Length; u8DataCount++ )
+    {
         u32Data = u32Data<<1;
         _SWI2C_Delay(3);
         _SWI2C_SCK_SETHIGH(s_sChannel.u32SCKPortIndex, s_sChannel.u32SCKPinMask);
@@ -253,11 +264,14 @@ SWI2C_Slave_ReadByte(
     uint8_t u8Data, u8DataCount;
     u8Data = 0;
     // Read data from device and the most signification bit(MSB) first
-    for ( u8DataCount=0; u8DataCount<8;  ) {
-        if (_SWI2C_SCK_GETVALUE(s_sChannel.u32SCKPortIndex, s_sChannel.u32SCKPinMask)==0) {
+    for ( u8DataCount=0; u8DataCount<8;  )
+    {
+        if (_SWI2C_SCK_GETVALUE(s_sChannel.u32SCKPortIndex, s_sChannel.u32SCKPinMask)==0)
+        {
             _SWI2C_Delay(3);
 
-            if (_SWI2C_SCK_GETVALUE(s_sChannel.u32SCKPortIndex, s_sChannel.u32SCKPinMask)==s_sChannel.u32SCKPinMask) {
+            if (_SWI2C_SCK_GETVALUE(s_sChannel.u32SCKPortIndex, s_sChannel.u32SCKPinMask)==s_sChannel.u32SCKPinMask)
+            {
 
                 u8Data = u8Data<<1;
                 if ( _SWI2C_SDA_GETVALUE(s_sChannel.u32SDAPortIndex, s_sChannel.u32SDAPinMask)==s_sChannel.u32SDAPinMask )
@@ -298,13 +312,15 @@ uint8_t SWI2C_Write_8bitSlaveAddr_8bitReg_8bitData(uint8_t uAddr, uint8_t uRegAd
     while(u32Delay--);
     if ( (SWI2C_WriteByte(uAddr,DrvI2C_Ack_Have,8)==FALSE) ||            // Write ID address to sensor
             (SWI2C_WriteByte(uRegAddr,DrvI2C_Ack_Have,8)==FALSE) ||    // Write register address to sensor
-            (SWI2C_WriteByte(uData,DrvI2C_Ack_Have,8)==FALSE) ) {      // Write data to sensor
+            (SWI2C_WriteByte(uData,DrvI2C_Ack_Have,8)==FALSE) )        // Write data to sensor
+    {
         SWI2C_SendStop();
         return FALSE;
     }
     SWI2C_SendStop();
 
-    if (uRegAddr==0x12 && (uData&0x80)!=0) {
+    if (uRegAddr==0x12 && (uData&0x80)!=0)
+    {
         Delay(1000);
     }
     return TRUE;
@@ -361,13 +377,15 @@ uint8_t SWI2C_Write_8bitSlaveAddr_16bitReg_8bitData(uint8_t uAddr, uint16_t uReg
     if ( (SWI2C_WriteByte(uAddr        ,DrvI2C_Ack_Have,8)==FALSE) ||  // Write ID address to sensor
             (SWI2C_WriteByte(uRegAddr>>8  ,DrvI2C_Ack_Have,8)==FALSE) ||    // Write register addressH to sensor
             (SWI2C_WriteByte(uRegAddr&0xff,DrvI2C_Ack_Have,8)==FALSE) ||    // Write register addressL to sensor
-            (SWI2C_WriteByte(uData        ,DrvI2C_Ack_Have,8)==FALSE) ) {      // Write data to sensor
+            (SWI2C_WriteByte(uData        ,DrvI2C_Ack_Have,8)==FALSE) )        // Write data to sensor
+    {
         SWI2C_SendStop();
         return FALSE;
     }
     SWI2C_SendStop();
 
-    if (uRegAddr==0x12 && (uData&0x80)!=0) {
+    if (uRegAddr==0x12 && (uData&0x80)!=0)
+    {
         Delay(1000);
     }
     return TRUE;

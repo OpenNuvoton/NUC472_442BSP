@@ -29,7 +29,8 @@ extern "C"
   @{
 */
 /*! USB Mass Storage disk                */
-typedef struct {
+typedef struct
+{
     USB_DEV_T     *pusb_dev;           /*!< This USB device.                    */
     uint16_t      vendor_id;           /*!< Vendor ID in device descriptor      */
     uint16_t      product_id;          /*!< Product ID in device descriptor     */

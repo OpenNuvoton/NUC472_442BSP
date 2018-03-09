@@ -34,12 +34,15 @@ void GPA_IRQHandler(void)
 void GPB_IRQHandler(void)
 {
     /* To check if PB2 interrupt occurred */
-    if (PB->INTSRC & BIT2) {
+    if (PB->INTSRC & BIT2)
+    {
         PB->INTSRC = BIT2;
         PD10 = PD10 ^ 1;
         printf("PB2 INT occurred. \n");
 
-    } else {
+    }
+    else
+    {
         /* Un-expected interrupt. Just clear all PORTB interrupts */
         PB->INTSRC = PB->INTSRC;
         printf("Un-expected interrupts. \n");
@@ -49,11 +52,14 @@ void GPB_IRQHandler(void)
 void GPC_IRQHandler(void)
 {
     /* To check if PC5 interrupt occurred */
-    if (PC->INTSRC & BIT5) {
+    if (PC->INTSRC & BIT5)
+    {
         PC->INTSRC = BIT5;
         PD10 = PD10 ^ 1;
         printf("PC5 INT occurred. \n");
-    } else {
+    }
+    else
+    {
         PC->INTSRC = PC->INTSRC;
         printf("Un-expected interrupts. \n");
     }
@@ -251,18 +257,23 @@ int main (void)
 
     /* Use Pin Data Input/Output Control to pull specified I/O or get I/O pin status */
     PB3 = 0;
-    if (PD7 != 0) {
+    if (PD7 != 0)
+    {
         i32Err = 1;
     }
 
     PB3 = 1;
-    if (PD7 != 1) {
+    if (PD7 != 1)
+    {
         i32Err = 1;
     }
 
-    if ( i32Err ) {
+    if ( i32Err )
+    {
         printf("  [FAIL] --- Please make sure PB.3 and PD.7 are connected. \n");
-    } else {
+    }
+    else
+    {
         printf("  [OK] \n");
     }
 

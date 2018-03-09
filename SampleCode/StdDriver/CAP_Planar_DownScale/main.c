@@ -40,21 +40,25 @@ void CAP_IRQHandler(void)
 {
     uint32_t u32CapInt;
     u32CapInt = ICAP->INT;
-    if( (u32CapInt & (CAP_INT_VIEN_Msk | CAP_INT_VINTF_Msk )) == (CAP_INT_VIEN_Msk | CAP_INT_VINTF_Msk)) {
+    if( (u32CapInt & (CAP_INT_VIEN_Msk | CAP_INT_VINTF_Msk )) == (CAP_INT_VIEN_Msk | CAP_INT_VINTF_Msk))
+    {
         CAP_InterruptHandler();
         ICAP->INT |= CAP_INT_VINTF_Msk;        /* Clear Frame end interrupt */
         u32EscapeFrame = u32EscapeFrame+1;
     }
 
-    if((u32CapInt & (CAP_INT_ADDRMIEN_Msk|CAP_INT_ADDRMINTF_Msk)) == (CAP_INT_ADDRMIEN_Msk|CAP_INT_ADDRMINTF_Msk)) {
+    if((u32CapInt & (CAP_INT_ADDRMIEN_Msk|CAP_INT_ADDRMINTF_Msk)) == (CAP_INT_ADDRMIEN_Msk|CAP_INT_ADDRMINTF_Msk))
+    {
         ICAP->INT |= CAP_INT_ADDRMINTF_Msk; /* Clear Address match interrupt */
     }
 
-    if ((u32CapInt & (CAP_INT_MEIEN_Msk|CAP_INT_MEINTF_Msk)) == (CAP_INT_MEIEN_Msk|CAP_INT_MEINTF_Msk)) {
+    if ((u32CapInt & (CAP_INT_MEIEN_Msk|CAP_INT_MEINTF_Msk)) == (CAP_INT_MEIEN_Msk|CAP_INT_MEINTF_Msk))
+    {
         ICAP->INT |= CAP_INT_MEINTF_Msk;    /* Clear Memory error interrupt */
     }
 
-    if ((u32CapInt & (CAP_INT_MDIEN_Msk|CAP_INT_MDINTF_Msk)) == (CAP_INT_MDIEN_Msk|CAP_INT_MDINTF_Msk)) {
+    if ((u32CapInt & (CAP_INT_MDIEN_Msk|CAP_INT_MDINTF_Msk)) == (CAP_INT_MDIEN_Msk|CAP_INT_MDINTF_Msk))
+    {
         ICAP->INT |= CAP_INT_MDINTF_Msk;    /* Clear Motion Detection interrupt */
     }
     ICAP->CTL = ICAP->CTL | CAP_CTL_UPDATE;
@@ -208,8 +212,10 @@ void PlanarFormatDownScale(void)
     CAP_Start();
 
     u32Frame=u32FramePass;
-    while(1) {
-        if(u32Frame!=u32FramePass) {
+    while(1)
+    {
+        if(u32Frame!=u32FramePass)
+        {
             u32Frame=u32FramePass;
             printf("Get frame %3d\n",u32Frame);
         }

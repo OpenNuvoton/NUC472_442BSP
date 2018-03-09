@@ -45,10 +45,13 @@ int SD_Open_(uint32_t cardSel)
 
 void SD_Close_(uint32_t cardSel)
 {
-    if (cardSel == 0) {
+    if (cardSel == 0)
+    {
         sd0_ok = 0;
         memset(&SD0, 0, sizeof(SD_INFO_T));
-    } else if(cardSel == 1) {
+    }
+    else if(cardSel == 1)
+    {
         sd1_ok = 0;
         memset(&SD1, 0, sizeof(SD_INFO_T));
     }

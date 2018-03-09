@@ -23,7 +23,8 @@ void PWM0CH0_IRQHandler(void)
     static uint32_t out;
 
     // Channel 0 frequency is 100Hz, every 1 second enter this IRQ handler 100 times.
-    if(++cnt == 100) {
+    if(++cnt == 100)
+    {
         if(out)
             PWM_EnableOutput(PWM0, 0x3F);
         else

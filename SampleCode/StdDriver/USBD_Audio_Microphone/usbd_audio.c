@@ -64,13 +64,15 @@ void USBD_IRQHandler(void)
     if (!IrqStL)    return;
 
     /* USB Bus interrupt */
-    if (IrqStL & USBD_GINTSTS_USBIF_Msk) {
+    if (IrqStL & USBD_GINTSTS_USBIF_Msk)
+    {
         IrqSt = USBD->BUSINTSTS & USBD->BUSINTEN;
 
         if (IrqSt & USBD_BUSINTSTS_SOFIF_Msk)
             USBD_CLR_BUS_INT_FLAG(USBD_BUSINTSTS_SOFIF_Msk);
 
-        if (IrqSt & USBD_BUSINTSTS_RSTIF_Msk) {
+        if (IrqSt & USBD_BUSINTSTS_RSTIF_Msk)
+        {
             USBD_SwReset();
             USBD_ResetDMA();
 
@@ -81,31 +83,38 @@ void USBD_IRQHandler(void)
             USBD_CLR_CEP_INT_FLAG(0x1ffc);
         }
 
-        if (IrqSt & USBD_BUSINTSTS_RESUMEIF_Msk) {
+        if (IrqSt & USBD_BUSINTSTS_RESUMEIF_Msk)
+        {
             USBD_ENABLE_BUS_INT(USBD_BUSINTEN_RSTIEN_Msk|USBD_BUSINTEN_SUSPENDIEN_Msk);
             USBD_CLR_BUS_INT_FLAG(USBD_BUSINTSTS_RESUMEIF_Msk);
         }
 
-        if (IrqSt & USBD_BUSINTSTS_SUSPENDIF_Msk) {
+        if (IrqSt & USBD_BUSINTSTS_SUSPENDIF_Msk)
+        {
             USBD_ENABLE_BUS_INT(USBD_BUSINTEN_RSTIEN_Msk | USBD_BUSINTEN_RESUMEIEN_Msk);
             USBD_CLR_BUS_INT_FLAG(USBD_BUSINTSTS_SUSPENDIF_Msk);
         }
 
-        if (IrqSt & USBD_BUSINTSTS_HISPDIF_Msk) {
+        if (IrqSt & USBD_BUSINTSTS_HISPDIF_Msk)
+        {
             USBD_ENABLE_CEP_INT(USBD_CEPINTEN_SETUPPKIEN_Msk);
             USBD_CLR_BUS_INT_FLAG(USBD_BUSINTSTS_HISPDIF_Msk);
         }
 
-        if (IrqSt & USBD_BUSINTSTS_DMADONEIF_Msk) {
+        if (IrqSt & USBD_BUSINTSTS_DMADONEIF_Msk)
+        {
             g_usbd_DmaDone = 1;
             USBD_CLR_BUS_INT_FLAG(USBD_BUSINTSTS_DMADONEIF_Msk);
 
-            if (!(USBD->DMACTL & USBD_DMACTL_DMARD_Msk)) {
+            if (!(USBD->DMACTL & USBD_DMACTL_DMARD_Msk))
+            {
                 USBD_ENABLE_EP_INT(EPB, USBD_EPINTEN_RXPKIEN_Msk);
             }
 
-            if (USBD->DMACTL & USBD_DMACTL_DMARD_Msk) {
-                if (g_usbd_ShortPacket == 1) {
+            if (USBD->DMACTL & USBD_DMACTL_DMARD_Msk)
+            {
+                if (g_usbd_ShortPacket == 1)
+                {
                     USBD->EP[EPA].EPRSPCTL = USB_EP_RSPCTL_SHORTTXEN;    // packet end
                     g_usbd_ShortPacket = 0;
                 }
@@ -115,11 +124,15 @@ void USBD_IRQHandler(void)
         if (IrqSt & USBD_BUSINTSTS_PHYCLKVLDIF_Msk)
             USBD_CLR_BUS_INT_FLAG(USBD_BUSINTSTS_PHYCLKVLDIF_Msk);
 
-        if (IrqSt & USBD_BUSINTSTS_VBUSDETIF_Msk) {
-            if (USBD_IS_ATTACHED()) {
+        if (IrqSt & USBD_BUSINTSTS_VBUSDETIF_Msk)
+        {
+            if (USBD_IS_ATTACHED())
+            {
                 /* USB Plug In */
                 USBD_ENABLE_USB();
-            } else {
+            }
+            else
+            {
                 /* USB Un-plug */
                 USBD_DISABLE_USB();
             }
@@ -128,51 +141,64 @@ void USBD_IRQHandler(void)
     }
 
     /* Control endpoint interrupt */
-    if (IrqStL & USBD_GINTSTS_CEPIF_Msk) {
+    if (IrqStL & USBD_GINTSTS_CEPIF_Msk)
+    {
         IrqSt = USBD->CEPINTSTS & USBD->CEPINTEN;
 
-        if (IrqSt & USBD_CEPINTSTS_SETUPTKIF_Msk) {
+        if (IrqSt & USBD_CEPINTSTS_SETUPTKIF_Msk)
+        {
             USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_SETUPTKIF_Msk);
             return;
         }
 
-        if (IrqSt & USBD_CEPINTSTS_SETUPPKIF_Msk) {
+        if (IrqSt & USBD_CEPINTSTS_SETUPPKIF_Msk)
+        {
             USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_SETUPPKIF_Msk);
             USBD_ProcessSetupPacket();
             return;
         }
 
-        if (IrqSt & USBD_CEPINTSTS_OUTTKIF_Msk) {
+        if (IrqSt & USBD_CEPINTSTS_OUTTKIF_Msk)
+        {
             USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_OUTTKIF_Msk);
             USBD_ENABLE_CEP_INT(USBD_CEPINTEN_STSDONEIEN_Msk);
             return;
         }
 
-        if (IrqSt & USBD_CEPINTSTS_INTKIF_Msk) {
+        if (IrqSt & USBD_CEPINTSTS_INTKIF_Msk)
+        {
             USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_INTKIF_Msk);
-            if (!(IrqSt & USBD_CEPINTSTS_STSDONEIF_Msk)) {
+            if (!(IrqSt & USBD_CEPINTSTS_STSDONEIF_Msk))
+            {
                 USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_TXPKIF_Msk);
                 USBD_ENABLE_CEP_INT(USBD_CEPINTEN_TXPKIEN_Msk);
                 USBD_CtrlIn();
-            } else {
+            }
+            else
+            {
                 USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_TXPKIF_Msk);
                 USBD_ENABLE_CEP_INT(USBD_CEPINTEN_TXPKIEN_Msk|USBD_CEPINTEN_STSDONEIEN_Msk);
             }
             return;
         }
 
-        if (IrqSt & USBD_CEPINTSTS_PINGIF_Msk) {
+        if (IrqSt & USBD_CEPINTSTS_PINGIF_Msk)
+        {
             USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_PINGIF_Msk);
             return;
         }
 
-        if (IrqSt & USBD_CEPINTSTS_TXPKIF_Msk) {
+        if (IrqSt & USBD_CEPINTSTS_TXPKIF_Msk)
+        {
             USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_STSDONEIF_Msk);
             USBD_SET_CEP_STATE(USB_CEPCTL_NAKCLR);
-            if (g_usbd_CtrlInSize) {
+            if (g_usbd_CtrlInSize)
+            {
                 USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_INTKIF_Msk);
                 USBD_ENABLE_CEP_INT(USBD_CEPINTEN_INTKIEN_Msk);
-            } else {
+            }
+            else
+            {
                 if (g_usbd_CtrlZero == 1)
                     USBD_SET_CEP_STATE(USB_CEPCTL_ZEROLEN);
                 USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_STSDONEIF_Msk);
@@ -182,48 +208,56 @@ void USBD_IRQHandler(void)
             return;
         }
 
-        if (IrqSt & USBD_CEPINTSTS_RXPKIF_Msk) {
+        if (IrqSt & USBD_CEPINTSTS_RXPKIF_Msk)
+        {
             USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_RXPKIF_Msk);
             USBD_SET_CEP_STATE(USB_CEPCTL_NAKCLR);
             USBD_ENABLE_CEP_INT(USBD_CEPINTEN_SETUPPKIEN_Msk|USBD_CEPINTEN_STSDONEIEN_Msk);
             return;
         }
 
-        if (IrqSt & USBD_CEPINTSTS_NAKIF_Msk) {
+        if (IrqSt & USBD_CEPINTSTS_NAKIF_Msk)
+        {
             USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_NAKIF_Msk);
             return;
         }
 
-        if (IrqSt & USBD_CEPINTSTS_STALLIF_Msk) {
+        if (IrqSt & USBD_CEPINTSTS_STALLIF_Msk)
+        {
             USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_STALLIF_Msk);
             return;
         }
 
-        if (IrqSt & USBD_CEPINTSTS_ERRIF_Msk) {
+        if (IrqSt & USBD_CEPINTSTS_ERRIF_Msk)
+        {
             USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_ERRIF_Msk);
             return;
         }
 
-        if (IrqSt & USBD_CEPINTSTS_STSDONEIF_Msk) {
+        if (IrqSt & USBD_CEPINTSTS_STSDONEIF_Msk)
+        {
             USBD_UpdateDeviceState();
             USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_STSDONEIF_Msk);
             USBD_ENABLE_CEP_INT(USBD_CEPINTEN_SETUPPKIEN_Msk);
             return;
         }
 
-        if (IrqSt & USBD_CEPINTSTS_BUFFULLIF_Msk) {
+        if (IrqSt & USBD_CEPINTSTS_BUFFULLIF_Msk)
+        {
             USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_BUFFULLIF_Msk);
             return;
         }
 
-        if (IrqSt & USBD_CEPINTSTS_BUFEMPTYIF_Msk) {
+        if (IrqSt & USBD_CEPINTSTS_BUFEMPTYIF_Msk)
+        {
             USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_BUFEMPTYIF_Msk);
             return;
         }
     }
 
     /* Non-control endpoint interrupt */
-    if (IrqStL & USBD_GINTSTS_EPAIF_Msk) {
+    if (IrqStL & USBD_GINTSTS_EPAIF_Msk)
+    {
         /* Isochronous in */
         IrqSt = USBD->EP[EPA].EPINTSTS & USBD->EP[EPA].EPINTEN;
 
@@ -231,59 +265,70 @@ void USBD_IRQHandler(void)
         USBD_CLR_EP_INT_FLAG(EPA, IrqSt);
     }
 
-    if (IrqStL & USBD_GINTSTS_EPBIF_Msk) {
+    if (IrqStL & USBD_GINTSTS_EPBIF_Msk)
+    {
         /* Isochronous out */
         IrqSt = USBD->EP[EPB].EPINTSTS & USBD->EP[EPB].EPINTEN;
 
         USBD_CLR_EP_INT_FLAG(EPB, IrqSt);
     }
 
-    if (IrqStL & USBD_GINTSTS_EPCIF_Msk) {
+    if (IrqStL & USBD_GINTSTS_EPCIF_Msk)
+    {
         IrqSt = USBD->EP[EPC].EPINTSTS & USBD->EP[EPC].EPINTEN;
         USBD_CLR_EP_INT_FLAG(EPC, IrqSt);
     }
 
-    if (IrqStL & USBD_GINTSTS_EPDIF_Msk) {
+    if (IrqStL & USBD_GINTSTS_EPDIF_Msk)
+    {
         IrqSt = USBD->EP[EPD].EPINTSTS & USBD->EP[EPD].EPINTEN;
         USBD_CLR_EP_INT_FLAG(EPD, IrqSt);
     }
 
-    if (IrqStL & USBD_GINTSTS_EPEIF_Msk) {
+    if (IrqStL & USBD_GINTSTS_EPEIF_Msk)
+    {
         IrqSt = USBD->EP[EPE].EPINTSTS & USBD->EP[EPE].EPINTEN;
         USBD_CLR_EP_INT_FLAG(EPE, IrqSt);
     }
 
-    if (IrqStL & USBD_GINTSTS_EPFIF_Msk) {
+    if (IrqStL & USBD_GINTSTS_EPFIF_Msk)
+    {
         IrqSt = USBD->EP[EPF].EPINTSTS & USBD->EP[EPF].EPINTEN;
         USBD_CLR_EP_INT_FLAG(EPF, IrqSt);
     }
 
-    if (IrqStL & USBD_GINTSTS_EPGIF_Msk) {
+    if (IrqStL & USBD_GINTSTS_EPGIF_Msk)
+    {
         IrqSt = USBD->EP[EPG].EPINTSTS & USBD->EP[EPG].EPINTEN;
         USBD_CLR_EP_INT_FLAG(EPG, IrqSt);
     }
 
-    if (IrqStL & USBD_GINTSTS_EPHIF_Msk) {
+    if (IrqStL & USBD_GINTSTS_EPHIF_Msk)
+    {
         IrqSt = USBD->EP[EPH].EPINTSTS & USBD->EP[EPH].EPINTEN;
         USBD_CLR_EP_INT_FLAG(EPH, IrqSt);
     }
 
-    if (IrqStL & USBD_GINTSTS_EPIIF_Msk) {
+    if (IrqStL & USBD_GINTSTS_EPIIF_Msk)
+    {
         IrqSt = USBD->EP[EPI].EPINTSTS & USBD->EP[EPI].EPINTEN;
         USBD_CLR_EP_INT_FLAG(EPI, IrqSt);
     }
 
-    if (IrqStL & USBD_GINTSTS_EPJIF_Msk) {
+    if (IrqStL & USBD_GINTSTS_EPJIF_Msk)
+    {
         IrqSt = USBD->EP[EPJ].EPINTSTS & USBD->EP[EPJ].EPINTEN;
         USBD_CLR_EP_INT_FLAG(EPJ, IrqSt);
     }
 
-    if (IrqStL & USBD_GINTSTS_EPKIF_Msk) {
+    if (IrqStL & USBD_GINTSTS_EPKIF_Msk)
+    {
         IrqSt = USBD->EP[EPK].EPINTSTS & USBD->EP[EPK].EPINTEN;
         USBD_CLR_EP_INT_FLAG(EPK, IrqSt);
     }
 
-    if (IrqStL & USBD_GINTSTS_EPLIF_Msk) {
+    if (IrqStL & USBD_GINTSTS_EPLIF_Msk)
+    {
         IrqSt = USBD->EP[EPL].EPINTSTS & USBD->EP[EPL].EPINTEN;
         USBD_CLR_EP_INT_FLAG(EPL, IrqSt);
     }
@@ -301,7 +346,8 @@ void USBD_IRQHandler(void)
 /* Record */
 void EPA_Handler(void)
 {
-    if (USBD->EP[EPA].EPINTSTS & USBD_EPINTSTS_TXPKIF_Msk) {
+    if (USBD->EP[EPA].EPINTSTS & USBD_EPINTSTS_TXPKIF_Msk)
+    {
         g_usbd_txflag = 1;
     }
 }
@@ -351,15 +397,20 @@ void UAC_Init(void)
  */
 void UAC_ClassRequest(void)
 {
-    if (gUsbCmd.bmRequestType & 0x80) { /* request data transfer direction */
+    if (gUsbCmd.bmRequestType & 0x80)   /* request data transfer direction */
+    {
         /* Get Feature Unit Control Request */
         // Device to host
-        switch (gUsbCmd.bRequest) {
+        switch (gUsbCmd.bRequest)
+        {
         /* Get current setting attribute */
-        case UAC_GET_CUR: {
-            switch ((gUsbCmd.wValue & 0xff00) >> 8) {
+        case UAC_GET_CUR:
+        {
+            switch ((gUsbCmd.wValue & 0xff00) >> 8)
+            {
             /* Mute Control */
-            case MUTE_CONTROL: {
+            case MUTE_CONTROL:
+            {
                 if (REC_FEATURE_UNITID == ((gUsbCmd.wIndex >> 8) & 0xff))
                     USBD_PrepareCtrlIn((uint8_t *)&g_usbd_RecMute, 1);
 
@@ -368,14 +419,16 @@ void UAC_ClassRequest(void)
                 break;
             }
             /* Volume Control */
-            case VOLUME_CONTROL: {
+            case VOLUME_CONTROL:
+            {
                 if (REC_FEATURE_UNITID == ((gUsbCmd.wIndex >> 8) & 0xff))
                     USBD_PrepareCtrlIn((uint8_t *)&g_usbd_RecVolume, 2);
                 USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_INTKIF_Msk);
                 USBD_ENABLE_CEP_INT(USBD_CEPINTEN_INTKIEN_Msk);
                 break;
             }
-            default: {
+            default:
+            {
                 /* Setup error, stall the device */
                 USBD_SET_CEP_STATE(USBD_CEPCTL_STALLEN_Msk);
             }
@@ -384,10 +437,13 @@ void UAC_ClassRequest(void)
         }
 
         /* Get Minimum setting attribute */
-        case UAC_GET_MIN: {
-            switch ((gUsbCmd.wValue & 0xff00) >> 8) {
+        case UAC_GET_MIN:
+        {
+            switch ((gUsbCmd.wValue & 0xff00) >> 8)
+            {
             /* Volume Control */
-            case VOLUME_CONTROL: {
+            case VOLUME_CONTROL:
+            {
                 if (REC_FEATURE_UNITID == ((gUsbCmd.wIndex >> 8) & 0xff))
                     USBD_PrepareCtrlIn((uint8_t *)&g_usbd_RecMinVolume, 2);
                 USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_INTKIF_Msk);
@@ -402,10 +458,13 @@ void UAC_ClassRequest(void)
         }
 
         /* Get Maximum setting attribute */
-        case UAC_GET_MAX: {
-            switch ((gUsbCmd.wValue & 0xff00) >> 8) {
+        case UAC_GET_MAX:
+        {
+            switch ((gUsbCmd.wValue & 0xff00) >> 8)
+            {
             /* Volume Control */
-            case VOLUME_CONTROL: {
+            case VOLUME_CONTROL:
+            {
                 if (REC_FEATURE_UNITID == ((gUsbCmd.wIndex >> 8) & 0xff))
                     USBD_PrepareCtrlIn((uint8_t *)&g_usbd_RecMaxVolume, 2);
                 USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_INTKIF_Msk);
@@ -420,10 +479,13 @@ void UAC_ClassRequest(void)
         }
 
         /* Get Resolution attribute */
-        case UAC_GET_RES: {
-            switch ((gUsbCmd.wValue & 0xff00) >> 8) {
+        case UAC_GET_RES:
+        {
+            switch ((gUsbCmd.wValue & 0xff00) >> 8)
+            {
             /* Volume Control */
-            case VOLUME_CONTROL: {
+            case VOLUME_CONTROL:
+            {
                 if (REC_FEATURE_UNITID == ((gUsbCmd.wIndex >> 8) & 0xff))
                     USBD_PrepareCtrlIn((uint8_t *)&g_usbd_RecResVolume, 2);
                 USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_INTKIF_Msk);
@@ -437,18 +499,24 @@ void UAC_ClassRequest(void)
             break;
         }
 
-        default: {
+        default:
+        {
             /* Setup error, stall the device */
             USBD_SET_CEP_STATE(USBD_CEPCTL_STALLEN_Msk);
         }
         }
-    } else {
+    }
+    else
+    {
         // Host to device
-        switch (gUsbCmd.bRequest) {
+        switch (gUsbCmd.bRequest)
+        {
         /* Set Current setting attribute */
-        case UAC_SET_CUR: {
+        case UAC_SET_CUR:
+        {
             USBD_ENABLE_CEP_INT(USBD_CEPINTEN_OUTTKIEN_Msk | USBD_CEPINTEN_RXPKIEN_Msk);
-            switch ((gUsbCmd.wValue & 0xff00) >> 8) {
+            switch ((gUsbCmd.wValue & 0xff00) >> 8)
+            {
             /* Mute Control */
             case MUTE_CONTROL:
                 if (REC_FEATURE_UNITID == ((gUsbCmd.wIndex >> 8) & 0xff))
@@ -477,7 +545,8 @@ void UAC_ClassRequest(void)
             break;
         }
 
-        default: {
+        default:
+        {
             /* Setup error, stall the device */
             USBD_SET_CEP_STATE(USBD_CEPCTL_STALLEN_Msk);
             break;
@@ -497,14 +566,18 @@ void UAC_ClassRequest(void)
  */
 void UAC_SetInterface(uint32_t u32AltInterface)
 {
-    if ((gUsbCmd.wIndex & 0xff) == 1) {
+    if ((gUsbCmd.wIndex & 0xff) == 1)
+    {
         /* Audio Iso IN interface */
-        if (u32AltInterface == 1) { /* Start Record */
+        if (u32AltInterface == 1)   /* Start Record */
+        {
             g_usbd_UsbAudioState = UAC_START_AUDIO_RECORD;
             USBD->EP[EPA].EPRSPCTL = USBD_EPRSPCTL_ZEROLEN_Msk;
             UAC_DeviceEnable();
             g_usbd_txflag = 1;
-        } else if (u32AltInterface == 0) { /* Stop Record */
+        }
+        else if (u32AltInterface == 0)     /* Stop Record */
+        {
             UAC_DeviceDisable();
             USBD->EP[EPA].EPRSPCTL = USBD_EPRSPCTL_ZEROLEN_Msk;
             g_usbd_UsbAudioState = UAC_STOP_AUDIO_RECORD;
@@ -519,7 +592,8 @@ uint8_t Device_Addr0 = 0x1A;                /* WAU8822 Device ID */
 uint8_t Tx_Data0[2];
 uint8_t DataCnt0;
 
-typedef enum {
+typedef enum
+{
     E_RS_NONE,          // no re-sampling
     E_RS_UP,            // up sampling
     E_RS_DOWN           // down sampling
@@ -552,28 +626,34 @@ restart:
     I2C_SET_DATA(I2C3, 0x1A<<1);
     I2C_SET_CONTROL_REG(I2C3, I2C_SI);
     I2C_WAIT_READY(I2C3);
-    if(I2C_GET_STATUS(I2C3) == 0x38) {
+    if(I2C_GET_STATUS(I2C3) == 0x38)
+    {
         RecoveryFromArbLost();
         goto restart;
-    } else if(I2C_GET_STATUS(I2C3) != 0x18)
+    }
+    else if(I2C_GET_STATUS(I2C3) != 0x18)
         goto stop;
 
     I2C_SET_DATA(I2C3, (uint8_t)((u8addr << 1) | (u16data >> 8)));
     I2C_SET_CONTROL_REG(I2C3, I2C_SI);
     I2C_WAIT_READY(I2C3);
-    if(I2C_GET_STATUS(I2C3) == 0x38) {
+    if(I2C_GET_STATUS(I2C3) == 0x38)
+    {
         RecoveryFromArbLost();
         goto restart;
-    } else if(I2C_GET_STATUS(I2C3) != 0x28)
+    }
+    else if(I2C_GET_STATUS(I2C3) != 0x28)
         goto stop;
 
     I2C_SET_DATA(I2C3, (uint8_t)(u16data & 0x00FF));
     I2C_SET_CONTROL_REG(I2C3, I2C_SI);
     I2C_WAIT_READY(I2C3);
-    if(I2C_GET_STATUS(I2C3) == 0x38) {
+    if(I2C_GET_STATUS(I2C3) == 0x38)
+    {
         RecoveryFromArbLost();
         goto restart;
-    } else if(I2C_GET_STATUS(I2C3) != 0x28)
+    }
+    else if(I2C_GET_STATUS(I2C3) != 0x28)
         goto stop;
 
 stop:
@@ -589,19 +669,23 @@ void WAU8822_ConfigSampleRate(uint32_t u32SampleRate)
 {
     printf("[NAU8822] Configure Sampling Rate to %d\n", u32SampleRate);
 
-    if((u32SampleRate % 8) == 0) {
+    if((u32SampleRate % 8) == 0)
+    {
         I2C_WriteWAU8822(36, 0x008);    //12.288Mhz
         I2C_WriteWAU8822(37, 0x00C);
         I2C_WriteWAU8822(38, 0x093);
         I2C_WriteWAU8822(39, 0x0E9);
-    } else {
+    }
+    else
+    {
         I2C_WriteWAU8822(36, 0x007);    //11.2896Mhz
         I2C_WriteWAU8822(37, 0x021);
         I2C_WriteWAU8822(38, 0x161);
         I2C_WriteWAU8822(39, 0x026);
     }
 
-    switch (u32SampleRate) {
+    switch (u32SampleRate)
+    {
     case 8000:
         I2C_WriteWAU8822(6, 0x1ED);   /* Divide by 12, 8K */
         I2C_WriteWAU8822(7, 0x00A);   /* 8K for internal filter coefficients */
@@ -715,7 +799,8 @@ void UAC_SendRecData(void)
     uint32_t *pBuff;
 
     /* when record buffer full, send data to host */
-    if(u8PcmRxBufFull[u32BufRecIdx]) {
+    if(u8PcmRxBufFull[u32BufRecIdx])
+    {
         if (USBD->DMACTL & USBD_DMACTL_DMAEN_Msk)
             return;
 
@@ -740,7 +825,8 @@ void UAC_SendRecData(void)
             u32BufRecIdx=0;
 
         /* wait usbd dma complete */
-        while(1) {
+        while(1)
+        {
             if (g_usbd_DmaDone)
                 break;
 
@@ -749,7 +835,9 @@ void UAC_SendRecData(void)
         }
 
         g_usbd_txflag = 0;
-    } else { /* send zero packet when no data*/
+    }
+    else     /* send zero packet when no data*/
+    {
         USBD->EP[EPA].EPRSPCTL = USBD_EPRSPCTL_ZEROLEN_Msk;
     }
 }
