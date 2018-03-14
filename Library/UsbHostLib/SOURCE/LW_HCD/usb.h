@@ -6,22 +6,22 @@
 
 enum OCHI_CC_CODE
 {
-/* mapping of the OHCI CC status to error codes */
-/* No  Error  */               CC_NOERROR,
-/* CRC Error  */               CC_CRC,
-/* Bit Stuff  */               CC_BITSTUFF,
-/* Data Toggle*/               CC_DATA_TOGGLE,
-/* Stall      */               CC_STALL,
-/* DevNotResp */               CC_NOTRESPONSE,
-/* PIDCheck   */               CC_PID_CHECK,
-/* UnExpPID   */               CC_UNEXPECTED_PID,
-/* DataOver   */               CC_DATA_OVERRUN,
-/* DataUnder  */               CC_DATA_UNDERRUN,
-/* reserved   */               CC_RESERVED1,
-/* reserved   */               CC_RESERVED2,
-/* BufferOver */               CC_BUFFER_OVERRUN,
-/* BuffUnder  */               CC_BUFFER_UNDERRUN,
-/* Not Access */               CC_NOT_ACCESS
+    /* mapping of the OHCI CC status to error codes */
+    /* No  Error  */               CC_NOERROR,
+    /* CRC Error  */               CC_CRC,
+    /* Bit Stuff  */               CC_BITSTUFF,
+    /* Data Toggle*/               CC_DATA_TOGGLE,
+    /* Stall      */               CC_STALL,
+    /* DevNotResp */               CC_NOTRESPONSE,
+    /* PIDCheck   */               CC_PID_CHECK,
+    /* UnExpPID   */               CC_UNEXPECTED_PID,
+    /* DataOver   */               CC_DATA_OVERRUN,
+    /* DataUnder  */               CC_DATA_UNDERRUN,
+    /* reserved   */               CC_RESERVED1,
+    /* reserved   */               CC_RESERVED2,
+    /* BufferOver */               CC_BUFFER_OVERRUN,
+    /* BuffUnder  */               CC_BUFFER_UNDERRUN,
+    /* Not Access */               CC_NOT_ACCESS
 };
 
 

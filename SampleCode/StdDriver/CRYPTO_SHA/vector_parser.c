@@ -196,7 +196,7 @@ int  get_next_pattern(void)
         if (_pi8LineBuff[0] == '#')
             continue;
 
-        if (strncmp(_pi8LineBuff ,"Len", 3) == 0)
+        if (strncmp(_pi8LineBuff,"Len", 3) == 0)
         {
             p = (uint8_t *)&_pi8LineBuff[3];
             while ((*p < '0') || (*p > '9'))
@@ -206,7 +206,7 @@ int  get_next_pattern(void)
             continue;
         }
 
-        if (strncmp(_pi8LineBuff ,"Msg", 3) == 0)
+        if (strncmp(_pi8LineBuff,"Msg", 3) == 0)
         {
             p = (uint8_t *)&_pi8LineBuff[3];
             while (!is_hex_char(*p)) p++;
@@ -214,7 +214,7 @@ int  get_next_pattern(void)
             continue;
         }
 
-        if (strncmp(_pi8LineBuff ,"MD", 2) == 0)
+        if (strncmp(_pi8LineBuff,"MD", 2) == 0)
         {
             p = (uint8_t *)&_pi8LineBuff[2];
             while (!is_hex_char(*p)) p++;

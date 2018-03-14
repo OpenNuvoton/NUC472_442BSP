@@ -42,88 +42,101 @@ osThreadDef(clock, osPriorityNormal, 1, 0);
 /*----------------------------------------------------------------------------
   switch LED on
  *---------------------------------------------------------------------------*/
-void LED_on (unsigned char led) {
-  LED_On (led);
+void LED_on (unsigned char led)
+{
+    LED_On (led);
 }
 
 /*----------------------------------------------------------------------------
   switch LED off
  *---------------------------------------------------------------------------*/
-void LED_off (unsigned char led) {
-  LED_Off(led);
+void LED_off (unsigned char led)
+{
+    LED_Off(led);
 }
 
 
 /*----------------------------------------------------------------------------
   Function 'signal_func' called from multiple tasks
  *---------------------------------------------------------------------------*/
-void signal_func (osThreadId thread)  {
-  osSignalSet (t_clock, 0x0100);         /* send event signal to clock task  */
-  osDelay (500);                      /* delay 50 clock ticks             */
-  osSignalSet (t_clock, 0x0100);         /* send event signal to clock task  */
-  osDelay (500);                      /* delay 50 clock ticks             */
-  osSignalSet (thread, 0x0001);            /* send event to task 'task'        */
-  osDelay (500);                      /* delay 50 clock ticks             */
+void signal_func (osThreadId thread)
+{
+    osSignalSet (t_clock, 0x0100);         /* send event signal to clock task  */
+    osDelay (500);                      /* delay 50 clock ticks             */
+    osSignalSet (t_clock, 0x0100);         /* send event signal to clock task  */
+    osDelay (500);                      /* delay 50 clock ticks             */
+    osSignalSet (thread, 0x0001);            /* send event to task 'task'        */
+    osDelay (500);                      /* delay 50 clock ticks             */
 }
 
 /*----------------------------------------------------------------------------
   Task 1 'phaseA': Phase A output
  *---------------------------------------------------------------------------*/
-void phaseA (void const *argument) {
-  for (;;) {
-    osSignalWait(0x0001, 0xffff);    /* wait for an event flag 0x0001    */
-    LED_on (LED_A);
-    signal_func (t_phaseB);              /* call common signal function      */
-    LED_off(LED_A);
-  }
+void phaseA (void const *argument)
+{
+    for (;;)
+    {
+        osSignalWait(0x0001, 0xffff);    /* wait for an event flag 0x0001    */
+        LED_on (LED_A);
+        signal_func (t_phaseB);              /* call common signal function      */
+        LED_off(LED_A);
+    }
 }
 
 /*----------------------------------------------------------------------------
   Task 2 'phaseB': Phase B output
  *---------------------------------------------------------------------------*/
-void phaseB (void const *argument) {
-  for (;;) {
-    osSignalWait (0x0001, 0xffff);    /* wait for an event flag 0x0001    */
-    LED_on (LED_B);
-    signal_func (t_phaseC);              /* call common signal function      */
-    LED_off(LED_B);
-  }
+void phaseB (void const *argument)
+{
+    for (;;)
+    {
+        osSignalWait (0x0001, 0xffff);    /* wait for an event flag 0x0001    */
+        LED_on (LED_B);
+        signal_func (t_phaseC);              /* call common signal function      */
+        LED_off(LED_B);
+    }
 }
 
 /*----------------------------------------------------------------------------
   Task 3 'phaseC': Phase C output
  *---------------------------------------------------------------------------*/
-void phaseC (void const *argument) {
-  for (;;) {
-    osSignalWait (0x0001, 0xffff);    /* wait for an event flag 0x0001    */
-    LED_on (LED_C);
-    signal_func (t_phaseD);              /* call common signal function      */
-    LED_off(LED_C);
-  }
+void phaseC (void const *argument)
+{
+    for (;;)
+    {
+        osSignalWait (0x0001, 0xffff);    /* wait for an event flag 0x0001    */
+        LED_on (LED_C);
+        signal_func (t_phaseD);              /* call common signal function      */
+        LED_off(LED_C);
+    }
 }
 
 /*----------------------------------------------------------------------------
   Task 4 'phaseD': Phase D output
  *---------------------------------------------------------------------------*/
-void phaseD (void const *argument) {
-  for (;;) {
-    osSignalWait (0x0001, 0xffff);    /* wait for an event flag 0x0001    */
-    LED_on (LED_D);
-    signal_func (t_phaseA);              /* call common signal function      */
-    LED_off(LED_D);
-  }
+void phaseD (void const *argument)
+{
+    for (;;)
+    {
+        osSignalWait (0x0001, 0xffff);    /* wait for an event flag 0x0001    */
+        LED_on (LED_D);
+        signal_func (t_phaseA);              /* call common signal function      */
+        LED_off(LED_D);
+    }
 }
 
 /*----------------------------------------------------------------------------
   Task 5 'clock': Signal Clock
  *---------------------------------------------------------------------------*/
-void clock (void const *argument) {
-  for (;;) {
-    osSignalWait (0x0100, 0xffff);    /* wait for an event flag 0x0100    */
-    LED_on (LED_CLK);
-    osDelay (80);                     /* delay 8 clock ticks              */
-    LED_off(LED_CLK);
-  }
+void clock (void const *argument)
+{
+    for (;;)
+    {
+        osSignalWait (0x0100, 0xffff);    /* wait for an event flag 0x0100    */
+        LED_on (LED_CLK);
+        osDelay (80);                     /* delay 8 clock ticks              */
+        LED_off(LED_CLK);
+    }
 }
 
 void UART_Init(void)
@@ -151,7 +164,8 @@ void UART_Init(void)
 /*----------------------------------------------------------------------------
   Main: Initialize and start RTX Kernel
  *---------------------------------------------------------------------------*/
-int main (void) {
+int main (void)
+{
 
     UART_Init();
     printf("4 LED Threads sample code...\n");

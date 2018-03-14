@@ -34,10 +34,10 @@ __align(4) uint8_t gu8DeviceDescriptor[] =
     CEP_MAX_PKT_SIZE,   /* bMaxPacketSize0 */
     /* idVendor */
     USBD_VID & 0x00FF,
-    (USBD_VID & 0xFF00) >> 8,
+    ((USBD_VID & 0xFF00) >> 8),
     /* idProduct */
     USBD_PID & 0x00FF,
-    (USBD_PID & 0xFF00) >> 8,
+    (((USBD_PID & 0xFF00) >> 8)),
     0x00, 0x00,     /* bcdDevice */
     0x01,           /* iManufacture */
     0x02,           /* iProduct */
@@ -78,7 +78,7 @@ __align(4) uint8_t gu8ConfigDescriptor[] =
     DESC_CONFIG,                       /* bDescriptorType */
     /* wTotalLength */
     LEN_CONFIG_AND_SUBORDINATE & 0x00FF,
-    (LEN_CONFIG_AND_SUBORDINATE & 0xFF00) >> 8,
+    ((LEN_CONFIG_AND_SUBORDINATE & 0xFF00) >> 8),
     0x01,                              /* bNumInterfaces */
     0x01,                              /* bConfigurationValue */
     0x00,                              /* iConfiguration */
@@ -102,7 +102,7 @@ __align(4) uint8_t gu8ConfigDescriptor[] =
     (INT_IN_EP_NUM | EP_INPUT),        /* bEndpointAddress */
     EP_INT,                            /* bmAttributes */
     EPA_MAX_PKT_SIZE & 0x00FF,         /* wMaxPacketSize */
-    (EPA_MAX_PKT_SIZE & 0xFF00) >> 8,
+    ((EPA_MAX_PKT_SIZE & 0xFF00) >> 8),
     INT_IN_INTERVAL,                   /* bInterval */
 
     /* Endpoint Descriptor: EPB interrupt out. */
@@ -111,7 +111,7 @@ __align(4) uint8_t gu8ConfigDescriptor[] =
     (INT_OUT_EP_NUM | EP_OUTPUT),      /* bEndpointAddress */
     EP_INT,                            /* bmAttributes */
     EPB_MAX_PKT_SIZE & 0x00FF,         /* wMaxPacketSize */
-    (EPB_MAX_PKT_SIZE & 0xFF00) >> 8,
+    ((EPB_MAX_PKT_SIZE & 0xFF00) >> 8),
     INT_OUT_INTERVAL,                  /* bInterval */
 
     /* Endpoint Descriptor: EPC isochronous in. */
@@ -120,7 +120,7 @@ __align(4) uint8_t gu8ConfigDescriptor[] =
     (ISO_IN_EP_NUM | EP_INPUT),        /* bEndpointAddress */
     EP_ISO,                            /* bmAttributes */
     EPC_MAX_PKT_SIZE & 0x00FF,         /* wMaxPacketSize */
-    (EPC_MAX_PKT_SIZE & 0xFF00) >> 8,
+    ((EPC_MAX_PKT_SIZE & 0xFF00) >> 8),
     ISO_IN_INTERVAL,                   /* bInterval */
 
     /* Endpoint Descriptor: EPD isochronous out. */
@@ -129,7 +129,7 @@ __align(4) uint8_t gu8ConfigDescriptor[] =
     (ISO_OUT_EP_NUM | EP_OUTPUT),      /* bEndpointAddress */
     EP_ISO,                            /* bmAttributes */
     EPD_MAX_PKT_SIZE & 0x00FF,         /* wMaxPacketSize */
-    (EPD_MAX_PKT_SIZE & 0xFF00) >> 8,
+    ((EPD_MAX_PKT_SIZE & 0xFF00) >> 8),
     ISO_OUT_INTERVAL,                  /* bInterval */
 
     /* Endpoint Descriptor: EPE bulk in. */
@@ -138,7 +138,7 @@ __align(4) uint8_t gu8ConfigDescriptor[] =
     (BULK_IN_EP_NUM | EP_INPUT),       /* bEndpointAddress */
     EP_BULK,                           /* bmAttributes */
     EPE_MAX_PKT_SIZE & 0x00FF,         /* wMaxPacketSize */
-    (EPE_MAX_PKT_SIZE & 0xFF00) >> 8,
+    ((EPE_MAX_PKT_SIZE & 0xFF00) >> 8),
     0x1,                               /* bInterval */
 
     /* Endpoint Descriptor: EPF bulk out. */
@@ -148,7 +148,7 @@ __align(4) uint8_t gu8ConfigDescriptor[] =
     EP_BULK,                           /* bmAttributes */
     EPF_MAX_PKT_SIZE & 0x00FF,         /* wMaxPacketSize */
     (EPF_MAX_PKT_SIZE & 0xFF00) >> 8,
-    0x1                                /* bInterval */
+                                0x1                                /* bInterval */
 };
 
 /*!<USB Other Speed Configure Descriptor */
@@ -164,7 +164,7 @@ __align(4) uint8_t gu8OtherConfigDescriptor[] =
     DESC_CONFIG,                       /* bDescriptorType */
     /* wTotalLength */
     LEN_CONFIG_AND_SUBORDINATE & 0x00FF,
-    (LEN_CONFIG_AND_SUBORDINATE & 0xFF00) >> 8,
+    ((LEN_CONFIG_AND_SUBORDINATE & 0xFF00) >> 8),
     0x01,                              /* bNumInterfaces */
     0x01,                              /* bConfigurationValue */
     0x00,                              /* iConfiguration */
@@ -188,7 +188,7 @@ __align(4) uint8_t gu8OtherConfigDescriptor[] =
     (INT_IN_EP_NUM | EP_INPUT),        /* bEndpointAddress */
     EP_INT,                            /* bmAttributes */
     EPA_MAX_PKT_SIZE & 0x00FF,         /* wMaxPacketSize */
-    (EPA_MAX_PKT_SIZE & 0xFF00) >> 8,
+    ((EPA_MAX_PKT_SIZE & 0xFF00) >> 8),
     INT_IN_INTERVAL,                   /* bInterval */
 
     /* Endpoint Descriptor: EPB interrupt out. */
@@ -197,7 +197,7 @@ __align(4) uint8_t gu8OtherConfigDescriptor[] =
     (INT_OUT_EP_NUM | EP_OUTPUT),      /* bEndpointAddress */
     EP_INT,                            /* bmAttributes */
     EPB_MAX_PKT_SIZE & 0x00FF,         /* wMaxPacketSize */
-    (EPB_MAX_PKT_SIZE & 0xFF00) >> 8,
+    ((EPB_MAX_PKT_SIZE & 0xFF00) >> 8),
     INT_OUT_INTERVAL,                  /* bInterval */
 
     /* Endpoint Descriptor: EPC isochronous in. */
@@ -206,7 +206,7 @@ __align(4) uint8_t gu8OtherConfigDescriptor[] =
     (ISO_IN_EP_NUM | EP_INPUT),        /* bEndpointAddress */
     EP_ISO,                            /* bmAttributes */
     EPC_MAX_PKT_SIZE & 0x00FF,         /* wMaxPacketSize */
-    (EPC_MAX_PKT_SIZE & 0xFF00) >> 8,
+    ((EPC_MAX_PKT_SIZE & 0xFF00) >> 8),
     ISO_IN_INTERVAL,                   /* bInterval */
 
     /* Endpoint Descriptor: EPD isochronous out. */
@@ -215,7 +215,7 @@ __align(4) uint8_t gu8OtherConfigDescriptor[] =
     (ISO_OUT_EP_NUM | EP_OUTPUT),      /* bEndpointAddress */
     EP_ISO,                            /* bmAttributes */
     EPD_MAX_PKT_SIZE & 0x00FF,         /* wMaxPacketSize */
-    (EPD_MAX_PKT_SIZE & 0xFF00) >> 8,
+    ((EPD_MAX_PKT_SIZE & 0xFF00) >> 8),
     ISO_OUT_INTERVAL,                  /* bInterval */
 
     /* Endpoint Descriptor: EPE bulk in. */
@@ -224,7 +224,7 @@ __align(4) uint8_t gu8OtherConfigDescriptor[] =
     (BULK_IN_EP_NUM | EP_INPUT),       /* bEndpointAddress */
     EP_BULK,                           /* bmAttributes */
     EPE_MAX_PKT_SIZE & 0x00FF,         /* wMaxPacketSize */
-    (EPE_MAX_PKT_SIZE & 0xFF00) >> 8,
+    ((EPE_MAX_PKT_SIZE & 0xFF00) >> 8),
     0x1,                               /* bInterval */
 
     /* Endpoint Descriptor: EPF bulk out. */
@@ -233,7 +233,7 @@ __align(4) uint8_t gu8OtherConfigDescriptor[] =
     (BULK_OUT_EP_NUM | EP_OUTPUT),     /* bEndpointAddress */
     EP_BULK,                           /* bmAttributes */
     EPF_MAX_PKT_SIZE & 0x00FF,         /* wMaxPacketSize */
-    (EPF_MAX_PKT_SIZE & 0xFF00) >> 8,
+    ((EPF_MAX_PKT_SIZE & 0xFF00) >> 8),
     0x1                                /* bInterval */
 };
 

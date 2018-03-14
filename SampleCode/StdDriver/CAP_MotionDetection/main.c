@@ -261,7 +261,7 @@ int32_t main (void)
     UART0_Init();
 
     /* Init Engine clock and Sensor clock */
-    CAP_SetFreq(7000000 ,7000000);
+    CAP_SetFreq(7000000,7000000);
 
     /* Motion Detection */
     MotionDetection8x8();

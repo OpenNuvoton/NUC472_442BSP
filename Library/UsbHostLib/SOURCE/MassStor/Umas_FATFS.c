@@ -28,7 +28,7 @@ static uint32_t     g_sector_size, g_total_sector_num;
 
 static uint8_t usb_stor_sense_notready[18] =
 {
-    0x70/* current error */, 0, 0x02/* not ready */, 0 , 0,
+    0x70/* current error */, 0, 0x02/* not ready */, 0, 0,
     0x0a/* additional length */, 0, 0, 0, 0,
     0x04/* not ready */, 0x03 /* manual intervention */
 };

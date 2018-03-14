@@ -354,7 +354,7 @@ uint8_t SWI2C_Read_8bitSlaveAddr_16bitReg_8bitData(uint8_t uAddr, uint16_t uRegA
     // 2-Phase(ID address, register address) write transmission
     SWI2C_SendStart();
     SWI2C_WriteByte(uAddr,DrvI2C_Ack_Have,8);        // Write ID address to sensor
-    SWI2C_WriteByte(uRegAddr>>8  ,DrvI2C_Ack_Have,8);    // Write register addressH to sensor
+    SWI2C_WriteByte(uRegAddr>>8,DrvI2C_Ack_Have,8);      // Write register addressH to sensor
     SWI2C_WriteByte(uRegAddr&0xFF,DrvI2C_Ack_Have,8);    // Write register addressL to sensor
     //DrvI2C_SendStop();
 
@@ -374,10 +374,10 @@ uint8_t SWI2C_Write_8bitSlaveAddr_16bitReg_8bitData(uint8_t uAddr, uint16_t uReg
     volatile uint8_t u32Delay = 0x50;
     SWI2C_SendStart();
     while(u32Delay--);
-    if ( (SWI2C_WriteByte(uAddr        ,DrvI2C_Ack_Have,8)==FALSE) ||  // Write ID address to sensor
-            (SWI2C_WriteByte(uRegAddr>>8  ,DrvI2C_Ack_Have,8)==FALSE) ||    // Write register addressH to sensor
+    if ( (SWI2C_WriteByte(uAddr,DrvI2C_Ack_Have,8)==FALSE) ||          // Write ID address to sensor
+            (SWI2C_WriteByte(uRegAddr>>8,DrvI2C_Ack_Have,8)==FALSE) ||      // Write register addressH to sensor
             (SWI2C_WriteByte(uRegAddr&0xff,DrvI2C_Ack_Have,8)==FALSE) ||    // Write register addressL to sensor
-            (SWI2C_WriteByte(uData        ,DrvI2C_Ack_Have,8)==FALSE) )        // Write data to sensor
+            (SWI2C_WriteByte(uData,DrvI2C_Ack_Have,8)==FALSE) )                // Write data to sensor
     {
         SWI2C_SendStop();
         return FALSE;
