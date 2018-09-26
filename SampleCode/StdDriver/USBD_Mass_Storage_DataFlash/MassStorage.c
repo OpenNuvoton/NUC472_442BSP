@@ -157,7 +157,7 @@ void USBD_IRQHandler(void)
             {
                 if (g_usbd_ShortPacket == 1)
                 {
-                    USBD->EP[EPA].EPRSPCTL = USBD->EP[EPA].EPRSPCTL & 0x10 | USB_EP_RSPCTL_SHORTTXEN;    // packet end
+                    USBD->EP[EPA].EPRSPCTL = (USBD->EP[EPA].EPRSPCTL & 0x10) | USB_EP_RSPCTL_SHORTTXEN;    // packet end
                     g_usbd_ShortPacket = 0;
                 }
             }
@@ -979,6 +979,9 @@ void MSC_ProcessCmd(void)
                 {
                     g_u8Remove = 1;
                 }
+                g_sCSW.dCSWDataResidue = 0;
+                g_sCSW.bCSWStatus = 0;
+                break;
             }
             case UFI_VERIFY_10:
             {
@@ -1064,6 +1067,7 @@ void MSC_ProcessCmd(void)
                 g_u8Prevent = 1;
                 g_sCSW.bCSWStatus = 0x01;
                 g_sCSW.dCSWDataResidue = 0;
+                break;
             }
             default:
             {
@@ -1098,7 +1102,7 @@ void MSC_ProcessCmd(void)
         else
         {
             if ((USBD_GetEpStall(EPA) == 0) && (!(USBD->EP[EPA].EPINTSTS & USBD_EPINTSTS_BUFEMPTYIF_Msk)))
-                USBD->EP[EPA].EPRSPCTL = USBD->EP[EPA].EPRSPCTL & 0x10 | USB_EP_RSPCTL_SHORTTXEN;
+                USBD->EP[EPA].EPRSPCTL = (USBD->EP[EPA].EPRSPCTL & 0x10) | USB_EP_RSPCTL_SHORTTXEN;
         }
     }
 }

@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "NUC472_442.h"
-#include "DataFlashProg.h"
+#include "dataflashprog.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011 Keil - An ARM Company. All rights reserved.
  *----------------------------------------------------------------------------*/
 
-#include "NUC472_442.H"                     /* NUC4xx definitions           */
+#include "NUC472_442.h"                     /* NUC4xx definitions           */
 #include "LED.h"
 
 const unsigned long led_mask[] = { 1UL << 0, 1UL << 1, 1UL << 2, 1UL << 3,
