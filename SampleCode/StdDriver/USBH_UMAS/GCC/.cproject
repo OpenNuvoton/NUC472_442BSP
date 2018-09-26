@@ -49,12 +49,12 @@
 							</tool>
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1998783287" name="Cross ARM GNU C Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler">
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.472760696" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" useByScannerDiscovery="true" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}\..\..\..\..\Library\CMSIS\Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}\..\..\..\..\Library\Device\Nuvoton\NUC472_442\Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}\..\..\..\..\Library\StdDriver\inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}\..\..\..\..\Library\UsbHostLib\Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}\..\..\..\..\ThirdParty\FatFS\src&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}\..\..\..\..\Library\UsbHostLib\Include\inc_mass&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../Library/CMSIS/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../Library/Device/Nuvoton/NUC472_442/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../Library/StdDriver/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../Library/UsbHostLib/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../ThirdParty/FatFS/src&quot;"/>
 								</option>
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.473850601" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
 							</tool>
@@ -113,6 +113,7 @@
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize.1446404628.908549613" name="Print size" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize.1446404628"/>
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi.1821221434.1691574755" name="Float ABI" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi.1821221434"/>
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit.2135722403.1675562797" name="FPU Type" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit.2135722403"/>
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform" isAbstract="false" osList="all" superClass="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform"/>
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.697082668" name="Cross ARM GNU Assembler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.1683921192">
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input.1738260286" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input"/>
 							</tool>

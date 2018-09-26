@@ -15,7 +15,7 @@
 	.text
         
 loaderImageBase:
-    .incbin  "..\\..\\..\\fmc_multi_word_prog.bin"
+    .incbin  "../../../fmc_multi_word_prog.bin"
 loaderImageLimit:
     .space   4
 

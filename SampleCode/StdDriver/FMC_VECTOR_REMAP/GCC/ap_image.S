@@ -17,12 +17,12 @@
     .text
 
 loaderImage1Base:
-    .incbin  "..\\..\\fmc_ld_boot.bin"
+    .incbin  "../../fmc_ld_boot.bin"
 loaderImage1Limit:
     .space   4
 
 loaderImage2Base:
-    .incbin  "..\\..\\fmc_isp.bin"
+    .incbin  "../../fmc_isp.bin"
 loaderImage2Limit:
     .space   4
 
