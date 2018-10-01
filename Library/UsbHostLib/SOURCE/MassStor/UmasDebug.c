@@ -55,7 +55,7 @@
 #include <string.h>
 #include "NUC472_442.h"
 #include "usbh_core.h"
-#include "umas.h"
+#include "Umas.h"
 
 /// @cond HIDDEN_SYMBOLS
 
