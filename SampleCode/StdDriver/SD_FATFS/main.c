@@ -253,34 +253,33 @@ void SD0_Handler(void)
     unsigned int volatile ier;
 
     // FMI data abort interrupt
-    if (SD->FMIISR & SD_FMIISR_DTA_IE_Msk)
+    if (SD->GINTSTS & SDH_GINTSTS_DTAIF_Msk)
     {
         /* ResetAllEngine() */
-        SD->FMICR |= SD_FMICR_SW_RST_Msk;
-        SD->FMIISR = SD_FMIISR_DTA_IE_Msk;
+        SD->GCTL |= SDH_GCTL_GCTLRST_Msk;
     }
 
     //----- SD interrupt status
-    isr = SD->SDISR;
-    if (isr & SD_SDISR_BLKD_IF_Msk)     // block down
+    isr = SD->INTSTS;
+    if (isr & SDH_INTSTS_BLKDIF_Msk)     // block down
     {
         extern uint8_t volatile _sd_SDDataReady;
         _sd_SDDataReady = TRUE;
-        SD->SDISR = SD_SDISR_BLKD_IF_Msk;
+        SD->INTSTS = SDH_INTSTS_BLKDIF_Msk;
     }
 
-    if (isr & SD_SDISR_CD0_IF_Msk)   // port 0 card detect
+    if (isr & SDH_INTSTS_CDIF0_Msk)   // port 0 card detect
     {
         //----- SD interrupt status
         // it is work to delay 50 times for SD_CLK = 200KHz
         {
             volatile int i;         // delay 30 fail, 50 OK
             for (i=0; i<500; i++);  // delay to make sure got updated value from REG_SDISR.
-            isr = SD->SDISR;
+            isr = SD->INTSTS;
         }
 
 #ifdef _USE_DAT3_DETECT_
-        if (!(isr & SD_SDISR_CDPS0_Msk))
+        if (!(isr & SDH_INTSTS_CDSTS0_Msk))
         {
             SD0.IsCardInsert = FALSE;
             SD_Close_(0);
@@ -290,7 +289,7 @@ void SD0_Handler(void)
             disk_initialize(SD_Drv);
         }
 #else
-        if (isr & SD_SDISR_CDPS0_Msk)
+        if (isr & SDH_INTSTS_CDSTS0_Msk)
         {
             SD0.IsCardInsert = FALSE;   // SDISR_CD_Card = 1 means card remove for GPIO mode
             SD_Close_(0);
@@ -301,18 +300,18 @@ void SD0_Handler(void)
         }
 #endif
 
-        SD->SDISR = SD_SDISR_CD0_IF_Msk;
+        SD->INTSTS = SDH_INTSTS_CDIF0_Msk;
     }
 
     // CRC error interrupt
-    if (isr & SD_SDISR_CRC_IF_Msk)
+    if (isr & SDH_INTSTS_CRCIF_Msk)
     {
-        if (!(isr & SD_SDISR_CRC_16_Msk))
+        if (!(isr & SDH_INTSTS_CRC16_Msk))
         {
             //printf("***** ISR sdioIntHandler(): CRC_16 error !\n");
             // handle CRC error
         }
-        else if (!(isr & SD_SDISR_CRC_7_Msk))
+        else if (!(isr & SDH_INTSTS_CRC7_Msk))
         {
             extern uint32_t _sd_uR3_CMD;
             if (! _sd_uR3_CMD)
@@ -321,7 +320,7 @@ void SD0_Handler(void)
                 // handle CRC error
             }
         }
-        SD->SDISR = SD_SDISR_CRC_IF_Msk;      // clear interrupt flag
+        SD->INTSTS = SDH_INTSTS_CRCIF_Msk;      // clear interrupt flag
     }
 
 
@@ -331,11 +330,11 @@ void SD0_Handler(void)
 void SD_IRQHandler(void)
 {
 
-    if( ((SD->SDCR & SD_SDCR_SDPORT_Msk) >> (SD_SDCR_SDPORT_Pos)) == 0 )
+    if( ((SD->CTL & SDH_CTL_SDPORT_Msk) >> (SDH_CTL_SDPORT_Pos)) == 0 )
     {
         SD0_Handler();
     }
-    else if( ((SD->SDCR & SD_SDCR_SDPORT_Msk) >> (SD_SDCR_SDPORT_Pos)) == 1 )
+    else if( ((SD->CTL & SDH_CTL_SDPORT_Msk) >> (SDH_CTL_SDPORT_Pos)) == 1 )
     {
         //SD1_Handler();
     }
@@ -428,6 +427,7 @@ int32_t main(void)
     UINT s1, s2, cnt;
     static const BYTE ft[] = {0, 12, 16, 32};
     DWORD ofs = 0, sect = 0;
+    TCHAR sd_path[] = { '0', ':', 0 }; /* SD drive started from 0 */
 
     SYS_Init();
 
@@ -437,8 +437,7 @@ int32_t main(void)
 
     printf("\n\nNUC470 SD FATFS TEST!\n");
     printf("rc=%d\n", (WORD)disk_initialize(SD_Drv));
-    disk_read(SD_Drv, Buff, 2, 1);
-    f_mount(&FatFs[0], 0, 1);
+    put_rc(f_mount(&FatFs[0], sd_path, 1));
 
     for (;;)
     {
@@ -540,7 +539,7 @@ int32_t main(void)
             switch (*ptr++)
             {
             case 'i' :  /* fi - Force initialized the logical drive */
-                put_rc(f_mount(&FatFs[0], 0, 1));
+                put_rc(f_mount(&FatFs[0], sd_path, 1));
                 break;
 
             case 's' :  /* fs - Show logical drive status */

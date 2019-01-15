@@ -52,7 +52,7 @@ DSTATUS disk_initialize (
         return 0;
 
     case DRV_SD1 :
-        SD_Open_(SD_PORT0 | CardDetect_From_GPIO);
+        SD_Open_(SD_PORT1 | CardDetect_From_GPIO);
 
         return 0;
 #endif
