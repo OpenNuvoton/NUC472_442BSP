@@ -257,6 +257,11 @@ void DFU_ClassRequest(void)
                         {
                             dfu_status.bState = STATE_dfuIDLE;
                             USBD->CEPCTL |= USBD_CEPCTL_ZEROLEN_Msk;
+                            while (USBD->CEPCTL & USBD_CEPCTL_ZEROLEN_Msk);
+                            /* Status stage */
+                            USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_STSDONEIF_Msk);
+                            USBD_SET_CEP_STATE(USB_CEPCTL_NAKCLR);
+                            USBD_ENABLE_CEP_INT(USBD_CEPINTEN_STSDONEIEN_Msk);
                             break;
                         }
 

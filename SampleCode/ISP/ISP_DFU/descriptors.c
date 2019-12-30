@@ -1,6 +1,6 @@
 /***************************************************************************//**
  * @file     descriptors.c
- * @brief    M4521 series USBD driver source file
+ * @brief    NUC472_442 series USBD driver source file
  * @version  2.0.0
  *
  * @copyright (C) 2019 Nuvoton Technology Corp. All rights reserved.
