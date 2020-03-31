@@ -172,6 +172,7 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPA_MFPL_PA5MFP_SPI3_SS0    (0x2UL<<SYS_GPA_MFPL_PA5MFP_Pos)            /*!< GPA_MFPL PA5 setting for SPI3_SS0    \hideinitializer */
 #define SYS_GPA_MFPL_PA5MFP_I2S0_BCLK   (0x3UL<<SYS_GPA_MFPL_PA5MFP_Pos)          /*!< GPA_MFPL PA5 setting for I2S0_BCLK    \hideinitializer */
 #define SYS_GPA_MFPL_PA5MFP_PWM0_CH0    (0x4UL<<SYS_GPA_MFPL_PA5MFP_Pos)            /*!< GPA_MFPL PA5 setting for PWM0 CH0     \hideinitializer */
+#define SYS_GPA_MFPL_PA5MFP_PWM0_0      (0x4UL<<SYS_GPA_MFPL_PA5MFP_Pos)            /*!< GPA_MFPL PA5 setting for PWM0 CH0     \hideinitializer */
 #define SYS_GPA_MFPL_PA5MFP_QEI1_B      (0x5UL<<SYS_GPA_MFPL_PA5MFP_Pos)            /*!< GPA_MFPL PA5 setting for QEI1_B    \hideinitializer */
 #define SYS_GPA_MFPL_PA5MFP_EBI_A15     (0x7UL<<SYS_GPA_MFPL_PA5MFP_Pos)            /*!< GPA_MFPL PA5 setting for EBI_A15    \hideinitializer */
 #define SYS_GPA_MFPL_PA5MFP_ECAP1_IC1   (0x8UL<<SYS_GPA_MFPL_PA5MFP_Pos)            /*!< GPA_MFPL PA5 setting for ECAP1_IC1    \hideinitializer */
@@ -181,6 +182,7 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPA_MFPL_PA6MFP_SC2_CD      (0x1UL<<SYS_GPA_MFPL_PA6MFP_Pos)           /*!< GPA_MFPL PA6 setting for SC2_CD     \hideinitializer */
 #define SYS_GPA_MFPL_PA6MFP_I2S0_LRCK   (0x3UL<<SYS_GPA_MFPL_PA6MFP_Pos)           /*!< GPA_MFPL PA6 setting for I2S0_LRCK    \hideinitializer */
 #define SYS_GPA_MFPL_PA6MFP_PWM0_CH1    (0x4UL<<SYS_GPA_MFPL_PA6MFP_Pos)           /*!< GPA_MFPL PA6 setting for PWM1 CH1    \hideinitializer */
+#define SYS_GPA_MFPL_PA6MFP_PWM0_1      (0x4UL<<SYS_GPA_MFPL_PA6MFP_Pos)           /*!< GPA_MFPL PA6 setting for PWM1 CH1    \hideinitializer */
 #define SYS_GPA_MFPL_PA6MFP_QEI1_A      (0x5UL<<SYS_GPA_MFPL_PA6MFP_Pos)           /*!< GPA_MFPL PA6 setting for QEI1_A     \hideinitializer */
 #define SYS_GPA_MFPL_PA6MFP_CAN1_TXD    (0x6UL<<SYS_GPA_MFPL_PA6MFP_Pos)           /*!< GPA_MFPL PA6 setting for CAN1_TXD    \hideinitializer */
 #define SYS_GPA_MFPL_PA6MFP_EBI_A16     (0x7UL<<SYS_GPA_MFPL_PA6MFP_Pos)           /*!< GPA_MFPL PA6 setting for EBI_A16    \hideinitializer */
@@ -191,7 +193,9 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPA_MFPL_PA7MFP_SC0_CLK     (0x2UL<<SYS_GPA_MFPL_PA7MFP_Pos)           /*!< GPA_MFPL PA7 setting for SC0_CLK    \hideinitializer */
 #define SYS_GPA_MFPL_PA7MFP_SPI3_SS0    (0x3UL<<SYS_GPA_MFPL_PA7MFP_Pos)           /*!< GPA_MFPL PA7 setting for SPI3_SS0     \hideinitializer */
 #define SYS_GPA_MFPL_PA7MFP_PWM1_CH3    (0x4UL<<SYS_GPA_MFPL_PA7MFP_Pos)          /*!< GPA_MFPL PA7 setting for PWM1 CH3     \hideinitializer */
+#define SYS_GPA_MFPL_PA7MFP_PWM1_3      (0x4UL<<SYS_GPA_MFPL_PA7MFP_Pos)          /*!< GPA_MFPL PA7 setting for PWM1 CH3     \hideinitializer */
 #define SYS_GPA_MFPL_PA7MFP_EPWM0_CH5   (0x5UL<<SYS_GPA_MFPL_PA7MFP_Pos)           /*!< GPA_MFPL PA7 setting for EPWM0 CH5     \hideinitializer */
+#define SYS_GPA_MFPL_PA7MFP_EPWM0_5     (0x5UL<<SYS_GPA_MFPL_PA7MFP_Pos)           /*!< GPA_MFPL PA7 setting for EPWM0 CH5     \hideinitializer */
 #define SYS_GPA_MFPL_PA7MFP_EBI_A17     (0x7UL<<SYS_GPA_MFPL_PA7MFP_Pos)           /*!< GPA_MFPL PA7 setting for EBI_A17     \hideinitializer */
 
 //GPA_MFPL_PA8MFP
@@ -199,7 +203,9 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPA_MFPH_PA8MFP_SC0_RST     (0x2UL<<SYS_GPA_MFPH_PA8MFP_Pos)           /*!< GPA_MFPH PA8 setting for SC0_RST    \hideinitializer */
 #define SYS_GPA_MFPH_PA8MFP_SPI3_CLK    (0x3UL<<SYS_GPA_MFPH_PA8MFP_Pos)           /*!< GPA_MFPH PA8 setting for SPI3_CLK     \hideinitializer */
 #define SYS_GPA_MFPH_PA8MFP_PWM1_CH2    (0x4UL<<SYS_GPA_MFPH_PA8MFP_Pos)           /*!< GPA_MFPH PA8 setting for PWM1 CH2    \hideinitializer */
+#define SYS_GPA_MFPH_PA8MFP_PWM1_2      (0x4UL<<SYS_GPA_MFPH_PA8MFP_Pos)           /*!< GPA_MFPH PA8 setting for PWM1 CH2    \hideinitializer */
 #define SYS_GPA_MFPH_PA8MFP_EPWM0_CH4   (0x5UL<<SYS_GPA_MFPH_PA8MFP_Pos)           /*!< GPA_MFPH PA8 setting for EPWM0_CH4     \hideinitializer */
+#define SYS_GPA_MFPH_PA8MFP_EPWM0_4     (0x5UL<<SYS_GPA_MFPH_PA8MFP_Pos)           /*!< GPA_MFPH PA8 setting for EPWM0_CH4     \hideinitializer */
 #define SYS_GPA_MFPH_PA8MFP_EBI_A18     (0x7UL<<SYS_GPA_MFPH_PA8MFP_Pos)           /*!< GPA_MFPH PA8 setting for EBI_A18    \hideinitializer */
 
 //GPA_MFPH_PA9MFP
@@ -207,7 +213,9 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPA_MFPH_PA9MFP_SC0_PWR     (0x2UL<<SYS_GPA_MFPH_PA9MFP_Pos)           /*!< GPA_MFPH PA9 setting for SC0_PWR    \hideinitializer */
 #define SYS_GPA_MFPH_PA9MFP_SPI3_MISO0  (0x3UL<<SYS_GPA_MFPH_PA9MFP_Pos)           /*!< GPA_MFPH PA9 setting for SPI3_MISO0     \hideinitializer */
 #define SYS_GPA_MFPH_PA9MFP_PWM1_CH1    (0x4UL<<SYS_GPA_MFPH_PA9MFP_Pos)           /*!< GPA_MFPH PA9 setting for PWM1 CH1    \hideinitializer */
+#define SYS_GPA_MFPH_PA9MFP_PWM1_1      (0x4UL<<SYS_GPA_MFPH_PA9MFP_Pos)           /*!< GPA_MFPH PA9 setting for PWM1 CH1    \hideinitializer */
 #define SYS_GPA_MFPH_PA9MFP_EPWM0_CH3   (0x5UL<<SYS_GPA_MFPH_PA9MFP_Pos)           /*!< GPA_MFPH PA9 setting for EPWM0 CH3     \hideinitializer */
+#define SYS_GPA_MFPH_PA9MFP_EPWM0_3     (0x5UL<<SYS_GPA_MFPH_PA9MFP_Pos)           /*!< GPA_MFPH PA9 setting for EPWM0 CH3     \hideinitializer */
 #define SYS_GPA_MFPH_PA9MFP_EBI_A19     (0x7UL<<SYS_GPA_MFPH_PA9MFP_Pos)           /*!< GPA_MFPH PA9 setting for EBI_A19    \hideinitializer */
 
 //GPA_MFPH_PA10MFP
@@ -215,7 +223,9 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPA_MFPH_PA10MFP_SC0_DAT    (0x2UL<<SYS_GPA_MFPH_PA10MFP_Pos)           /*!< GPA_MFPH PA10 setting for SC0_DAT  \hideinitializer */
 #define SYS_GPA_MFPH_PA10MFP_SPI3_MOSI0 (0x3UL<<SYS_GPA_MFPH_PA10MFP_Pos)           /*!< GPA_MFPH PA10 setting for SPI3_MOSI0   \hideinitializer */
 #define SYS_GPA_MFPH_PA10MFP_PWM1_CH0   (0x4UL<<SYS_GPA_MFPH_PA10MFP_Pos)           /*!< GPA_MFPH PA10 setting for PWM1_CH0  \hideinitializer */
+#define SYS_GPA_MFPH_PA10MFP_PWM1_0     (0x4UL<<SYS_GPA_MFPH_PA10MFP_Pos)           /*!< GPA_MFPH PA10 setting for PWM1_CH0  \hideinitializer */
 #define SYS_GPA_MFPH_PA10MFP_EPWM0_CH2  (0x5UL<<SYS_GPA_MFPH_PA10MFP_Pos)           /*!< GPA_MFPH PA10 setting for EPWM0_CH2   \hideinitializer */
+#define SYS_GPA_MFPH_PA10MFP_EPWM0_2    (0x5UL<<SYS_GPA_MFPH_PA10MFP_Pos)           /*!< GPA_MFPH PA10 setting for EPWM0_CH2   \hideinitializer */
 #define SYS_GPA_MFPH_PA10MFP_EBI_A20    (0x7UL<<SYS_GPA_MFPH_PA10MFP_Pos)           /*!< GPA_MFPH PA10 setting for EBI_A20  \hideinitializer */
 
 //GPA_MFPH_PA11MFP
@@ -223,7 +233,9 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPA_MFPH_PA11MFP_UART0_RTS    (0x1UL<<SYS_GPA_MFPH_PA11MFP_Pos)           /*!< GPA_MFPH PA11 setting for UART0_RTS   \hideinitializer */
 #define SYS_GPA_MFPH_PA11MFP_SPI3_MISO1 (0x3UL<<SYS_GPA_MFPH_PA11MFP_Pos)           /*!< GPA_MFPH PA11 setting for SPI3_MISO1   \hideinitializer */
 #define SYS_GPA_MFPH_PA11MFP_PWM0_CH5   (0x4UL<<SYS_GPA_MFPH_PA11MFP_Pos)           /*!< GPA_MFPH PA11 setting for PWM0_CH5   \hideinitializer */
+#define SYS_GPA_MFPH_PA11MFP_PWM0_5     (0x4UL<<SYS_GPA_MFPH_PA11MFP_Pos)           /*!< GPA_MFPH PA11 setting for PWM0_CH5   \hideinitializer */
 #define SYS_GPA_MFPH_PA11MFP_EPWM0_CH1  (0x5UL<<SYS_GPA_MFPH_PA11MFP_Pos)           /*!< GPA_MFPH PA11 setting for EPWM0_CH1   \hideinitializer */
+#define SYS_GPA_MFPH_PA11MFP_EPWM0_1    (0x5UL<<SYS_GPA_MFPH_PA11MFP_Pos)           /*!< GPA_MFPH PA11 setting for EPWM0_CH1   \hideinitializer */
 #define SYS_GPA_MFPH_PA11MFP_EBI_AD0    (0x7UL<<SYS_GPA_MFPH_PA11MFP_Pos)           /*!< GPA_MFPH PA11 setting for EBI_AD0   \hideinitializer */
 
 //GPA_MFPH_PA12MFP
@@ -231,7 +243,9 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPA_MFPH_PA12MFP_UART0_CTS    (0x1UL<<SYS_GPA_MFPH_PA12MFP_Pos)           /*!< GPA_MFPH PA12 setting for UART0_CTS   \hideinitializer */
 #define SYS_GPA_MFPH_PA12MFP_SPI3_MOSI1 (0x3UL<<SYS_GPA_MFPH_PA12MFP_Pos)           /*!< GPA_MFPH PA12 setting for SPI3_MOSI1   \hideinitializer */
 #define SYS_GPA_MFPH_PA12MFP_PWM0_CH4   (0x4UL<<SYS_GPA_MFPH_PA12MFP_Pos)           /*!< GPA_MFPH PA12 setting for PWM0_CH4   \hideinitializer */
+#define SYS_GPA_MFPH_PA12MFP_PWM0_4     (0x4UL<<SYS_GPA_MFPH_PA12MFP_Pos)           /*!< GPA_MFPH PA12 setting for PWM0_CH4   \hideinitializer */
 #define SYS_GPA_MFPH_PA12MFP_EPWM0_CH0  (0x5UL<<SYS_GPA_MFPH_PA12MFP_Pos)           /*!< GPA_MFPH PA12 setting for EPWM0_CH0   \hideinitializer */
+#define SYS_GPA_MFPH_PA12MFP_EPWM0_0    (0x5UL<<SYS_GPA_MFPH_PA12MFP_Pos)           /*!< GPA_MFPH PA12 setting for EPWM0_CH0   \hideinitializer */
 #define SYS_GPA_MFPH_PA12MFP_EBI_AD1    (0x7UL<<SYS_GPA_MFPH_PA12MFP_Pos)           /*!< GPA_MFPH PA12 setting for EBI_AD1   \hideinitializer */
 
 //GPA_MFPH_PA13MFP
@@ -239,6 +253,7 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPA_MFPH_PA13MFP_UART0_RXD    (0x1UL<<SYS_GPA_MFPH_PA13MFP_Pos)           /*!< GPA_MFPH PA13 setting for UART0_RXD   \hideinitializer */
 #define SYS_GPA_MFPH_PA13MFP_SC3_DAT    (0x3UL<<SYS_GPA_MFPH_PA13MFP_Pos)           /*!< GPA_MFPH PA13 setting for SC3_DAT   \hideinitializer */
 #define SYS_GPA_MFPH_PA13MFP_PWM1_CH4   (0x4UL<<SYS_GPA_MFPH_PA13MFP_Pos)           /*!< GPA_MFPH PA13 setting for PWM1_CH4   \hideinitializer */
+#define SYS_GPA_MFPH_PA13MFP_PWM1_4     (0x4UL<<SYS_GPA_MFPH_PA13MFP_Pos)           /*!< GPA_MFPH PA13 setting for PWM1_CH4   \hideinitializer */
 #define SYS_GPA_MFPH_PA13MFP_EBI_AD2    (0x7UL<<SYS_GPA_MFPH_PA13MFP_Pos)           /*!< GPA_MFPH PA13 setting for EBI_AD2   \hideinitializer */
 
 //GPA_MFPH_PA14MFP
@@ -246,6 +261,7 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPA_MFPH_PA14MFP_UART0_TXD    (0x1UL<<SYS_GPA_MFPH_PA14MFP_Pos)           /*!< GPA_MFPH PA14 setting for UART0_TXD   \hideinitializer */
 #define SYS_GPA_MFPH_PA14MFP_SC3_CLK    (0x3UL<<SYS_GPA_MFPH_PA14MFP_Pos)           /*!< GPA_MFPH PA14 setting for SC3_CLK   \hideinitializer */
 #define SYS_GPA_MFPH_PA14MFP_PWM1_CH5   (0x4UL<<SYS_GPA_MFPH_PA14MFP_Pos)           /*!< GPA_MFPH PA14 setting for PWM1_CH5   \hideinitializer */
+#define SYS_GPA_MFPH_PA14MFP_PWM1_5     (0x4UL<<SYS_GPA_MFPH_PA14MFP_Pos)           /*!< GPA_MFPH PA14 setting for PWM1_CH5   \hideinitializer */
 #define SYS_GPA_MFPH_PA14MFP_EBI_AD3    (0x7UL<<SYS_GPA_MFPH_PA14MFP_Pos)           /*!< GPA_MFPH PA14 setting for EBI_AD3   \hideinitializer */
 //GPA_MFPH_PA15MFP
 #define SYS_GPA_MFPH_PA15MFP_GPIO       (0x0UL<<SYS_GPA_MFPH_PA15MFP_Pos)           /*!< GPA_MFPH PA15 setting for GPIO   \hideinitializer */
@@ -302,7 +318,9 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPB_MFPL_PB6MFP_BRAKE01        (0x2UL<<SYS_GPB_MFPL_PB6MFP_Pos)           /*!< GPB_MFPL PB6 setting for BRAKE01      \hideinitializer */
 #define SYS_GPB_MFPL_PB6MFP_UART4_RTS      (0x3UL<<SYS_GPB_MFPL_PB6MFP_Pos)           /*!< GPB_MFPL PB6 setting for UART4_RTS    \hideinitializer */
 #define SYS_GPB_MFPL_PB6MFP_PWM1_CH4       (0x4UL<<SYS_GPB_MFPL_PB6MFP_Pos)           /*!< GPB_MFPL PB6 setting for PWM1_CH4     \hideinitializer */
+#define SYS_GPB_MFPL_PB6MFP_PWM1_4         (0x4UL<<SYS_GPB_MFPL_PB6MFP_Pos)           /*!< GPB_MFPL PB6 setting for PWM1_CH4     \hideinitializer */
 #define SYS_GPB_MFPL_PB6MFP_EPWM1_CH0      (0x5UL<<SYS_GPB_MFPL_PB6MFP_Pos)           /*!< GPB_MFPL PB6 setting for EPWM1_CH0     \hideinitializer */
+#define SYS_GPB_MFPL_PB6MFP_EPWM1_0        (0x5UL<<SYS_GPB_MFPL_PB6MFP_Pos)           /*!< GPB_MFPL PB6 setting for EPWM1_CH0     \hideinitializer */
 #define SYS_GPB_MFPL_PB6MFP_EBI_AD8        (0x7UL<<SYS_GPB_MFPL_PB6MFP_Pos)           /*!< GPB_MFPL PB6 setting for EBI_AD8    \hideinitializer */
 
 //GPB_MFPL_PB7MFP
@@ -311,7 +329,9 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPB_MFPL_PB7MFP_BRAKE00         (0x2UL<<SYS_GPB_MFPL_PB7MFP_Pos)           /*!< GPB_MFPL PB7 setting for BRAKE00    \hideinitializer */
 #define SYS_GPB_MFPL_PB7MFP_UART4_CTS       (0x3UL<<SYS_GPB_MFPL_PB7MFP_Pos)           /*!< GPB_MFPL PB7 setting for UART4_CTS    \hideinitializer */
 #define SYS_GPB_MFPL_PB7MFP_PWM1_CH5        (0x4UL<<SYS_GPB_MFPL_PB7MFP_Pos)           /*!< GPB_MFPL PB7 setting for PWM1_CH5    \hideinitializer */
+#define SYS_GPB_MFPL_PB7MFP_PWM1_5          (0x4UL<<SYS_GPB_MFPL_PB7MFP_Pos)           /*!< GPB_MFPL PB7 setting for PWM1_CH5    \hideinitializer */
 #define SYS_GPB_MFPL_PB7MFP_EPWM1_CH1       (0x5UL<<SYS_GPB_MFPL_PB7MFP_Pos)           /*!< GPB_MFPL PB7 setting for EPWM1_CH1     \hideinitializer */
+#define SYS_GPB_MFPL_PB7MFP_EPWM1_1         (0x5UL<<SYS_GPB_MFPL_PB7MFP_Pos)           /*!< GPB_MFPL PB7 setting for EPWM1_CH1     \hideinitializer */
 #define SYS_GPB_MFPL_PB7MFP_ETM_TRACE_DATA3 (0x6UL<<SYS_GPB_MFPL_PB7MFP_Pos)           /*!< GPB_MFPL PB7 setting for ETM_TRACE_DATA3    \hideinitializer */
 #define SYS_GPB_MFPL_PB7MFP_EBI_AD9         (0x7UL<<SYS_GPB_MFPL_PB7MFP_Pos)           /*!< GPB_MFPL PB7 setting for EBI_AD9    \hideinitializer */
 
@@ -319,6 +339,7 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPB_MFPH_PB8MFP_GPIO            (0x0UL<<SYS_GPB_MFPH_PB8MFP_Pos)           /*!< GPB_MFPH PB8 setting for GPIO     \hideinitializer */
 #define SYS_GPB_MFPH_PB8MFP_UART5_CTS       (0x1UL<<SYS_GPB_MFPH_PB8MFP_Pos)           /*!< GPB_MFPH PB8 setting for UART5_CTS     \hideinitializer */
 #define SYS_GPB_MFPH_PB8MFP_EPWM1_CH2       (0x5UL<<SYS_GPB_MFPH_PB8MFP_Pos)           /*!< GPB_MFPH PB8 setting for EPWM1_CH2    \hideinitializer */
+#define SYS_GPB_MFPH_PB8MFP_EPWM1_2         (0x5UL<<SYS_GPB_MFPH_PB8MFP_Pos)           /*!< GPB_MFPH PB8 setting for EPWM1_CH2    \hideinitializer */
 #define SYS_GPB_MFPH_PB8MFP_ETM_TRACE_DATA2 (0x6UL<<SYS_GPB_MFPH_PB8MFP_Pos)           /*!< GPB_MFPH PB8 setting for ETM_TRACE_DATA2     \hideinitializer */
 #define SYS_GPB_MFPH_PB8MFP_EBI_AD10        (0x7UL<<SYS_GPB_MFPH_PB8MFP_Pos)           /*!< GPB_MFPH PB8 setting for EBI_AD10    \hideinitializer */
 
@@ -326,6 +347,7 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPB_MFPH_PB9MFP_GPIO            (0x0UL<<SYS_GPB_MFPH_PB9MFP_Pos)           /*!< GPB_MFPH PB9 setting for GPIO    \hideinitializer */
 #define SYS_GPB_MFPH_PB9MFP_UART5_RTS       (0x1UL<<SYS_GPB_MFPH_PB9MFP_Pos)           /*!< GPB_MFPH PB9 setting for UART5_RTS    \hideinitializer */
 #define SYS_GPB_MFPH_PB9MFP_EPWM1_CH3       (0x5UL<<SYS_GPB_MFPH_PB9MFP_Pos)           /*!< GPB_MFPH PB9 setting for EPWM1_CH3     \hideinitializer */
+#define SYS_GPB_MFPH_PB9MFP_EPWM1_3         (0x5UL<<SYS_GPB_MFPH_PB9MFP_Pos)           /*!< GPB_MFPH PB9 setting for EPWM1_CH3     \hideinitializer */
 #define SYS_GPB_MFPH_PB9MFP_ETM_TRACE_DATA1 (0x6UL<<SYS_GPB_MFPH_PB9MFP_Pos)           /*!< GPB_MFPH PB9 setting for ETM_TRACE_DATA1      \hideinitializer */
 #define SYS_GPB_MFPH_PB9MFP_EBI_AD11        (0x7UL<<SYS_GPB_MFPH_PB9MFP_Pos)           /*!< GPB_MFPH PB9 setting for EBI_AD11     \hideinitializer */
 
@@ -333,6 +355,7 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPB_MFPH_PB10MFP_GPIO            (0x0UL<<SYS_GPB_MFPH_PB10MFP_Pos)           /*!< GPB_MFPH PB10 setting for GPIO   \hideinitializer */
 #define SYS_GPB_MFPH_PB10MFP_UART5_TXD       (0x1UL<<SYS_GPB_MFPH_PB10MFP_Pos)           /*!< GPB_MFPH PB10 setting for UART5_TXD  \hideinitializer */
 #define SYS_GPB_MFPH_PB10MFP_EPWM1_CH4       (0x5UL<<SYS_GPB_MFPH_PB10MFP_Pos)           /*!< GPB_MFPH PB10 setting for EPWM1_CH4   \hideinitializer */
+#define SYS_GPB_MFPH_PB10MFP_EPWM1_4         (0x5UL<<SYS_GPB_MFPH_PB10MFP_Pos)           /*!< GPB_MFPH PB10 setting for EPWM1_CH4   \hideinitializer */
 #define SYS_GPB_MFPH_PB10MFP_ETM_TRACE_DATA0 (0x6UL<<SYS_GPB_MFPH_PB10MFP_Pos)           /*!< GPB_MFPH PB10 setting for ETM_TRACE_DATA0  \hideinitializer */
 #define SYS_GPB_MFPH_PB10MFP_EBI_AD12        (0x7UL<<SYS_GPB_MFPH_PB10MFP_Pos)           /*!< GPB_MFPH PB10 setting for EBI_AD12   \hideinitializer */
 
@@ -340,6 +363,7 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPB_MFPH_PB11MFP_GPIO            (0x0UL<<SYS_GPB_MFPH_PB11MFP_Pos)           /*!< GPB_MFPH PB11 setting for GPIO   \hideinitializer */
 #define SYS_GPB_MFPH_PB11MFP_UART5_RXD       (0x1UL<<SYS_GPB_MFPH_PB11MFP_Pos)           /*!< GPB_MFPH PB11 setting for UART5_RXD   \hideinitializer */
 #define SYS_GPB_MFPH_PB11MFP_EPWM1_CH5       (0x5UL<<SYS_GPB_MFPH_PB11MFP_Pos)           /*!< GPB_MFPH PB11 setting for EPWM1_CH5   \hideinitializer */
+#define SYS_GPB_MFPH_PB11MFP_EPWM1_5         (0x5UL<<SYS_GPB_MFPH_PB11MFP_Pos)           /*!< GPB_MFPH PB11 setting for EPWM1_CH5   \hideinitializer */
 #define SYS_GPB_MFPH_PB11MFP_ETM_TRACE_CLK   (0x6UL<<SYS_GPB_MFPH_PB11MFP_Pos)           /*!< GPB_MFPH PB11 setting for ETM_TRACE_CLK   \hideinitializer */
 #define SYS_GPB_MFPH_PB11MFP_EBI_AD13        (0x7UL<<SYS_GPB_MFPH_PB11MFP_Pos)           /*!< GPB_MFPH PB11 setting for EBI_AD13   \hideinitializer */
 
@@ -426,6 +450,7 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 //GPC_MFPL_PC5MFP
 #define SYS_GPC_MFPL_PC5MFP_GPIO             (0x0UL<<SYS_GPC_MFPL_PC5MFP_Pos)           /*!< GPC_MFPL PC5 setting for GPIO     \hideinitializer */
 #define SYS_GPC_MFPL_PC5MFP_CLK_O            (0x1UL<<SYS_GPC_MFPL_PC5MFP_Pos)           /*!< GPC_MFPL PC5 setting for CLK_O    \hideinitializer */
+#define SYS_GPC_MFPL_PC5MFP_CLKO             (0x1UL<<SYS_GPC_MFPL_PC5MFP_Pos)           /*!< GPC_MFPL PC5 setting for CLK_O    \hideinitializer */
 #define SYS_GPC_MFPL_PC5MFP_QEI0_A           (0x5UL<<SYS_GPC_MFPL_PC5MFP_Pos)           /*!< GPC_MFPL PC5 setting for QEI0_A     \hideinitializer */
 #define SYS_GPC_MFPL_PC5MFP_EMAC_MII_RXCLK   (0x6UL<<SYS_GPC_MFPL_PC5MFP_Pos)           /*!< GPC_MFPL PC5 setting for EMAC_MII_RXCLK     \hideinitializer */
 #define SYS_GPC_MFPL_PC5MFP_EBI_MCLK         (0x7UL<<SYS_GPC_MFPL_PC5MFP_Pos)           /*!< GPC_MFPL PC5 setting for EBI_MCLK     \hideinitializer */
@@ -468,6 +493,7 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPC_MFPH_PC10MFP_SC3_CD          (0x1UL<<SYS_GPC_MFPH_PC10MFP_Pos)           /*!< GPC_MFPH PC10 setting for SC3_CD   \hideinitializer */
 #define SYS_GPC_MFPH_PC10MFP_UART2_RXD       (0x2UL<<SYS_GPC_MFPH_PC10MFP_Pos)           /*!< GPC_MFPH PC10 setting for UART2_RXD  \hideinitializer */
 #define SYS_GPC_MFPH_PC10MFP_PWM0_CH2        (0x4UL<<SYS_GPC_MFPH_PC10MFP_Pos)           /*!< GPC_MFPH PC10 setting for PWM0_CH2  \hideinitializer */
+#define SYS_GPC_MFPH_PC10MFP_PWM0_2          (0x4UL<<SYS_GPC_MFPH_PC10MFP_Pos)           /*!< GPC_MFPH PC10 setting for PWM0_CH2  \hideinitializer */
 #define SYS_GPC_MFPH_PC10MFP_EBI_A23         (0x6UL<<SYS_GPC_MFPH_PC10MFP_Pos)           /*!< GPC_MFPH PC10 setting for EBI_A23  \hideinitializer */
 #define SYS_GPC_MFPH_PC10MFP_EBI_AD2         (0x7UL<<SYS_GPC_MFPH_PC10MFP_Pos)           /*!< GPC_MFPH PC10 setting for EBI_AD2  \hideinitializer */
 
@@ -475,6 +501,7 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 #define SYS_GPC_MFPH_PC11MFP_GPIO            (0x0UL<<SYS_GPC_MFPH_PC11MFP_Pos)           /*!< GPC_MFPH PC11 setting for GPIO   \hideinitializer */
 #define SYS_GPC_MFPH_PC11MFP_UART2_TXD       (0x2UL<<SYS_GPC_MFPH_PC11MFP_Pos)           /*!< GPC_MFPH PC11 setting for UART2_TXD   \hideinitializer */
 #define SYS_GPC_MFPH_PC11MFP_PWM0_CH3        (0x4UL<<SYS_GPC_MFPH_PC11MFP_Pos)           /*!< GPC_MFPH PC11 setting for PWM0_CH3   \hideinitializer */
+#define SYS_GPC_MFPH_PC11MFP_PWM0_3          (0x4UL<<SYS_GPC_MFPH_PC11MFP_Pos)           /*!< GPC_MFPH PC11 setting for PWM0_CH3   \hideinitializer */
 #define SYS_GPC_MFPH_PC11MFP_EBI_A24         (0x6UL<<SYS_GPC_MFPH_PC11MFP_Pos)           /*!< GPC_MFPH PC11 setting for EBI_A24   \hideinitializer */
 #define SYS_GPC_MFPH_PC11MFP_EBI_AD3         (0x7UL<<SYS_GPC_MFPH_PC11MFP_Pos)           /*!< GPC_MFPH PC11 setting for EBI_AD3   \hideinitializer */
 
@@ -792,12 +819,16 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 //GPF_MFPH_PF9MFP
 #define SYS_GPF_MFPH_PF9MFP_GPIO          (0x0UL<<SYS_GPF_MFPH_PF9MFP_Pos)           /*!< GPF_MFPH PF9 setting for GPIO     \hideinitializer */
 #define SYS_GPF_MFPH_PF9MFP_OPA0_IN_P     (0x1UL<<SYS_GPF_MFPH_PF9MFP_Pos)           /*!< GPF_MFPH PF9 setting for OPA0_IN_P      \hideinitializer */
+#define SYS_GPF_MFPH_PF9MFP_OPA0_P        (0x1UL<<SYS_GPF_MFPH_PF9MFP_Pos)           /*!< GPF_MFPH PF9 setting for OPA0_IN_P      \hideinitializer */
 #define SYS_GPF_MFPH_PF9MFP_PWM0_CH0      (0x4UL<<SYS_GPF_MFPH_PF9MFP_Pos)           /*!< GPF_MFPH PF9 setting for PWM0_CH0      \hideinitializer */
+#define SYS_GPF_MFPH_PF9MFP_PWM0_0        (0x4UL<<SYS_GPF_MFPH_PF9MFP_Pos)           /*!< GPF_MFPH PF9 setting for PWM0_CH0      \hideinitializer */
 
 //GPF_MFPH_PF10MFP
 #define SYS_GPF_MFPH_PF10MFP_GPIO         (0x0UL<<SYS_GPF_MFPH_PF10MFP_Pos)           /*!< GPF_MFPH PF10 setting for GPIO   \hideinitializer */
 #define SYS_GPF_MFPH_PF10MFP_OPA0_IN_N    (0x1UL<<SYS_GPF_MFPH_PF10MFP_Pos)           /*!< GPF_MFPH PF10 setting for OPA0_IN_N    \hideinitializer */
+#define SYS_GPF_MFPH_PF10MFP_OPA0_N       (0x1UL<<SYS_GPF_MFPH_PF10MFP_Pos)           /*!< GPF_MFPH PF10 setting for OPA0_IN_N    \hideinitializer */
 #define SYS_GPF_MFPH_PF10MFP_PWM0_CH1     (0x4UL<<SYS_GPF_MFPH_PF10MFP_Pos)           /*!< GPF_MFPH PF10 setting for PWM0_CH1  \hideinitializer */
+#define SYS_GPF_MFPH_PF10MFP_PWM0_1       (0x4UL<<SYS_GPF_MFPH_PF10MFP_Pos)           /*!< GPF_MFPH PF10 setting for PWM0_CH1  \hideinitializer */
 
 //GPF_MFPH_PF11MFP
 #define SYS_GPF_MFPH_PF11MFP_GPIO         (0x0UL<<SYS_GPF_MFPH_PF11MFP_Pos)           /*!< GPF_MFPH PF11 setting for GPIO   \hideinitializer */
@@ -807,10 +838,12 @@ Example 1: If user want to set PA.0 as SC0_CD in initial function,
 //GPF_MFPH_PF12MFP
 #define SYS_GPF_MFPH_PF12MFP_GPIO         (0x0UL<<SYS_GPF_MFPH_PF12MFP_Pos)           /*!< GPF_MFPH PF12 setting for GPIO   \hideinitializer */
 #define SYS_GPF_MFPH_PF12MFP_OPA1_IN_P    (0x1UL<<SYS_GPF_MFPH_PF12MFP_Pos)           /*!< GPF_MFPH PF12 setting for OPA1_IN_P   \hideinitializer */
+#define SYS_GPF_MFPH_PF12MFP_OPA1_P       (0x1UL<<SYS_GPF_MFPH_PF12MFP_Pos)           /*!< GPF_MFPH PF12 setting for OPA1_IN_P   \hideinitializer */
 #define SYS_GPF_MFPH_PF12MFP_UART1_CTS    (0x2UL<<SYS_GPF_MFPH_PF12MFP_Pos)           /*!< GPF_MFPH PF12 setting for UART1_CTS   \hideinitializer */
 //GPF_MFPH_PF13MFP
 #define SYS_GPF_MFPH_PF13MFP_GPIO         (0x0UL<<SYS_GPF_MFPH_PF13MFP_Pos)           /*!< GPF_MFPH PF13 setting for GPIO   \hideinitializer */
 #define SYS_GPF_MFPH_PF13MFP_OPA1_IN_N    (0x1UL<<SYS_GPF_MFPH_PF13MFP_Pos)            /*!< GPF_MFPH PF13 setting for OPA1_IN_N  \hideinitializer */
+#define SYS_GPF_MFPH_PF13MFP_OPA1_N       (0x1UL<<SYS_GPF_MFPH_PF13MFP_Pos)            /*!< GPF_MFPH PF13 setting for OPA1_IN_N  \hideinitializer */
 #define SYS_GPF_MFPH_PF13MFP_UART1_TXD    (0x2UL<<SYS_GPF_MFPH_PF13MFP_Pos)            /*!< GPF_MFPH PF13 setting for UART1_TXD    \hideinitializer */
 
 //GPF_MFPH_PF14MFP
