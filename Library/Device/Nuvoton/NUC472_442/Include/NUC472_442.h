@@ -7,6 +7,7 @@
  *           This file contains all the peripheral register's definitions,
  *           bits definitions and memory mapping for NuMicro NUC472/NUC442 MCU.
  * @note
+ * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2018 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 /**
@@ -2049,16 +2050,16 @@ typedef struct {
      * | :----: | :----:   | :---- |
      * |[0:7]   |PLNSHMH   |Planar Scaling Horizontal Factor M (Higher 8-Bit)
      * |        |          |Specifies the higher 8-bit of denominator part (M) of the horizontal scaling factor
-     * |        |          |For detailed programming, please refer to the register “CAP_PLNSL?
+     * |        |          |For detailed programming, please refer to the register CAP_PLNSL
      * |[8:15]  |PLNSHNH   |Planar Scaling Horizontal Factor N (Higher 8-Bit)
      * |        |          |Specifies the higher 8-bit of numerator part (N) of the horizontal scaling factor.
-     * |        |          |For detailed programming, please refer to the register “CAP_PLNSL?
+     * |        |          |For detailed programming, please refer to the register CAP_PLNSL
      * |[16:23] |PLNSVMH   |Planar Scaling Vertical Factor M (Higher 8-Bit)
      * |        |          |Specifies the lower 8-bit of denominator part (M) of the vertical scaling factor.
-     * |        |          |For detailed programming, please refer to the register “CAP_PLNSL?
+     * |        |          |For detailed programming, please refer to the register CAP_PLNSL
      * |[24:31] |PLNSVNH   |Planar Scaling Vertical Factor N (Higher 8-Bit)
      * |        |          |Specifies the higher 8-bit of numerator part (N) of the vertical scaling factor.
-     * |        |          |For detailed programming, please refer to the register “CAP_PLNSL?
+     * |        |          |For detailed programming, please refer to the register CAP_PLNSL
     */
     __IO uint32_t PLNSM;
 
@@ -14739,7 +14740,7 @@ typedef struct {
      * |        |          |Note: This bit needs to be cleared by writing 1 to it.
      * |[20:9]  |VECMAP    |Vector Page Mapping Address (Read Only)
      * |        |          |The current flash address space 0x0000_0000~0x0000_07FF is mapping to
-     * |        |          |address {VECMAP[11:2], 11¡¦h000} ~ {VECMAP[11:2], 11¡¦h7FF}
+     * |        |          |address {VECMAP[11:2], 0x000} ~ {VECMAP[11:2], 0x7FF}
      * |        |          |VECMAP[1:0] is needed to set 0.
      * |[26]    |CFGCRCF   |User-Configuration CRC Check Flag (Read Only)
      * |        |          |This bit is set by hardware when detecting CONFIG CRC checksum is error

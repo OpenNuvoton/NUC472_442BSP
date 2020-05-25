@@ -6,6 +6,7 @@
  * @brief    NUC472/NUC442 MCU USB Host OHCI driver
  *
  * @note
+ * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2013 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>

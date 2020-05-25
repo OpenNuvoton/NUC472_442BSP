@@ -6,6 +6,7 @@
  * @brief    NUC472/NUC442 Debug Port and Semihost Setting Source File
  *
  * @note
+ * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2014 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>

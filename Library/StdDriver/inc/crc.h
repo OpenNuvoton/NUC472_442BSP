@@ -6,6 +6,7 @@
  * @brief    NUC472/NUC442 series CRC driver header file
  *
  * @note
+ * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2015 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #ifndef __CRC_H__

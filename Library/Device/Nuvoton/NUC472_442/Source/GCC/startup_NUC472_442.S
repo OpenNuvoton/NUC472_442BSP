@@ -3,6 +3,7 @@
  * @version  V1.00
  * @brief    CMSIS Cortex-M4 Core Device Startup File for NUC472_442
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2018 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 

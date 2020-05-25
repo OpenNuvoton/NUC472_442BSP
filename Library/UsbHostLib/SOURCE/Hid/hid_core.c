@@ -6,6 +6,7 @@
  * @brief    NUC472/NUC442 MCU USB Host HID library core.
  *
  * @note
+ * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2014 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 

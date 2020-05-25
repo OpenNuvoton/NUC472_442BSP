@@ -6,6 +6,7 @@
  * @brief    USB Host core driver header file
  *
  * @note
+ * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2013 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #ifndef _USB_CORE_H_
