@@ -294,7 +294,7 @@ void CLK_SetHCLK(uint32_t u32ClkSrc, uint32_t u32ClkDiv)
   * |\ref SDH_MODULE       |\ref CLK_CLKSEL0_SDHSEL_HIRC          |\ref CLK_CLKDIV0_SDH(x)       |
   * |\ref CRC_MODULE       | x                                    | x                            |
   * |\ref CAP_MODULE       |\ref CLK_CLKSEL0_CAPSEL_HXT           |\ref CLK_CLKDIV3_CAP(x)       |
-  * |\ref CAP_MODULE       |\ref CLK_CLKSEL0_CAPSEL_PLL2          |\ref CLK_CLKDIV3_CAP(x)       |
+  * |\ref CAP_MODULE       |\ref CLK_CLKSEL0_CAPSEL_PLL           |\ref CLK_CLKDIV3_CAP(x)       |
   * |\ref CAP_MODULE       |\ref CLK_CLKSEL0_CAPSEL_HCLK          |\ref CLK_CLKDIV3_CAP(x)       |
   * |\ref CAP_MODULE       |\ref CLK_CLKSEL0_CAPSEL_HIRC          |\ref CLK_CLKDIV3_CAP(x)       |
   * |\ref SEN_MODULE       | x                                    | x                            |

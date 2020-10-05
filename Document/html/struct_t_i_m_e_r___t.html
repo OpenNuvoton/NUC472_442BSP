@@ -20,7 +20,7 @@
   <td id="projectlogo"><img alt="Logo" src="m4.jpg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">NUC472/NUC442 BSP
-   &#160;<span id="projectnumber">V3.03.001</span>
+   &#160;<span id="projectnumber">V3.03.002</span>
    </div>
    <div id="projectbrief">The Board Support Package for NUC472/NUC442</div>
   </td>
@@ -71,7 +71,7 @@ Data Fields</h2></td></tr>
 <div class="textblock"><pre class="fragment">@addtogroup TIMER Timer Controller(TIMER)
 Memory Mapped Structure for TIMER Controller
 </pre> 
-<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l24888">24888</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l24889">24889</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
 </div><h2 class="groupheader">Field Documentation</h2>
 <a id="a4dd06cb4142a738d725637c4fa66caff"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4dd06cb4142a738d725637c4fa66caff">&#9670;&nbsp;</a></span>CAP</h2>
@@ -95,7 +95,7 @@ Memory Mapped Structure for TIMER Controller
 <td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyLeft">When CAPEN (TIMER_EXTCTL[3]) bit is set, CAPFUNCS (TIMER_EXTCTL[4]) bit is 0, and a transition on TMx_EXT pin matched the CAPEDGE (TIMER_EXTCTL[2:1]) setting, CAPIF (TIMER_EINTSTS[0]) will set to 1 and the current timer counter value (TIMER_CNT value) will be auto-loaded into this CAPDAT field.   </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l25017">25017</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l25018">25018</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
 
 </div>
 </div>
@@ -131,7 +131,7 @@ Memory Mapped Structure for TIMER Controller
 <td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyLeft">But if timer is operating at other modes, the 24-bit up counter will restart counting and using newest CMPDAT value to be the timer compared value if software writes a new value into CMPDAT field.   </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l24970">24970</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l24971">24971</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
 
 </div>
 </div>
@@ -163,7 +163,7 @@ Memory Mapped Structure for TIMER Controller
 <td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyLeft">User can read TIMER_CNT for getting current 24- bit event counter value if TIMERX_CTL[24] is 1   </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l25005">25005</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l25006">25006</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
 
 </div>
 </div>
@@ -293,7 +293,7 @@ Memory Mapped Structure for TIMER Controller
 <td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyLeft">TIMER counter will keep going no matter CPU is held by ICE or not.   </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l24953">24953</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l24954">24954</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
 
 </div>
 </div>
@@ -327,7 +327,7 @@ Memory Mapped Structure for TIMER Controller
 <td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyLeft">Note: This bit is cleared by writing 1 to it.   </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l25074">25074</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l25075">25075</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
 
 </div>
 </div>
@@ -411,7 +411,7 @@ Memory Mapped Structure for TIMER Controller
 <td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyLeft">If this bit is enabled, the edge detection of TMx pin is detected with de-bounce circuit.   </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l25058">25058</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l25059">25059</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
 
 </div>
 </div>
@@ -453,7 +453,7 @@ Memory Mapped Structure for TIMER Controller
 <td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyLeft">Note: This bit is cleared by writing 1 to it.   </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l24990">24990</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_n_u_c472__442_8h_source.html#l24991">24991</a> of file <a class="el" href="_n_u_c472__442_8h_source.html">NUC472_442.h</a>.</p>
 
 </div>
 </div>
@@ -463,7 +463,7 @@ Memory Mapped Structure for TIMER Controller
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Nov 11 2019 17:06:31 for NUC472/NUC442 BSP by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Oct 5 2020 17:15:02 for NUC472/NUC442 BSP by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>
