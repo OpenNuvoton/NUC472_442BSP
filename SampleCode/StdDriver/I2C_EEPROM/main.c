@@ -190,6 +190,9 @@ void SYS_Init(void)
     /* Set GPH3,GPH4 multi-function pins for I2C3 */
     SYS->GPH_MFPL |= SYS_GPH_MFPL_PH3MFP_I2C3_SCL | SYS_GPH_MFPL_PH4MFP_I2C3_SDA ;
 
+    /* I2C pin enable schmitt trigger */
+    PH->SMTEN |= GPIO_SMTEN_SMTEN3_Msk | GPIO_SMTEN_SMTEN4_Msk;
+
     /* Lock protected registers */
     SYS_LockReg();
 }
