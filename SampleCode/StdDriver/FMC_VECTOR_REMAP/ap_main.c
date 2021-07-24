@@ -18,9 +18,7 @@
 
 uint32_t PllClock = PLL_CLOCK;
 
-
 static int  load_image_to_flash(uint32_t image_base, uint32_t image_limit, uint32_t flash_addr, uint32_t max_size);
-
 
 void SYS_Init(void)
 {
@@ -148,8 +146,13 @@ int32_t main (void)
      *------------------------------------------------------------*/
     printf("Writing fmc_ld_boot.bin image to LDROM...\n");
     FMC_ENABLE_LD_UPDATE();
+#ifdef __ICCARM__   /* IAR compiler */
+    if (load_image_to_flash((uint32_t)&loaderImage1Base, (uint32_t)&loaderImage1Base + FMC_LDROM_SIZE,
+                            FMC_LDROM_BASE, FMC_LDROM_SIZE) != 0)
+#else
     if (load_image_to_flash((uint32_t)&loaderImage1Base, (uint32_t)&loaderImage1Limit,
                             FMC_LDROM_BASE, FMC_LDROM_SIZE) != 0)
+#endif
     {
         printf("Load image to LDROM failed!\n");
         return -1;
@@ -161,8 +164,13 @@ int32_t main (void)
      *------------------------------------------------------------*/
     printf("Writing fmc_isp.bin image to APROM address 0x%x...\n", ISP_CODE_BASE);
     FMC_ENABLE_AP_UPDATE();
+#ifdef __ICCARM__   /* IAR compiler */
+    if (load_image_to_flash((uint32_t)&loaderImage2Base, (uint32_t)&loaderImage2Base + ISP_CODE_MAX_SIZE,
+                            ISP_CODE_BASE, ISP_CODE_MAX_SIZE) != 0)
+#else
     if (load_image_to_flash((uint32_t)&loaderImage2Base, (uint32_t)&loaderImage2Limit,
                             ISP_CODE_BASE, ISP_CODE_MAX_SIZE) != 0)
+#endif
     {
         printf("Load image to APROM failed!\n");
         return -1;
