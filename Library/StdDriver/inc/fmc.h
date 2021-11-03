@@ -49,6 +49,7 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 #define FMC_ISPCMD_READ         0x00            /*!< ISP Command: Read flash word          \hideinitializer */
 #define FMC_ISPCMD_READ_64      0x40            /*!< ISP Command: Read flash double word   \hideinitializer */
+#define FMC_ISPCMD_PROGRAM      0x21            /*!< ISP Command: Write flash word         \hideinitializer */
 #define FMC_ISPCMD_WRITE        0x21            /*!< ISP Command: Write flash word         \hideinitializer */
 #define FMC_ISPCMD_WRITE_64     0x61            /*!< ISP Command: Write flash double word  \hideinitializer */
 #define FMC_ISPCMD_PAGE_ERASE   0x22            /*!< ISP Command: Page Erase Flash         \hideinitializer */

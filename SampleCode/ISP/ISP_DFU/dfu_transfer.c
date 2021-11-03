@@ -198,7 +198,7 @@ void DFU_ClassRequest(void)
                     {
                         dfu_status.bState = STATE_dfuDNLOAD_IDLE;
 
-                        WriteData(prog_struct.block_num * TRANSFER_SIZE, (prog_struct.block_num * TRANSFER_SIZE) + prog_struct.data_len, (uint32_t *)prog_struct.buf);
+                        FMC_Proc(FMC_ISPCMD_PROGRAM, prog_struct.block_num * TRANSFER_SIZE, prog_struct.block_num * TRANSFER_SIZE + prog_struct.data_len, (uint32_t *)prog_struct.buf);
                         //dfu_status.bStatus = STATUS_errWRITE;
                         command_Count = 0;
                     }
@@ -265,7 +265,7 @@ void DFU_ClassRequest(void)
                             break;
                         }
 
-                        ReadData(gUsbCmd.wValue * TRANSFER_SIZE, (gUsbCmd.wValue * TRANSFER_SIZE) + gUsbCmd.wLength, (uint32_t *)prog_struct.buf);
+                        FMC_Proc(FMC_ISPCMD_READ, gUsbCmd.wValue * TRANSFER_SIZE, (gUsbCmd.wValue * TRANSFER_SIZE) + gUsbCmd.wLength, (uint32_t *)prog_struct.buf);
                         USBD_PrepareCtrlIn((uint8_t *)prog_struct.buf, gUsbCmd.wLength);
                         USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_INTKIF_Msk);
                         USBD_ENABLE_CEP_INT(USBD_CEPINTEN_INTKIEN_Msk);

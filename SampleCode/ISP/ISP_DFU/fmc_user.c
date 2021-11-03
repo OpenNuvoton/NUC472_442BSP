@@ -8,6 +8,52 @@
 #include <stdio.h>
 #include "FMC_USER.h"
 
+int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end, unsigned int *data)
+{
+    unsigned int u32Addr, Reg;
+
+    for (u32Addr = addr_start; u32Addr < addr_end; data++, u32Addr += 4)
+    {
+        FMC->ISPADDR = u32Addr;
+
+        if ((u32Addr & (FMC_FLASH_PAGE_SIZE - 1)) == 0 && u32Cmd == FMC_ISPCMD_PROGRAM)
+        {
+            FMC->ISPCMD = FMC_ISPCMD_PAGE_ERASE;
+            FMC->ISPTRG = 0x1;
+
+            while (FMC->ISPTRG & 0x1) ;
+        }
+
+        FMC->ISPCMD = u32Cmd;
+
+        if (u32Cmd == FMC_ISPCMD_PROGRAM)
+        {
+            FMC->ISPDAT = *data;
+        }
+
+        FMC->ISPTRG = 0x1;
+        //        __ISB();
+
+        while (FMC->ISPTRG & 0x1) ;  /* Wait for ISP command done. */
+
+        Reg = FMC->ISPCTL;
+
+        if (Reg & FMC_ISPCTL_ISPFF_Msk)
+        {
+            FMC->ISPCTL = Reg;
+            return -1;
+        }
+
+        if (u32Cmd == FMC_ISPCMD_READ)
+        {
+            *data = FMC->ISPDAT;
+        }
+
+    }
+
+    return 0;
+}
+
 /**
  * @brief      Program 32-bit data into specified address of flash
  *

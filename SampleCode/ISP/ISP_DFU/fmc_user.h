@@ -36,6 +36,7 @@ extern void GetDataFlashInfo(uint32_t *addr, uint32_t *size);
 int FMC_Write_User(unsigned int u32Addr, unsigned int u32Data);
 int FMC_Read_User(unsigned int u32Addr, unsigned int *data);
 int FMC_Erase_User(unsigned int u32Addr);
+int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end, unsigned int *data);
 
 #endif
 
