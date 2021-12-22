@@ -271,10 +271,13 @@ void SD0_Handler(void)
     if (isr & SDH_INTSTS_CDIF0_Msk)   // port 0 card detect
     {
         //----- SD interrupt status
-        // it is work to delay 50 times for SD_CLK = 200KHz
+        // delay 10 us to sync the GPIO and SDH
         {
-            volatile int i;         // delay 30 fail, 50 OK
-            for (i=0; i<500; i++);  // delay to make sure got updated value from REG_SDISR.
+            int volatile delay = SystemCoreClock / 1000000 * 10;
+            for(; delay > 0UL; delay--)
+            {
+                __NOP();
+            }
             isr = SD->INTSTS;
         }
 
@@ -413,7 +416,8 @@ unsigned long get_fattime (void)
 uint8_t Read_Buf[1024];
 uint8_t Write_Buf[1024];
 
-
+uint32_t volatile prestate = 0;
+extern uint32_t SD_CardDetection(uint32_t u32CardNum);
 int32_t main(void)
 {
     char *ptr, *ptr2;
@@ -421,13 +425,13 @@ int32_t main(void)
     BYTE *buf;
     FATFS *fs;              /* Pointer to file system object */
     FRESULT res;
-
     DIR dir;                /* Directory object */
     FIL file1, file2;       /* File objects */
     UINT s1, s2, cnt;
     static const BYTE ft[] = {0, 12, 16, 32};
     DWORD ofs = 0, sect = 0;
     TCHAR sd_path[] = { '0', ':', 0 }; /* SD drive started from 0 */
+    uint32_t volatile state=0;
 
     SYS_Init();
 
@@ -442,6 +446,22 @@ int32_t main(void)
 
     for (;;)
     {
+        if (SD_CardDetection(SD_PORT0) == 0)
+        {
+            if (state == 0)
+            {
+                printf("card remove\n");
+                prestate = 0;
+                state = 1;
+            }
+            continue;
+        }
+        state = 0;
+
+        if ((SD0.IsCardInsert == 1) && (SD0.IsCardInsert != prestate))
+        {
+            disk_initialize(SD_Drv);
+        }
         printf(_T(">"));
         ptr = Line;
         get_line(ptr, sizeof(Line));
@@ -471,7 +491,6 @@ int32_t main(void)
             case 'i' :  /* di - Initialize disk */
                 printf("rc=%d\n", (WORD)disk_initialize(SD_Drv));
                 break;
-
 
             }
             break;

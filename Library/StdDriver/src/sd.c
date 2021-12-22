@@ -60,14 +60,18 @@ DISK_DATA_T SD_DiskInfo1;
 SD_INFO_T SD0;
 SD_INFO_T SD1;
 
-void SD_CheckRB()
+uint32_t SD_CheckRB()
 {
     while(1)
     {
         SD->CTL |= SDH_CTL_CLK8OEN_Msk;
         while(SD->CTL & SDH_CTL_CLK8OEN_Msk);
         if (SD->INTSTS & SDH_INTSTS_DAT0STS_Msk)
-            break;
+            return 0;
+        if (SD0.IsCardInsert == FALSE)
+        {
+            return SD_NO_SD_CARD;
+        }
     }
 }
 
@@ -108,6 +112,10 @@ int SD_SDCmdAndRsp(SD_INFO_T *pSD, uint8_t ucCmd, uint32_t uArg, int ntickCount)
             }
             if (pSD->IsCardInsert == FALSE)
                 return SD_NO_SD_CARD;
+            if (SD->INTSTS & SDH_INTSTS_CDSTS0_Msk)
+            {
+                return SD_NO_SD_CARD;
+            }
         }
     }
     else
@@ -116,6 +124,10 @@ int SD_SDCmdAndRsp(SD_INFO_T *pSD, uint8_t ucCmd, uint32_t uArg, int ntickCount)
         {
             if (pSD->IsCardInsert == FALSE)
                 return SD_NO_SD_CARD;
+            if (SD->INTSTS & SDH_INTSTS_CDSTS0_Msk)
+            {
+                return SD_NO_SD_CARD;
+            }
         }
     }
 
@@ -177,6 +189,10 @@ int SD_SDCmdAndRsp2(SD_INFO_T *pSD, uint8_t ucCmd, uint32_t uArg, uint32_t *puR2
     {
         if (pSD->IsCardInsert == FALSE)
             return SD_NO_SD_CARD;
+        if (SD->INTSTS & SDH_INTSTS_CDSTS0_Msk)
+        {
+            return SD_NO_SD_CARD;
+        }
     }
 
     if (SD->INTSTS & SDH_INTSTS_CRC7_Msk)
@@ -208,12 +224,20 @@ int SD_SDCmdAndRspDataIn(SD_INFO_T *pSD, uint8_t ucCmd, uint32_t uArg)
     {
         if (pSD->IsCardInsert == FALSE)
             return SD_NO_SD_CARD;
+        if (SD->INTSTS & SDH_INTSTS_CDSTS0_Msk)
+        {
+            return SD_NO_SD_CARD;
+        }
     }
 
     while (SD->CTL & SDH_CTL_DIEN_Msk)
     {
         if (pSD->IsCardInsert == FALSE)
             return SD_NO_SD_CARD;
+        if (SD->INTSTS & SDH_INTSTS_CDSTS0_Msk)
+        {
+            return SD_NO_SD_CARD;
+        }
     }
 
     if (!(SD->INTSTS & SDH_INTSTS_CRC7_Msk))      // check CRC7
@@ -512,7 +536,13 @@ int SD_SwitchToHighSpeed(SD_INFO_T *pSD)
 
         // function change timing: 8 clocks
         SD->CTL |= SDH_CTL_CLK8OEN_Msk;
-        while(SD->CTL & SDH_CTL_CLK8OEN_Msk);
+        while(SD->CTL & SDH_CTL_CLK8OEN_Msk)
+        {
+            if (SD->INTSTS & SDH_INTSTS_CDSTS0_Msk)
+            {
+                return SD_NO_SD_CARD;
+            }
+        }
 
         current_comsumption = _sd_pSDHCBuffer[0]<<8 | _sd_pSDHCBuffer[1];
         if (!current_comsumption)
@@ -607,7 +637,13 @@ int SD_SelectCardType(SD_INFO_T *pSD)
 
     SD_SDCommand(pSD, 7, 0);
     SD->CTL |= SDH_CTL_CLK8OEN_Msk;
-    while(SD->CTL & SDH_CTL_CLK8OEN_Msk);
+    while(SD->CTL & SDH_CTL_CLK8OEN_Msk)
+    {
+        if (SD->INTSTS & SDH_INTSTS_CDSTS0_Msk)
+        {
+            return SD_NO_SD_CARD;
+        }
+    }
 
 #ifdef _SD_USE_INT_
     SD->INTEN |= SDH_INTEN_BLKDIEN_Msk;
@@ -642,7 +678,13 @@ void SD_Get_SD_info(SD_INFO_T *pSD, DISK_DATA_T *_info)
 
             SD_SDCommand(pSD, 7, 0);
             SD->CTL |= SDH_CTL_CLK8OEN_Msk;
-            while(SD->CTL & SDH_CTL_CLK8OEN_Msk);
+            while(SD->CTL & SDH_CTL_CLK8OEN_Msk)
+            {
+                if (SD->INTSTS & SDH_INTSTS_CDSTS0_Msk)
+                {
+                    return;
+                }
+            }
 
             _info->totalSectorN = (*(uint32_t *)(ptr+212));
             _info->diskSize = _info->totalSectorN / 2;
@@ -923,6 +965,10 @@ uint32_t SD_Read(uint32_t u32CardNum, uint8_t *pu8BufAddr, uint32_t u32StartSec,
 #endif
             if (pSD->IsCardInsert == FALSE)
                 return SD_NO_SD_CARD;
+            if (SD->INTSTS & SDH_INTSTS_CDSTS0_Msk)
+            {
+                return SD_NO_SD_CARD;
+            }
         }
 
         if (!(SD->INTSTS & SDH_INTSTS_CRC7_Msk))      // check CRC7
@@ -974,6 +1020,10 @@ uint32_t SD_Read(uint32_t u32CardNum, uint8_t *pu8BufAddr, uint32_t u32StartSec,
 
             if (pSD->IsCardInsert == FALSE)
                 return SD_NO_SD_CARD;
+            if (SD->INTSTS & SDH_INTSTS_CDSTS0_Msk)
+            {
+                return SD_NO_SD_CARD;
+            }
         }
 
         if (!(SD->INTSTS & SDH_INTSTS_CRC7_Msk))      // check CRC7
@@ -998,7 +1048,13 @@ uint32_t SD_Read(uint32_t u32CardNum, uint8_t *pu8BufAddr, uint32_t u32StartSec,
 
     SD_SDCommand(pSD, 7, 0);
     SD->CTL |= SDH_CTL_CLK8OEN_Msk;
-    while(SD->CTL & SDH_CTL_CLK8OEN_Msk);
+    while(SD->CTL & SDH_CTL_CLK8OEN_Msk)
+    {
+        if (SD->INTSTS & SDH_INTSTS_CDSTS0_Msk)
+        {
+            return SD_NO_SD_CARD;
+        }
+    }
 
     return Successful;
 }
@@ -1084,6 +1140,10 @@ uint32_t SD_Write(uint32_t u32CardNum, uint8_t *pu8BufAddr, uint32_t u32StartSec
 #endif
             if (pSD->IsCardInsert == FALSE)
                 return SD_NO_SD_CARD;
+            if (SD->INTSTS & SDH_INTSTS_CDSTS0_Msk)
+            {
+                return SD_NO_SD_CARD;
+            }
         }
 
         if ((SD->INTSTS & SDH_INTSTS_CRCIF_Msk) != 0)     // check CRC
@@ -1124,6 +1184,10 @@ uint32_t SD_Write(uint32_t u32CardNum, uint8_t *pu8BufAddr, uint32_t u32StartSec
 #endif
             if (pSD->IsCardInsert == FALSE)
                 return SD_NO_SD_CARD;
+            if (SD->INTSTS & SDH_INTSTS_CDSTS0_Msk)
+            {
+                return SD_NO_SD_CARD;
+            }
         }
 
         if ((SD->INTSTS & SDH_INTSTS_CRCIF_Msk) != 0)     // check CRC
@@ -1142,7 +1206,13 @@ uint32_t SD_Write(uint32_t u32CardNum, uint8_t *pu8BufAddr, uint32_t u32StartSec
 
     SD_SDCommand(pSD, 7, 0);
     SD->CTL |= SDH_CTL_CLK8OEN_Msk;
-    while(SD->CTL & SDH_CTL_CLK8OEN_Msk);
+    while(SD->CTL & SDH_CTL_CLK8OEN_Msk)
+    {
+        if (SD->INTSTS & SDH_INTSTS_CDSTS0_Msk)
+        {
+            return SD_NO_SD_CARD;
+        }
+    }
 
     return Successful;
 }
