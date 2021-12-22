@@ -109,6 +109,7 @@ int32_t main (void)
 {
     uint32_t    i, u32KeySize;
     uint32_t    au32PrngData[8];
+    int         tout;
 
     /* Lock protected registers */
     if(SYS->REGLCTL == 1) // In end of main function, program issued CPU reset and write-protection will be disabled.
@@ -139,7 +140,14 @@ int32_t main (void)
         {
             g_PRNG_done = 0;
             PRNG_Start();
-            while (!g_PRNG_done);
+
+            tout = SystemCoreClock;
+            while ((tout-- > 0) && (!g_PRNG_done)) {}
+            if (tout <= 0)
+            {
+                printf("PRNG H/W time-out!\n");
+                return -1;
+            }
 
             memset(au32PrngData, 0, sizeof(au32PrngData));
             PRNG_Read(au32PrngData);

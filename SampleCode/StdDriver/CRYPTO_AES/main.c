@@ -60,6 +60,20 @@ void CRYPTO_IRQHandler()
     }
 }
 
+int  wait_AES_done()
+{
+    int  tout = SystemCoreClock;
+
+    while ((tout-- > 0) && (!g_AES_done)) {}
+    if (tout <= 0)
+    {
+        printf("AES H/W time-out!\n");
+        return -1;
+    }
+    else
+        return 0;
+}
+
 
 void  dump_buff_hex(uint8_t *pucBuff, int nBytes)
 {
@@ -187,7 +201,8 @@ int32_t main (void)
 
     g_AES_done = 0;
     AES_Start(0, CRYPTO_DMA_ONE_SHOT);
-    while (!g_AES_done);
+    if (wait_AES_done() != 0)
+        goto end;
 
     printf("AES encrypt done.\n\n");
     dump_buff_hex(au8OutputData, sizeof(au8InputData));
@@ -202,10 +217,12 @@ int32_t main (void)
 
     g_AES_done = 0;
     AES_Start(0, CRYPTO_DMA_ONE_SHOT);
-    while (!g_AES_done);
+    if (wait_AES_done() != 0)
+        goto end;
 
     printf("AES decrypt done.\n\n");
     dump_buff_hex(au8InputData, sizeof(au8InputData));
 
+end:
     while (1);
 }

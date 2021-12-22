@@ -125,6 +125,7 @@ int  do_compare(uint8_t *output, uint8_t *expect, int cmp_len)
 int  run_sha()
 {
     uint32_t  au32OutputDigest[8];
+    int       tout;
 
     SHA_Open(SHA_MODE_SHA1, SHA_IN_SWAP);
 
@@ -134,7 +135,14 @@ int  run_sha()
 
     g_SHA_done = 0;
     SHA_Start(CRYPTO_DMA_ONE_SHOT);
-    while (!g_SHA_done) ;
+
+    tout = SystemCoreClock;
+    while ((tout-- > 0) && (!g_SHA_done)) {}
+    if (tout <= 0)
+    {
+        printf("SHA H/W time-out!\n");
+        return -1;
+    }
 
     SHA_Read(au32OutputDigest);
 

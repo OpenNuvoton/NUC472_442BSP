@@ -104,6 +104,7 @@ void init_test_pattern()
 int  do_page_program(uint32_t u32PageAddr)
 {
     uint32_t    i, idx, u32MPADR, u32Data;
+    int32_t     tout;
 
     printf("Page program 0x%x\n", u32PageAddr);
 
@@ -133,18 +134,33 @@ int  do_page_program(uint32_t u32PageAddr)
         // program the subsequent 124 words
         for (i = idx+4; i < idx+128; i += 4)
         {
-            while (FMC->MPSTS & (FMC_MPSTS_D0_Msk | FMC_MPSTS_D1_Msk)) ;
+            tout = FMC_TIMEOUT_WRITE;
+            while ((tout-- > 0) && (FMC->MPSTS & (FMC_MPSTS_D0_Msk | FMC_MPSTS_D1_Msk))) ;
+            if (tout <= 0)
+            {
+                printf("Wait D0/D1 time-out!\n");
+                return -1;
+            }
 
             FMC->MPDAT0 = page_buff[i];
             FMC->MPDAT1 = page_buff[i+1];
 
-            while (FMC->MPSTS & (FMC_MPSTS_D2_Msk | FMC_MPSTS_D3_Msk)) ;
+            tout = FMC_TIMEOUT_WRITE;
+            while ((tout-- > 0) && (FMC->MPSTS & (FMC_MPSTS_D2_Msk | FMC_MPSTS_D3_Msk))) ;
+            if (tout <= 0)
+            {
+                printf("Wait D2/D3 time-out!\n");
+                return -1;
+            }
 
             FMC->MPDAT2 = page_buff[i+2];
             FMC->MPDAT3 = page_buff[i+3];
         }
 
-        while (FMC->MPSTS & FMC_MPSTS_MPBUSY_Msk) ;
+        tout = FMC_TIMEOUT_WRITE;
+        while ((tout-- > 0) && (FMC->MPSTS & FMC_MPSTS_MPBUSY_Msk)) ;
+        if (tout <= 0)
+            return -1;
     }
 
     printf("Verify...\n");

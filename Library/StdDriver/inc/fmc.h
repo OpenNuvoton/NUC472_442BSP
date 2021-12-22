@@ -62,6 +62,9 @@ extern "C"
 #define IS_BOOT_FROM_APROM      0               /*!< Is booting from APROM                 \hideinitializer */
 #define IS_BOOT_FROM_LDROM      1               /*!< Is booting from LDROM                 \hideinitializer */
 
+#define FMC_TIMEOUT_READ        ((SystemCoreClock/10))   /*!< Read command time-out 100 ms         \hideinitializer */
+#define FMC_TIMEOUT_WRITE       ((SystemCoreClock/10))   /*!< Write command time-out 100 ms        \hideinitializer */
+#define FMC_TIMEOUT_ERASE       ((SystemCoreClock/10)*2) /*!< Erase command time-out 200 ms        \hideinitializer */
 
 /*@}*/ /* end of group NUC472_442_FMC_EXPORTED_CONSTANTS */
 
@@ -173,29 +176,33 @@ extern "C"
 #define FMC_CLR_FAIL_FLAG()         (FMC->ISPSTS |= FMC_ISPSTS_ISPFF_Msk)       /*!< Clear ISP fail flag         \hideinitializer */
 
 
+/*---------------------------------------------------------------------------------------------------------*/
+/*  Global variables                                                                                       */
+/*---------------------------------------------------------------------------------------------------------*/
+extern int32_t  g_FMC_i32ErrCode;
 
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Functions                                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
 
-extern void FMC_Close(void);
-extern int32_t FMC_Erase(uint32_t u32PageAddr);
-extern int32_t FMC_GetBootSource(void);
-extern void FMC_Open(void);
+extern void     FMC_Close(void);
+extern int32_t  FMC_Erase(uint32_t u32PageAddr);
+extern int32_t  FMC_GetBootSource(void);
+extern void     FMC_Open(void);
 extern uint32_t FMC_Read(uint32_t u32Addr);
-extern void FMC_Read_64(uint32_t u32Addr, uint32_t *u32Data0, uint32_t *u32Data1);
+extern int32_t  FMC_Read_64(uint32_t u32Addr, uint32_t *u32Data0, uint32_t *u32Data1);
 extern uint32_t FMC_ReadCID(void);
 extern uint32_t FMC_ReadPID(void);
 extern uint32_t FMC_ReadUCID(uint32_t u32Index);
 extern uint32_t FMC_ReadUID(uint32_t u32Index);
 extern uint32_t FMC_ReadDataFlashBaseAddr(void);
-extern void FMC_SetVectorPageAddr(uint32_t u32PageAddr);
+extern int32_t  FMC_SetVectorPageAddr(uint32_t u32PageAddr);
 extern uint32_t FMC_GetVectorPageAddr(void);
-extern void FMC_Write(uint32_t u32Addr, uint32_t u32Data);
-extern void FMC_Write_64(uint32_t u32Addr, uint32_t u32Data0, uint32_t u32Data1);
-extern int32_t FMC_ReadConfig(uint32_t *u32Config, uint32_t u32Count);
-extern int32_t FMC_WriteConfig(uint32_t *u32Config, uint32_t u32Count);
+extern int32_t  FMC_Write(uint32_t u32Addr, uint32_t u32Data);
+extern int32_t  FMC_Write_64(uint32_t u32Addr, uint32_t u32Data0, uint32_t u32Data1);
+extern int32_t  FMC_ReadConfig(uint32_t *u32Config, uint32_t u32Count);
+extern int32_t  FMC_WriteConfig(uint32_t *u32Config, uint32_t u32Count);
 extern uint32_t FMC_CRC8(uint32_t au32Data[], int i32Count);
 
 

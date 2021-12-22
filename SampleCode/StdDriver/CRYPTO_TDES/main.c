@@ -159,6 +159,8 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main (void)
 {
+    int  tout;
+
     /* Lock protected registers */
     if(SYS->REGLCTL == 1) // In end of main function, program issued CPU reset and write-protection will be disabled.
         SYS_LockReg();
@@ -187,7 +189,14 @@ int32_t main (void)
 
     g_TDES_done = 0;
     TDES_Start(0, CRYPTO_DMA_ONE_SHOT);
-    while (!g_TDES_done);
+
+    tout = SystemCoreClock;
+    while ((tout-- > 0) && (!g_TDES_done)) {}
+    if (tout <= 0)
+    {
+        printf("TDES H/W time-out!\n");
+        while (1);
+    }
 
     printf("TDES encrypt done.\n\n");
     dump_buff_hex(au8OutputData, sizeof(au8InputData));
@@ -202,7 +211,14 @@ int32_t main (void)
 
     g_TDES_done = 0;
     TDES_Start(0, CRYPTO_DMA_ONE_SHOT);
-    while (!g_TDES_done);
+
+    tout = SystemCoreClock;
+    while ((tout-- > 0) && (!g_TDES_done)) {}
+    if (tout <= 0)
+    {
+        printf("TDES H/W time-out!\n");
+        while (1);
+    }
 
     printf("TDES decrypt done.\n\n");
     dump_buff_hex(au8InputData, sizeof(au8InputData));
