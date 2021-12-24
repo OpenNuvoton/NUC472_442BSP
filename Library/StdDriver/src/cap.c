@@ -19,6 +19,7 @@
   @{
 */
 
+int32_t g_CAP_i32ErrCode = 0;       /*!< CAP global error code */
 
 /** @addtogroup NUC472_442_CAP_EXPORTED_FUNCTIONS CAP Exported Functions
   @{
@@ -201,12 +202,20 @@ void CAP_Start(void)
  */
 void CAP_Stop(uint32_t u32FrameComplete)
 {
+    uint32_t u32Delay = SystemCoreClock * 2;  /* 2 second */
+
     if(u32FrameComplete==FALSE)
         ICAP->CTL &= ~CAP_CTL_CAPEN;
     else
     {
         ICAP->CTL |= CAP_CTL_SHUTTER_Msk;
-        while(CAP_IS_STOPPED());
+        while(!CAP_IS_STOPPED()){
+            u32Delay--;
+            if(u32Delay == 0){
+                g_CAP_i32ErrCode = CAP_TIMEOUT_ERR;
+                break;
+            }
+        }
     }
 }
 
