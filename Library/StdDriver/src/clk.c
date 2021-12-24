@@ -19,6 +19,7 @@
   @{
 */
 
+int32_t g_CLK_i32ErrCode = 0;    /*!< CLK global error code */
 
 /** @addtogroup NUC472_442_CLK_EXPORTED_FUNCTIONS CLK Exported Functions
   @{
@@ -794,19 +795,37 @@ void CLK_SetSysTickClockSrc(uint32_t u32ClkSrc)
   * @brief  This function execute delay function.
   * @param[in]  us  Delay time. The Max value is 2^24 / CPU Clock(MHz). Ex:
   *                             50MHz => 335544us, 48MHz => 349525us, 28MHz => 699050us ...
-  * @return None
+  * @return     Delay success or not
+  * @retval     0 Success, target delay time reached
   * @details    Use the SysTick to generate the delay time and the UNIT is in us.
   *             The SysTick clock source is from HCLK, i.e the same as system core clock.
+  *             User can use SystemCoreClockUpdate() to calculate CyclesPerUs automatically before using this function.
   */
-void CLK_SysTickDelay(uint32_t us)
+int32_t CLK_SysTickDelay(uint32_t us)
 {
+    /* The u32TimeOutCnt value must be greater than the max delay time of 1398ms if HCLK=12MHz */
+    uint32_t u32TimeOutCnt = SystemCoreClock * 2;
+
     SysTick->LOAD = us * CyclesPerUs;
     SysTick->VAL  =  (0x00);
     SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
 
     /* Waiting for down-count to zero */
-    while((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0);
-    SysTick->CTRL = 0 ;
+    while((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            break;
+        }
+    }
+
+    /* Disable SysTick counter */
+    SysTick->CTRL = 0;
+
+    if(u32TimeOutCnt == 0)
+        return CLK_TIMEOUT_ERR;
+    else
+        return 0;
 }
 
 /**
@@ -822,19 +841,29 @@ void CLK_SysTickDelay(uint32_t us)
   * @return   0  clock is not stable
   *           1  clock is stable
   *
-  * @details  To wait for clock ready by specified CLKSTATUS bit or timeout (~300ms)
+  * @details  To wait for clock ready by specified CLKSTATUS bit or timeout (~500ms)
+  * @note     This function sets g_CLK_i32ErrCode to CLK_TIMEOUT_ERR if clock source status is not stable
   */
 uint32_t CLK_WaitClockReady(uint32_t u32ClkMask)
 {
-    int32_t i32TimeOutCnt = 2160000;
+    uint32_t u32TimeOutCnt = SystemCoreClock / 2;
+    uint32_t u32Ret = 1U;
+
+    g_CLK_i32ErrCode = 0;
 
     while((CLK->STATUS & u32ClkMask) != u32ClkMask)
     {
-        if(i32TimeOutCnt-- <= 0)
-            return 0;
+        if(--u32TimeOutCnt == 0)
+        {
+            u32Ret = 0U;
+            break;
+        }
     }
 
-    return 1;
+    if(u32TimeOutCnt == 0)
+        g_CLK_i32ErrCode = CLK_TIMEOUT_ERR;
+
+    return u32Ret;
 }
 
 /**

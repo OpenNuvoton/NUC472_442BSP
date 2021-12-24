@@ -391,8 +391,11 @@ extern "C"
 #define OPA_MODULE       ((2UL<<30)|(0<<28)|(MODULE_NoMsk<<25)|( 0<<20)|(0<<18)|(MODULE_NoMsk<<10)|( 0<<5)|CLK_APBCLK1_OPACKEN_Pos)    /*!< OPA Module  \hideinitializer */
 #define EADC_MODULE      ((2UL<<30)|(1<<28)|(3<<25)           |( 2<<20)|(0<<18)|(0xFF<<10)        |(16<<5)|CLK_APBCLK1_EADCCKEN_Pos)   /*!< EADC Module  \hideinitializer */
 
+#define CLK_TIMEOUT_ERR            (-1)     /*!< Clock timeout error value \hideinitializer */
+
 /*@}*/ /* end of group NUC472_442_CLK_EXPORTED_CONSTANTS */
 
+extern int32_t g_CLK_i32ErrCode;
 
 /** @addtogroup NUC472_442_CLK_EXPORTED_FUNCTIONS CLK Exported Functions
   @{
@@ -418,7 +421,7 @@ void CLK_EnableModuleClock(uint32_t u32ModuleIdx);
 void CLK_DisableModuleClock(uint32_t u32ModuleIdx);
 uint32_t CLK_EnablePLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq);
 void CLK_DisablePLL(void);
-void CLK_SysTickDelay(uint32_t us);
+int32_t CLK_SysTickDelay(uint32_t us);
 uint32_t CLK_WaitClockReady(uint32_t u32ClkMask);
 void CLK_EnableSysTick(uint32_t u32ClkSrc, uint32_t u32Count);
 void CLK_DisableSysTick(void);
