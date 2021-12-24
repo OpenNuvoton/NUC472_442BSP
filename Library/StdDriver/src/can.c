@@ -87,9 +87,14 @@ void CAN_EnterInitMode(CAN_T *tCAN)
   */
 void CAN_LeaveInitMode(CAN_T *tCAN)
 {
+    uint32_t u32TimeOutCount = SystemCoreClock; // 1 second timeout
     tCAN->CON &= (~(CAN_CON_INIT_Msk | CAN_CON_CCE_Msk));
 
-    while(tCAN->CON & CAN_CON_INIT_Msk);       /* Check INIT bit is released */
+    while(tCAN->CON & CAN_CON_INIT_Msk)       /* Check INIT bit is released */
+    {
+        if(u32TimeOutCount == 0) break;
+        u32TimeOutCount--;
+    }
 }
 
 /**
@@ -191,6 +196,7 @@ uint32_t CAN_IsNewDataReceived(CAN_T *tCAN, uint8_t u8MsgObj)
   * @param[in]    pCanMsg     Pointer to the message structure containing data to transmit.
   * @return   TRUE:  Transmission OK
   *           FALSE: Check busy flag of interface 0 is timeout
+  *           -1: Wait CAN_IF timeout
   * @details  The function is used to send CAN message in BASIC mode of test mode. Before call the API,
   *           the user should be call CAN_EnterTestMode(CAN_TESTR_BASIC) and let CAN controller enter
   *           basic mode of test mode. Please notice IF1 Registers used as Tx Buffer in basic mode.
@@ -198,7 +204,13 @@ uint32_t CAN_IsNewDataReceived(CAN_T *tCAN, uint8_t u8MsgObj)
 int32_t CAN_BasicSendMsg(CAN_T *tCAN, STR_CANMSG_T* pCanMsg)
 {
     uint32_t i=0;
-    while(tCAN->IF[0].CREQ & CAN_IF_CREQ_BUSY_Msk);
+    uint32_t u32TimeOutCount = SystemCoreClock; // 1 second timeout
+
+    while(tCAN->IF[0].CREQ & CAN_IF_CREQ_BUSY_Msk)
+    {
+        i++;
+        if(i > u32TimeOutCount) return -1;
+    }
 
     tCAN->STATUS &= (~CAN_STATUS_TXOK_Msk);
 
@@ -370,19 +382,23 @@ int32_t CAN_SetRxMsgObj(CAN_T  *tCAN, uint8_t u8MsgObj, uint8_t u8idType, uint32
   * @param[in]    tCAN        The base address of can module.
   * @param[in]    u8MsgObj    Specifies the Message object number, from 0 to 31.
   * @param[in]    u8Release   Specifies the message release indicator.
-  *                       This parameter can be one of the following values:
+  *                        This parameter can be one of the following values:
   *                        TRUE: the message object is released when getting the data.
   *                        FALSE:the message object is not released.
-  * @param[out]    pCanMsg     Pointer to the message structure where received data is copied.
-  * @retval   TRUE   Success
+  * @param[out]    pCanMsg    Pointer to the message structure where received data is copied.
+  * @retval   TRUE     Success
   * @retval   FALSE    No any message received
+  * @retval   -1       Read Message Fail
   * @details  Gets the message, if received.
   */
 int32_t CAN_ReadMsgObj(CAN_T *tCAN, uint8_t u8MsgObj, uint8_t u8Release, STR_CANMSG_T* pCanMsg)
 {
+    int32_t rev = 1l;
+    uint32_t u32TimeOutCount = SystemCoreClock * 2; // 2 second timeout
+
     if (!CAN_IsNewDataReceived(tCAN, u8MsgObj))
     {
-        return FALSE;
+        rev = 0;
     }
 
     tCAN->STATUS &= (~CAN_STATUS_RXOK_Msk);
@@ -400,7 +416,11 @@ int32_t CAN_ReadMsgObj(CAN_T *tCAN, uint8_t u8MsgObj, uint8_t u8Release, STR_CAN
 
     while (tCAN->IF[1].CREQ & CAN_IF_CREQ_BUSY_Msk)
     {
-        /*Wait*/
+        if(u32TimeOutCount == 0)
+        {
+            return -1;
+        }
+        u32TimeOutCount--;
     }
 
     if ((tCAN->IF[1].ARB2 & CAN_IF_ARB2_XTD_Msk) == 0)
@@ -426,7 +446,7 @@ int32_t CAN_ReadMsgObj(CAN_T *tCAN, uint8_t u8MsgObj, uint8_t u8Release, STR_CAN
     pCanMsg->Data[6] = tCAN->IF[1].DAT_B2 & CAN_IF_DAT_B2_DATA6_Msk;
     pCanMsg->Data[7] = (tCAN->IF[1].DAT_B2 & CAN_IF_DAT_B2_DATA7_Msk) >> CAN_IF_DAT_B2_DATA7_Pos;
 
-    return TRUE;
+    return rev;
 }
 
 static int can_update_spt(int sampl_pt, int tseg, int *tseg1, int *tseg2)
@@ -594,13 +614,15 @@ uint32_t CAN_Open(CAN_T *tCAN, uint32_t u32BaudRate, uint32_t u32Mode)
 int32_t CAN_SetTxMsg(CAN_T *tCAN, uint32_t u32MsgNum, STR_CANMSG_T* pCanMsg)
 {
     uint8_t u8MsgIfNum=0;
-    uint32_t i=0;
+    uint32_t u32TimeOutCount = SystemCoreClock; // 1 second timeout
 
     while((u8MsgIfNum = GetFreeIF(tCAN)) == 2)
     {
-        i++;
-        if(i > 0x10000000)
+        if(u32TimeOutCount == 0)
+        {
             return FALSE;
+        }
+        u32TimeOutCount--;
     }
 
     /* update the contents needed for transmission*/
@@ -706,13 +728,15 @@ void CAN_DisableInt(CAN_T *tCAN, uint32_t u32Mask)
   */
 int32_t CAN_SetRxMsg(CAN_T *tCAN, uint32_t u32MsgNum, uint32_t u32IDType, uint32_t u32ID)
 {
-    uint32_t u32TimeOutCount = 0;
+    uint32_t u32TimeOutCount = SystemCoreClock; // 1 second timeout
 
     while(CAN_SetRxMsgObj(tCAN, u32MsgNum, u32IDType, u32ID, TRUE) == FALSE)
     {
-        u32TimeOutCount++;
-
-        if(u32TimeOutCount >= 0x10000000) return FALSE;
+        if(u32TimeOutCount == 0)
+        {
+            return FALSE;
+        }
+        u32TimeOutCount--;
     }
 
     return TRUE;
@@ -734,22 +758,22 @@ int32_t CAN_SetRxMsg(CAN_T *tCAN, uint32_t u32MsgNum, uint32_t u32IDType, uint32
 int32_t CAN_SetMultiRxMsg(CAN_T *tCAN, uint32_t u32MsgNum, uint32_t u32MsgCount, uint32_t u32IDType, uint32_t u32ID)
 {
     uint32_t i = 0;
-    uint32_t u32TimeOutCount;
+    uint32_t u32TimeOutCount = SystemCoreClock; // 1 second timeout
     uint32_t u32EOB_Flag = 0;
 
     for(i= 1; i < u32MsgCount; i++)
     {
-        u32TimeOutCount = 0;
-
         u32MsgNum += (i - 1);
 
         if(i == u32MsgCount) u32EOB_Flag = 1;
 
         while(CAN_SetRxMsgObj(tCAN, u32MsgNum, u32IDType, u32ID, u32EOB_Flag) == FALSE)
         {
-            u32TimeOutCount++;
-
-            if(u32TimeOutCount >= 0x10000000) return FALSE;
+            if(u32TimeOutCount == 0)
+            {
+                return FALSE;
+            }
+            u32TimeOutCount--;
         }
     }
 
@@ -815,9 +839,9 @@ int32_t CAN_Receive(CAN_T *tCAN, uint32_t u32MsgNum, STR_CANMSG_T* pCanMsg)
 void CAN_CLR_INT_PENDING_BIT(CAN_T *tCAN, uint8_t u32MsgNum)
 {
     uint32_t u32MsgIfNum = 0;
-    uint32_t u32IFBusyCount = 0;
+    uint32_t u32TimeOutCount = SystemCoreClock; // 1 second timeout
 
-    while(u32IFBusyCount < 0x10000000)
+    while(u32TimeOutCount > 0)
     {
         if((tCAN->IF[0].CREQ & CAN_IF_CREQ_BUSY_Msk) == 0)
         {
@@ -830,7 +854,7 @@ void CAN_CLR_INT_PENDING_BIT(CAN_T *tCAN, uint8_t u32MsgNum)
             break;
         }
 
-        u32IFBusyCount++;
+        u32TimeOutCount--;
     }
 
     tCAN->IF[u32MsgIfNum].CMASK = CAN_IF_CMASK_CLRINTPND_Msk | CAN_IF_CMASK_TXRQSTNEWDAT_Msk;

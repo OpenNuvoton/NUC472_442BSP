@@ -130,6 +130,12 @@ int32_t main(void)
     sInitTime.u32TimeScale  = RTC_CLOCK_24;
 
     RTC_Open(&sInitTime);
+    if(g_RTC_i32ErrCode == RTC_TIMEOUT_ERR)
+    {
+        printf("\n RTC initial fail!!");
+        printf("\n Please check h/w setting!!");
+        while(1);
+    }
 
     printf("\n RTC Time Display Test (Exit after 5 seconds)\n\n");
 
