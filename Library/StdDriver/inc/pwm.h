@@ -72,6 +72,11 @@ extern "C"
 #define PWM_RISING_LATCH_INT_FLAG           (PWM_RISING_LATCH_INT_ENABLE)          /*!< PWM rising latch condition happened \hideinitializer */
 #define PWM_RISING_FALLING_LATCH_INT_FLAG   (PWM_RISING_FALLING_LATCH_INT_ENABLE)  /*!< PWM rising latch condition happened \hideinitializer */
 
+/*---------------------------------------------------------------------------------------------------------*/
+/*  Define Error Code                                                                                      */
+/*---------------------------------------------------------------------------------------------------------*/
+#define PWM_TIMEOUT_ERR    (-1)    /*!< PWM operation abort due to timeout error \hideinitializer */
+
 /*@}*/ /* end of group NUC472_442_PWM_EXPORTED_CONSTANTS */
 
 

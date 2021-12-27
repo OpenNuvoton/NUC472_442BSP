@@ -19,6 +19,7 @@
 
 #define SAMPLE_CNT 32
 
+extern int32_t g_PWM_i32ErrCode;
 static uint8_t volatile cap_index;
 static uint32_t cap_val[SAMPLE_CNT >> 1][2];
 
@@ -153,11 +154,22 @@ int32_t main (void)
     printf("So, please connect GPIO port A5 and C10.\n");
     // PWM0 frequency is 25000Hz, duty 30%,
     PWM_ConfigOutputChannel(PWM0, 0, 25000, 30);
+    if(g_PWM_i32ErrCode == PWM_TIMEOUT_ERR)
+    {
+        printf("\n PWM initialize fail!!");
+        printf("\n Please check h/w setting!!");
+        while(1);
+    }
     PWM_EnableDeadZone(PWM0, 0, 400);
 
     // PWM2
     PWM_ConfigCaptureChannel(PWM0,2,50,0);
-
+    if(g_PWM_i32ErrCode == PWM_TIMEOUT_ERR)
+    {
+        printf("\n PWM initialize fail!!");
+        printf("\n Please check h/w setting!!");
+        while(1);
+    }
     // Enable output of channel 0
     PWM_EnableOutput(PWM0, PWM_CH_0_MASK);
 

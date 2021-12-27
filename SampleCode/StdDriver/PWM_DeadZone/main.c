@@ -15,6 +15,8 @@
 #define PLLCON_SETTING      CLK_PLLCTL_84MHz_HXT
 #define PLL_CLOCK           84000000
 
+extern int32_t g_PWM_i32ErrCode;
+
 void PWM0CH0_IRQHandler(void);
 
 void PWM0CH0_IRQHandler(void)
@@ -135,6 +137,12 @@ int32_t main (void)
     printf("And also enable/disable PWM0 output every 1 second.\n");
     // PWM0 frequency is 100Hz, duty 30%,
     PWM_ConfigOutputChannel(PWM0, 0, 100, 30);
+    if(g_PWM_i32ErrCode == PWM_TIMEOUT_ERR)
+    {
+        printf("\n PWM initialize fail!!");
+        printf("\n Please check h/w setting!!");
+        while(1);
+    }
     PWM_EnableDeadZone(PWM0, 0, 400);
 
     // PWM2 frequency is 300Hz, duty 50%
