@@ -92,6 +92,7 @@ static uint32_t u32EscapeFrame = 0;
 #define CAP_INVALID_BUF               ((int32_t)(0xFFFFFFFF-2))
 #define CAP_INVALID_PIPE              ((int32_t)(0xFFFFFFFF-3))
 
+#define CAP_TIMEOUT_ERR    (-1)    /*!< CAP operation abort due to timeout error \hideinitializer */
 
 /*@}*/ /* end of group NUC472_442_CAP_EXPORTED_CONSTANTS */
 

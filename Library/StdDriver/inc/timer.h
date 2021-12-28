@@ -44,6 +44,8 @@ extern "C"
 #define TIMER_TOGGLE_OUT1                   (TIMER_CTL_TOGDIS2_Msk)      /*!< Select PB.4, PB.1, PC.6, PC.1 as timer toggle output pin   \hideinitializer */
 #define TIMER_TOGGLE_OUT2                   (TIMER_CTL_TOGDIS1_Msk)      /*!< Select PD.1, PE.8, PE.1, PD.11 as timer toggle output pin  \hideinitializer */
 
+#define TIMER_TIMEOUT_ERR                  (-1L)                           /*!< Timer operation abort due to timeout error \hideinitializer */
+
 /*@}*/ /* end of group NUC472_442_TIMER_EXPORTED_CONSTANTS */
 
 
@@ -302,7 +304,7 @@ __STATIC_INLINE uint32_t TIMER_GetCounter(TIMER_T *timer)
 
 uint32_t TIMER_Open(TIMER_T *timer, uint32_t u32Mode, uint32_t u32Freq);
 void TIMER_Close(TIMER_T *timer);
-void TIMER_Delay(TIMER_T *timer, uint32_t u32Usec);
+int32_t TIMER_Delay(TIMER_T *timer, uint32_t u32Usec);
 void TIMER_EnableCapture(TIMER_T *timer, uint32_t u32CapMode, uint32_t u32Edge);
 void TIMER_DisableCapture(TIMER_T *timer);
 void TIMER_EnableEventCounter(TIMER_T *timer, uint32_t u32Edge);
