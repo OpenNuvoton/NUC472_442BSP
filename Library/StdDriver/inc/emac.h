@@ -35,9 +35,12 @@ extern "C"
 #define EMAC_RX_DESC_SIZE 4    ///< Number of Rx Descriptors, should be 2 at least
 #define EMAC_TX_DESC_SIZE 4    ///< Number of Tx Descriptors, should be 2 at least
 
+#define EMAC_TIMEOUT_ERR  (-1L)  /*!<  Ethernet operation abort due to timeout error \hideinitializer */
+#define EMAC_BUS_ERR      (-2L)  /*!<  Ethernet operation abort due to bus error \hideinitializer */
 
 /*@}*/ /* end of group NUC472_442_EMAC_EXPORTED_CONSTANTS */
 
+extern int32_t g_EMAC_i32ErrCode;
 
 /** @addtogroup NUC472_442_EMAC_EXPORTED_FUNCTIONS EMAC Exported Functions
   @{
@@ -156,7 +159,7 @@ extern "C"
 #define EMAC_CLR_ALARM_FLAG() (EMAC->INTSTS = EMAC_INTSTS_TSALMIF_Msk)
 
 
-void EMAC_Open(uint8_t *pu8MacAddr);
+int32_t EMAC_Open(uint8_t *pu8MacAddr);
 void EMAC_Close(void);
 void EMAC_SetMacAddr(uint8_t *pu8MacAddr);
 void EMAC_EnableCamEntry(uint32_t u32Entry, uint8_t *pu8MacAddr);

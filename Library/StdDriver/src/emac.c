@@ -21,6 +21,7 @@
   @{
 */
 
+int32_t g_EMAC_i32ErrCode = 0;       /*!< EMAC global error code */
 
 // Below are structure, definitions, static variables used locally by EMAC driver and does not want to parse by doxygen unless HIDDEN_SYMBOLS is defined
 /// @cond HIDDEN_SYMBOLS
@@ -162,13 +163,19 @@ static uint32_t s_u32EnableTs = 0;
   */
 static void EMAC_MdioWrite(uint32_t u32Reg, uint32_t u32Addr, uint32_t u32Data)
 {
+    // From preamble to idle is 64-bit transfer, MDC shouldn't be slower than 1MHz
+    uint32_t u32Delay = SystemCoreClock / 1000000 * 64;
     // Set data register
     EMAC->MIIMDAT = u32Data ;
     // Set PHY address, PHY register address, busy bit and write bit
     EMAC->MIIMCTL = u32Reg | (u32Addr << 8) | EMAC_MIIMCTL_BUSY_Msk | EMAC_MIIMCTL_WRITE_Msk | EMAC_MIIMCTL_MDCON_Msk;
-    // Wait write complete by polling busy bit.
-    while(EMAC->MIIMCTL & EMAC_MIIMCTL_BUSY_Msk);
 
+    // Wait write complete by polling busy bit.
+    while ((EMAC->MIIMCTL & EMAC_MIIMCTL_BUSY_Msk) && (--u32Delay))
+    {
+        ;
+    }
+    g_EMAC_i32ErrCode = u32Delay > 0 ? 0 :EMAC_TIMEOUT_ERR;
 }
 
 /**
@@ -179,10 +186,16 @@ static void EMAC_MdioWrite(uint32_t u32Reg, uint32_t u32Addr, uint32_t u32Data)
   */
 static uint32_t EMAC_MdioRead(uint32_t u32Reg, uint32_t u32Addr)
 {
+    // From preamble to idle is 64-bit transfer, MDC shouldn't be slower than 1MHz
+    uint32_t u32Delay = SystemCoreClock / 1000000 * 64;
     // Set PHY address, PHY register address, busy bit
     EMAC->MIIMCTL = u32Reg | (u32Addr << EMAC_MIIMCTL_PHYADDR_Pos) | EMAC_MIIMCTL_BUSY_Msk | EMAC_MIIMCTL_MDCON_Msk;
     // Wait read complete by polling busy bit
-    while(EMAC->MIIMCTL & EMAC_MIIMCTL_BUSY_Msk);
+    while ((EMAC->MIIMCTL & EMAC_MIIMCTL_BUSY_Msk) && (--u32Delay))
+    {
+        ;
+    }
+    g_EMAC_i32ErrCode = u32Delay > 0 ? 0 :EMAC_TIMEOUT_ERR;
     // Get return data
     return EMAC->MIIMDAT;
 }
@@ -191,31 +204,38 @@ static uint32_t EMAC_MdioRead(uint32_t u32Reg, uint32_t u32Addr)
 /**
   * @brief  Initialize PHY chip, check for the auto-negotiation result.
   * @param  None
-  * @return None
+  * @return Initial PHY and auto-negotiation success or not
+  * @retval 0 Initial PHY and auto-negotiation success
+  * @retval EMAC_TIMEOUT_ERR Initial PHY and auto-negotiation failed due to timeout error
   */
-static void EMAC_PhyInit(void)
+int32_t EMAC_PhyInit(void)
 {
+    uint32_t u32Delay;
     uint32_t reg;
-    uint32_t i = 0;
 
     // Reset Phy Chip
     EMAC_MdioWrite(PHY_CNTL_REG, EMAC_PHY_ADDR, PHY_CNTL_RESET_PHY);
 
     // Wait until reset complete
-    while (1)
+    //Report error if the reset status is not cleared for more than 0.1 second
+    u32Delay = SystemCoreClock / 10;
+    while (--u32Delay)
     {
         reg = EMAC_MdioRead(PHY_CNTL_REG, EMAC_PHY_ADDR) ;
         if ((reg & PHY_CNTL_RESET_PHY)==0)
             break;
     }
+    if(u32Delay == 0)
+    {
+        goto error;
+    }
+
+    u32Delay = SystemCoreClock;  // Wait 1 second. Report error if link valid is not set
     while(!(EMAC_MdioRead(PHY_STATUS_REG, EMAC_PHY_ADDR) & PHY_STATUS_LINK_VALID))
     {
-        if(i++ > 80000)       // Cable not connected
+        if (--u32Delay == 0)      /* Cable not connected */
         {
-            printf("Unplugged..\n");
-            EMAC->CTL &= ~EMAC_CTL_OPMODE_Msk;
-            EMAC->CTL &= ~EMAC_CTL_FUDUP_Msk;
-            return;
+            goto error;
         }
     }
     // Configure auto negotiation capability
@@ -228,10 +248,26 @@ static void EMAC_PhyInit(void)
     EMAC_MdioWrite(PHY_CNTL_REG, EMAC_PHY_ADDR, EMAC_MdioRead(PHY_CNTL_REG, EMAC_PHY_ADDR) | PHY_CNTL_RESTART_AN);
 
     // Wait for auto-negotiation complete
-    while(!(EMAC_MdioRead(PHY_STATUS_REG, EMAC_PHY_ADDR) & PHY_STATUS_AN_COMPLETE));
+    // Report error if auto-negotiation is not complete in 2 seconds
+    u32Delay = SystemCoreClock * 2;
+    while(!(EMAC_MdioRead(PHY_STATUS_REG, EMAC_PHY_ADDR) & PHY_STATUS_AN_COMPLETE))
+    {
+        if (--u32Delay == 0)
+        {
+            goto error;
+        }
+    }
 
     // Check link valid again. Some PHYs needs to check result after link valid bit set
-    while(!(EMAC_MdioRead(PHY_STATUS_REG, EMAC_PHY_ADDR) & PHY_STATUS_LINK_VALID));
+    // Report error if link valid is not set after 1 second
+    u32Delay = SystemCoreClock;
+    while(!(EMAC_MdioRead(PHY_STATUS_REG, EMAC_PHY_ADDR) & PHY_STATUS_LINK_VALID))
+    {
+        if (--u32Delay == 0)
+        {
+            goto error;
+        }
+    }
 
     // Check link partner capability
     reg = EMAC_MdioRead(PHY_ANLPA_REG, EMAC_PHY_ADDR) ;
@@ -259,6 +295,12 @@ static void EMAC_PhyInit(void)
         EMAC->CTL &= ~EMAC_CTL_OPMODE_Msk;
         EMAC->CTL &= ~EMAC_CTL_FUDUP_Msk;
     }
+    return 0;
+
+error:
+    EMAC->CTL &= ~EMAC_CTL_OPMODE_Msk;
+    EMAC->CTL &= ~EMAC_CTL_FUDUP_Msk;
+    return EMAC_TIMEOUT_ERR;
 }
 
 /**
@@ -364,14 +406,15 @@ static uint32_t EMAC_Nsec2Subsec(uint32_t nsec)
 /**
   * @brief  Initialize EMAC interface, including descriptors, MAC address, and PHY.
   * @param[in]  pu8MacAddr  Pointer to uint8_t array holds MAC address
-  * @return None
+  * @retval 0 success
+  * @retval EMAC_TIMEOUT_ERR Initial PHY and auto-negotiation failed due to timeout error
   * @note This API sets EMAC to work in RMII mode, but could configure to MII mode later with \ref EMAC_ENABLE_MII_INTF macro
   * @note This API configures EMAC to receive all broadcast and multicast packets, but could configure to other settings with
   *       \ref EMAC_ENABLE_RECV_BCASTPKT, \ref EMAC_DISABLE_RECV_BCASTPKT, \ref EMAC_ENABLE_RECV_MCASTPKT, and \ref EMAC_DISABLE_RECV_MCASTPKT
   * @note Receive(RX) and transmit(TX) are not enabled yet, application must call \ref EMAC_ENABLE_RX and \ref EMAC_ENABLE_TX to
   *       enable receive and transmit function.
   */
-void EMAC_Open(uint8_t *pu8MacAddr)
+int32_t EMAC_Open(uint8_t *pu8MacAddr)
 {
     // Enable transmit and receive descriptor
     EMAC_TxDescInit();
@@ -401,7 +444,7 @@ void EMAC_Open(uint8_t *pu8MacAddr)
                     EMAC_CAMCTL_AMP_Msk |
                     EMAC_CAMCTL_ABP_Msk;
 
-    EMAC_PhyInit();
+    return (EMAC_PhyInit());
 }
 
 /**
@@ -467,6 +510,7 @@ void EMAC_DisableCamEntry(uint32_t u32Entry)
   * @return Packet receive success or not
   * @retval 0 No packet available for receive
   * @retval 1 A packet is received
+  * @retval EMAC_BUS_ERR Bus error
   * @note Return 0 doesn't guarantee the packet will be sent and received successfully.
   */
 uint32_t EMAC_RecvPkt(uint8_t *pu8Data, uint32_t *pu32Size)
@@ -483,6 +527,7 @@ uint32_t EMAC_RecvPkt(uint8_t *pu8Data, uint32_t *pu32Size)
     {
         // Bus error occurred, this is usually a bad sign about software bug and will occur again...
         printf("RX bus error\n");
+        return (uint32_t)EMAC_BUS_ERR;
     }
     else
     {
@@ -528,6 +573,7 @@ uint32_t EMAC_RecvPkt(uint8_t *pu8Data, uint32_t *pu32Size)
   * @return Packet receive success or not
   * @retval 0 No packet available for receive
   * @retval 1 A packet is received
+  * @retval EMAC_BUS_ERR Bus error
   * @note Return 0 doesn't guarantee the packet will be sent and received successfully.
   * @note Largest Ethernet packet is 1514 bytes after stripped CRC, application must give
   *       a buffer large enough to store such packet
@@ -546,6 +592,7 @@ uint32_t EMAC_RecvPktTS(uint8_t *pu8Data, uint32_t *pu32Size, uint32_t *pu32Sec,
     {
         // Bus error occurred, this is usually a bad sign about software bug and will occur again...
         printf("RX bus error\n");
+        return (uint32_t)EMAC_BUS_ERR;
     }
     else
     {
@@ -662,6 +709,8 @@ uint32_t EMAC_SendPkt(uint8_t *pu8Data, uint32_t u32Size)
   * @brief Clean up process after packet(s) are sent
   * @param None
   * @return Number of packet sent between two function calls
+  * @retval EMAC_BUS_ERR Bus error
+  * @retval Otherwise Number of packet sent between two function calls
   * @details EMAC Tx interrupt service routine \b must call this API or \ref EMAC_SendPktDoneTS to
   *          release the resource use by transmit process
   */
@@ -681,6 +730,7 @@ uint32_t EMAC_SendPktDone(void)
     {
         // Bus error occurred, this is usually a bad sign about software bug and will occur again...
         printf("TX bus error\n");
+        return (uint32_t)EMAC_BUS_ERR;
     }
     else
     {
@@ -732,6 +782,7 @@ uint32_t EMAC_SendPktDone(void)
   * @return If a packet sent successfully
   * @retval 0 No packet sent successfully, and the value in *pu32Sec and *pu32Nsec are meaningless
   * @retval 1 A packet sent successfully, and the value in *pu32Sec and *pu32Nsec is the time stamp while packet sent
+  * @retval EMAC_BUS_ERR Bus error
   * @details EMAC Tx interrupt service routine \b must call this API or \ref EMAC_SendPktDone to
   *          release the resource use by transmit process
   */
@@ -751,6 +802,7 @@ uint32_t EMAC_SendPktDoneTS(uint32_t *pu32Sec, uint32_t *pu32Nsec)
     {
         // Bus error occurred, this is usually a bad sign about software bug and will occur again...
         printf("TX bus error\n");
+        return (uint32_t)EMAC_BUS_ERR;
     }
     else
     {
