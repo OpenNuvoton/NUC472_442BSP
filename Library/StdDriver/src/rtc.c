@@ -39,6 +39,29 @@
 /*---------------------------------------------------------------------------------------------------------*/
 static volatile uint32_t g_u32Reg, g_u32Reg1,g_u32hiYear,g_u32loYear,g_u32hiMonth,g_u32loMonth,g_u32hiDay,g_u32loDay;
 static volatile uint32_t g_u32hiHour,g_u32loHour,g_u32hiMin,g_u32loMin,g_u32hiSec,g_u32loSec;
+int32_t g_RTC_i32ErrCode = 0;       /*!< RTC global error code */
+
+/**
+  * @brief      Wait RTC Access Enable
+  *
+  * @param      None
+  *
+  * @return     None
+  *
+  * @details    This function is used to enable the maximum RTC read/write accessible time.
+  */
+void RTC_WaitAccessEnable(void)
+{
+    uint32_t u32TimeOutCount = SystemCoreClock * 2; // 2 second timeout
+    uint32_t i = 0;
+
+    RTC->RWEN = RTC_WRITE_KEY;
+    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk))
+    {
+        i++;
+        if(i > u32TimeOutCount) break;
+    }
+}
 
 /// @endcond HIDDEN_SYMBOLS
 
@@ -69,8 +92,7 @@ void RTC_32KCalibration(int32_t i32FrequencyX100)
         return;
     }
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->FREQADJ = (uint32_t)((i32RegInt<<8) | i32RegFra);
 
@@ -102,6 +124,7 @@ void RTC_32KCalibration(int32_t i32FrequencyX100)
 void RTC_Open (S_RTC_TIME_DATA_T *sPt)
 {
     uint32_t u32Reg;
+    uint32_t u32TimeOutCount = SystemCoreClock * 2; // 2 second timeout
 
     volatile int32_t i32delay=1000;
 
@@ -109,7 +132,15 @@ void RTC_Open (S_RTC_TIME_DATA_T *sPt)
     {
         RTC->INIT = RTC_INIT_KEY;
 
-        while(RTC->INIT != 0x1);
+        while(RTC->INIT != 0x1)
+        {
+            if(u32TimeOutCount == 0)
+            {
+                g_RTC_i32ErrCode = RTC_TIMEOUT_ERR;
+                return;
+            }
+            u32TimeOutCount--;
+        }
     }
 
     if(sPt == NULL)
@@ -120,8 +151,7 @@ void RTC_Open (S_RTC_TIME_DATA_T *sPt)
     /*-----------------------------------------------------------------------------------------------------*/
     if (sPt->u32TimeScale == RTC_CLOCK_12)
     {
-        RTC->RWEN = RTC_WRITE_KEY;
-        while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+        RTC_WaitAccessEnable();
         RTC->CLKFMT &= ~RTC_CLKFMT_24HEN_Msk;
 
         /*-------------------------------------------------------------------------------------------------*/
@@ -132,8 +162,7 @@ void RTC_Open (S_RTC_TIME_DATA_T *sPt)
     }
     else                                                                               /* RTC_CLOCK_24 */
     {
-        RTC->RWEN = RTC_WRITE_KEY;
-        while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+        RTC_WaitAccessEnable();
         RTC->CLKFMT |= RTC_CLKFMT_24HEN_Msk;
     }
 
@@ -148,8 +177,7 @@ void RTC_Open (S_RTC_TIME_DATA_T *sPt)
     u32Reg    |= (sPt->u32Day     % 10);
     g_u32Reg = u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->CAL = (uint32_t)g_u32Reg;
 
@@ -164,8 +192,7 @@ void RTC_Open (S_RTC_TIME_DATA_T *sPt)
     u32Reg    |= (sPt->u32Second % 10);
     g_u32Reg = u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->TIME = (uint32_t)g_u32Reg;
 
@@ -295,8 +322,7 @@ void RTC_GetAlarmDateAndTime(S_RTC_TIME_DATA_T *sPt)
     sPt->u32TimeScale = RTC->CLKFMT & RTC_CLKFMT_24HEN_Msk;  /* 12/24-hour */
     sPt->u32DayOfWeek = RTC->WEEKDAY & RTC_WEEKDAY_WEEKDAY_Msk;        /* Day of week */
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     g_u32hiYear  = (RTC->CALM & RTC_CALM_TENYEAR_Msk) >> RTC_CALM_TENYEAR_Pos;
     g_u32loYear  = (RTC->CALM & RTC_CALM_YEAR_Msk)    >> RTC_CALM_YEAR_Pos;
@@ -305,8 +331,7 @@ void RTC_GetAlarmDateAndTime(S_RTC_TIME_DATA_T *sPt)
     g_u32hiDay   = (RTC->CALM & RTC_CALM_TENDAY_Msk)  >> RTC_CALM_TENDAY_Pos;
     g_u32loDay   = (RTC->CALM & RTC_CALM_DAY_Msk);
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     g_u32hiHour   =  (RTC->TALM & RTC_TALM_TENHR_Msk)  >> RTC_TALM_TENHR_Pos;
     g_u32loHour   =  (RTC->TALM & RTC_TALM_HR_Msk)     >> RTC_TALM_HR_Pos;
@@ -396,8 +421,7 @@ void RTC_SetDateAndTime(S_RTC_TIME_DATA_T *sPt)
 {
     uint32_t u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     if (sPt->u32TimeScale == RTC_CLOCK_12)
     {
@@ -424,8 +448,7 @@ void RTC_SetDateAndTime(S_RTC_TIME_DATA_T *sPt)
     u32Reg    |=  (sPt->u32Day    % 10);
     g_u32Reg = u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->CAL = (uint32_t)g_u32Reg;
 
@@ -437,8 +460,7 @@ void RTC_SetDateAndTime(S_RTC_TIME_DATA_T *sPt)
     u32Reg    |=  (sPt->u32Second % 10);
     g_u32Reg = u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->TIME = (uint32_t)g_u32Reg;
 
@@ -468,8 +490,7 @@ void RTC_SetAlarmDateAndTime(S_RTC_TIME_DATA_T *sPt)
 {
     uint32_t u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     if (sPt->u32TimeScale == RTC_CLOCK_12)
     {
@@ -497,8 +518,7 @@ void RTC_SetAlarmDateAndTime(S_RTC_TIME_DATA_T *sPt)
     u32Reg    |=  (sPt->u32Day    % 10);
     g_u32Reg   = u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->CALM = (uint32_t)g_u32Reg;
 
@@ -510,8 +530,7 @@ void RTC_SetAlarmDateAndTime(S_RTC_TIME_DATA_T *sPt)
     u32Reg    |=  (sPt->u32Second % 10);
     g_u32Reg = u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->TALM = (uint32_t)g_u32Reg;
 
@@ -535,8 +554,7 @@ void RTC_SetDate(uint32_t u32Year, uint32_t u32Month, uint32_t u32Day, uint32_t 
 {
     __IO uint32_t u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->WEEKDAY = u32DayOfWeek & RTC_WEEKDAY_WEEKDAY_Msk;
 
@@ -548,8 +566,7 @@ void RTC_SetDate(uint32_t u32Year, uint32_t u32Month, uint32_t u32Day, uint32_t 
     u32Reg    |=  (u32Day    % 10);
     g_u32Reg   = u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->CAL = (uint32_t)g_u32Reg;
 
@@ -571,8 +588,7 @@ void RTC_SetTime(uint32_t u32Hour, uint32_t u32Minute, uint32_t u32Second, uint3
 {
     __IO uint32_t u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     if (u32TimeMode == RTC_CLOCK_12)
     {
@@ -595,8 +611,7 @@ void RTC_SetTime(uint32_t u32Hour, uint32_t u32Minute, uint32_t u32Second, uint3
 
     g_u32Reg = u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->TIME = (uint32_t)g_u32Reg;
 
@@ -616,8 +631,7 @@ void RTC_SetAlarmDate(uint32_t u32Year, uint32_t u32Month, uint32_t u32Day)
 {
     __IO uint32_t u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     u32Reg       = ((u32Year - RTC_YEAR2000) / 10) << 20;
     u32Reg      |= (((u32Year - RTC_YEAR2000) % 10) << 16);
@@ -627,8 +641,7 @@ void RTC_SetAlarmDate(uint32_t u32Year, uint32_t u32Month, uint32_t u32Day)
     u32Reg      |=  (u32Day    % 10);
     g_u32Reg   = u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->CALM = (uint32_t)g_u32Reg;
 
@@ -650,8 +663,7 @@ void RTC_SetAlarmTime(uint32_t u32Hour, uint32_t u32Minute, uint32_t u32Second, 
 {
     __IO uint32_t u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     if (u32TimeMode == RTC_CLOCK_12)
     {
@@ -674,8 +686,7 @@ void RTC_SetAlarmTime(uint32_t u32Hour, uint32_t u32Minute, uint32_t u32Second, 
 
     g_u32Reg = u32Reg;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->TALM = (uint32_t)g_u32Reg;
 
@@ -685,17 +696,28 @@ void RTC_SetAlarmTime(uint32_t u32Hour, uint32_t u32Minute, uint32_t u32Second, 
 /**
  *  @brief    The spare registers access enable
  *
- *  @return   None
+ * @retval 0  spare registers access enable
+ * @retval -1 spare registers access enable timeout
  *
  */
-void RTC_EnableSpareAccess(void)
+int32_t RTC_EnableSpareAccess(void)
 {
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    uint32_t u32TimeOutCount = SystemCoreClock * 2; // 2 second timeout
+
+    RTC_WaitAccessEnable();
 
     RTC->SPRCTL |= RTC_SPRCTL_SPRRWEN_Msk;
 
-    while(!(RTC->SPRCTL & RTC_SPRCTL_SPRRWRDY_Msk));
+    while(!(RTC->SPRCTL & RTC_SPRCTL_SPRRWRDY_Msk))
+    {
+        if(u32TimeOutCount == 0)
+            {
+                return -1;
+            }
+            u32TimeOutCount--;
+    }
+
+    return 0;
 }
 
 
@@ -720,8 +742,7 @@ void RTC_EnableTamperDetection(uint32_t u32PinNumber, uint32_t u32PinCondition, 
 {
     uint32_t u32Tmp;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     u32Tmp = RTC->TAMPCTL;
 
@@ -762,15 +783,11 @@ void RTC_EnableTamperDetection(uint32_t u32PinNumber, uint32_t u32PinCondition, 
     else
         u32Tmp &= ~RTC_TAMPCTL_DESTROYEN_Msk;
 
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->TAMPCTL = u32Tmp;
 
-    while(RTC->RWEN & RTC_RWEN_RWENF_Msk);
-
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     if(u32PinNumber == RTC_TAMPER_0)
     {
@@ -794,8 +811,7 @@ void RTC_EnableTamperDetection(uint32_t u32PinNumber, uint32_t u32PinCondition, 
  */
 void RTC_DisableTamperDetection(uint32_t u32PinNumber)
 {
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     if(u32PinNumber == RTC_TAMPER_0)
     {
@@ -841,8 +857,7 @@ uint32_t RTC_GetDayOfWeek(void)
  */
 void RTC_SetTickPeriod(uint32_t u32TickSelection)
 {
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->TICK = RTC->TICK & ~RTC_TICK_TICKSEL_Msk | u32TickSelection;
 }
@@ -859,8 +874,7 @@ void RTC_SetTickPeriod(uint32_t u32TickSelection)
  */
 void RTC_EnableInt(uint32_t u32IntFlagMask)
 {
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     RTC->INTEN |= u32IntFlagMask;
 }
@@ -877,8 +891,7 @@ void RTC_EnableInt(uint32_t u32IntFlagMask)
  */
 void RTC_DisableInt(uint32_t u32IntFlagMask)
 {
-    RTC->RWEN = RTC_WRITE_KEY;
-    while(!(RTC->RWEN & RTC_RWEN_RWENF_Msk));
+    RTC_WaitAccessEnable();
 
     if(u32IntFlagMask & RTC_INTEN_TICKIEN_Msk)
     {

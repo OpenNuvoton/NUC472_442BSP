@@ -32,6 +32,7 @@ extern "C"
   @{
 */
 
+#define RTC_TIMEOUT_ERR      (-1L)         /*!< RTC operation abort due to timeout error \hideinitializer */
 
 #define RTC_INIT_KEY         0xA5EB1357UL  /*!< RTC Access Key   \hideinitializer */
 #define RTC_WRITE_KEY        0xA965         /*!< RTC Access Key  \hideinitializer */
@@ -69,6 +70,7 @@ extern "C"
 
 /*@}*/ /* end of group NUC472_442_RTC_EXPORTED_CONSTANTS */
 
+extern int32_t g_RTC_i32ErrCode;
 
 /** @addtogroup NUC472_442_RTC_EXPORTED_STRUCTS RTC Exported Structs
   @{
@@ -204,7 +206,7 @@ void RTC_DisableInt(uint32_t u32IntFlagMask);
 uint32_t RTC_GetDayOfWeek(void);
 void RTC_DisableTamperDetection(uint32_t u32PinNumber);
 void RTC_EnableTamperDetection(uint32_t u32PinNumber, uint32_t u32PinCondition, uint32_t u32IntFlag, uint32_t u32ClearFlag, uint32_t u32DestroyEn);
-void RTC_EnableSpareAccess(void);
+int32_t RTC_EnableSpareAccess(void);
 void RTC_SetAlarmTime(uint32_t u32Hour, uint32_t u32Minute, uint32_t u32Second, uint32_t u32TimeMode, uint32_t u32AmPm);
 void RTC_SetAlarmDate(uint32_t u32Year, uint32_t u32Month, uint32_t u32Day);
 void RTC_SetTime(uint32_t u32Hour, uint32_t u32Minute, uint32_t u32Second, uint32_t u32TimeMode, uint32_t u32AmPm);

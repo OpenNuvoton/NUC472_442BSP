@@ -94,11 +94,22 @@ int32_t main(void)
     sInitTime.u32TimeScale  = RTC_CLOCK_24;
 
     RTC_Open(&sInitTime);
+    if(g_RTC_i32ErrCode == RTC_TIMEOUT_ERR)
+    {
+        printf("\n RTC initial fail!!");
+        printf("\n Please check h/w setting!!");
+        while(1);
+    }
 
     printf("\n RTC Spare Register Read/Write Test: \n\n");
 
     // Enable spare register
-    RTC_EnableSpareAccess();
+    if(RTC_EnableSpareAccess() == -1)
+    {
+        printf("\n RTC enable spare register fail!!");
+        printf("\n Please check h/w setting!!");
+        while(1);
+    }
 
     // Write spare register
     for(i = 0; i < 24; i++)

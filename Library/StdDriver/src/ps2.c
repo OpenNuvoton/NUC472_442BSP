@@ -124,6 +124,7 @@ int32_t PS2_Write(uint32_t *pu32Buf, uint32_t u32ByteCount)
     uint32_t u32TxFIFO_Depth = 16;
     uint32_t u32delayno, txcnt, remainder;
     uint8_t i=0;
+    uint32_t u32TimeOutCount = SystemCoreClock * 3; // 3 second timeout
 
     txcnt = u32ByteCount / u32TxFIFO_Depth;
 
@@ -134,7 +135,7 @@ int32_t PS2_Write(uint32_t *pu32Buf, uint32_t u32ByteCount)
     while (!(PS2->STATUS & PS2_STATUS_TXEMPTY_Msk))
     {
         u32delayno++;
-        if (u32delayno >= 0xF0000000)
+        if (u32delayno >= u32TimeOutCount)
             return FALSE; // Time Out
     }
 
@@ -147,7 +148,7 @@ int32_t PS2_Write(uint32_t *pu32Buf, uint32_t u32ByteCount)
         while (!(PS2->STATUS & PS2_STATUS_TXEMPTY_Msk))
         {
             u32delayno++;
-            if(u32delayno >= 0xF0000000)
+            if(u32delayno >= u32TimeOutCount)
                 return FALSE; // Time Out
         }
 
@@ -168,7 +169,7 @@ int32_t PS2_Write(uint32_t *pu32Buf, uint32_t u32ByteCount)
     while(!(PS2->STATUS & PS2_STATUS_TXEMPTY_Msk))
     {
         u32delayno++;
-        if(u32delayno >= 0xF0000000)
+        if(u32delayno >= u32TimeOutCount)
             return FALSE; // Time Out
     }
 
