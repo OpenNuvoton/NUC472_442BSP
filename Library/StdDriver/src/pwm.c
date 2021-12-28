@@ -18,7 +18,7 @@
 /** @addtogroup NUC472_442_PWM_Driver PWM Driver
   @{
 */
-
+int32_t g_PWM_i32ErrCode = 0;       /*!< PWM global error code */
 
 /** @addtogroup NUC472_442_PWM_EXPORTED_FUNCTIONS PWM Exported Functions
   @{
@@ -43,6 +43,7 @@ uint32_t PWM_ConfigOutputChannel (PWM_T *pwm,
     uint32_t u32PWM_CLock = __HIRC;
     uint8_t  u8Divider = 1, u8Prescale = 0xFF;
     uint16_t u16CNR = 0xFFFF;
+    uint32_t u32Delay = SystemCoreClock;  /* 1 second */
 
     if (pwm == PWM0)
     {
@@ -173,7 +174,14 @@ uint32_t PWM_ConfigOutputChannel (PWM_T *pwm,
         u8Divider = 3;
 
     // every two channels share a prescaler
-    while((pwm->SBS[u32ChannelNum] & 1) == 1);
+    while((pwm->SBS[u32ChannelNum] & 1) == 1)
+    {
+         u32Delay--;
+         if(u32Delay == 0){
+                g_PWM_i32ErrCode = PWM_TIMEOUT_ERR;
+                break;
+         }
+    }
     pwm->CLKPSC = (pwm->CLKPSC & ~(PWM_CLKPSC_CLKPSC01_Msk << ((u32ChannelNum >> 1) * 8))) | (u8Prescale << ((u32ChannelNum >> 1) * 8));
     pwm->CLKDIV = (pwm->CLKDIV & ~(PWM_CLKDIV_CLKDIV0_Msk << (4 * u32ChannelNum))) | (u8Divider << (4 * u32ChannelNum));
     pwm->CTL |= 1 << (PWM_CTL_CNTMODE_Pos + u32ChannelNum);
@@ -205,6 +213,7 @@ uint32_t PWM_ConfigCaptureChannel (PWM_T *pwm,
     uint32_t u32PWM_CLock = __HIRC;
     uint8_t  u8Divider = 1, u8Prescale = 0xFF;
     uint16_t u16CNR = 0xFFFF;
+    uint32_t u32Delay = SystemCoreClock;  /* 1 second */
 
     if (pwm == PWM0)
     {
@@ -326,7 +335,14 @@ uint32_t PWM_ConfigCaptureChannel (PWM_T *pwm,
         u8Divider = 3;
 
     // every two channels share a prescaler
-    while((pwm->SBS[u32ChannelNum] & 1) == 1);
+    while((pwm->SBS[u32ChannelNum] & 1) == 1)
+    {
+         u32Delay--;
+         if(u32Delay == 0){
+                g_PWM_i32ErrCode = PWM_TIMEOUT_ERR;
+                break;
+         }
+    }
     pwm->CLKPSC = (pwm->CLKPSC & ~(PWM_CLKPSC_CLKPSC01_Msk << ((u32ChannelNum >> 1) * 8))) | (u8Prescale << ((u32ChannelNum >> 1) * 8));
     pwm->CLKDIV = (pwm->CLKDIV & ~(PWM_CLKDIV_CLKDIV0_Msk << (4 * u32ChannelNum))) | (u8Divider << (4 * u32ChannelNum));
     pwm->CTL |= 1 << (PWM_CTL_CNTMODE_Pos + u32ChannelNum);
