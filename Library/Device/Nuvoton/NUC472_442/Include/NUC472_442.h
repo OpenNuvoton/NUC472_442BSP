@@ -47,7 +47,7 @@
    *
    * <b>Copyright Notice</b>
    *
-   * Copyright (C) 2015~2020 Nuvoton Technology Corp. All rights reserved.
+   * Copyright (C) 2015~2022 Nuvoton Technology Corp. All rights reserved.
    */
 
 #ifndef __NUC472_442_H__
