@@ -4908,10 +4908,6 @@
   <UL>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Data Structures"><param name="Local" value="annotated.html"><param name="ImageNumber" value="1"></OBJECT>
     <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Name" value="__FILE"><param name="Local" value="da/d3e/struct_____f_i_l_e.html"><param name="ImageNumber" value="1"></OBJECT>
-      <UL>
-      <LI><OBJECT type="text/sitemap"><param name="Name" value="handle"><param name="Local" value="da/d3e/struct_____f_i_l_e.html#ac65d6afc3b2c74e74d56195829a1626f"><param name="ImageNumber" value="11"></OBJECT>
-      </UL>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="ACMP_T"><param name="Local" value="d1/d99/struct_a_c_m_p___t.html"><param name="ImageNumber" value="1"></OBJECT>
       <UL>
       <LI><OBJECT type="text/sitemap"><param name="Name" value="CTL"><param name="Local" value="d4/dfa/group___n_u_c472__442__legacy___constants.html#ga027dc3910e7d1e2a2f581329d42ef95d"><param name="ImageNumber" value="11"></OBJECT>
@@ -16160,10 +16156,6 @@
           </UL>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="retarget.c"><param name="Local" value="d3/d3d/retarget_8c.html"><param name="ImageNumber" value="1"></OBJECT>
           <UL>
-          <LI><OBJECT type="text/sitemap"><param name="Name" value="__FILE"><param name="Local" value="da/d3e/struct_____f_i_l_e.html"><param name="ImageNumber" value="1"></OBJECT>
-            <UL>
-            <LI><OBJECT type="text/sitemap"><param name="Name" value="handle"><param name="Local" value="da/d3e/struct_____f_i_l_e.html#ac65d6afc3b2c74e74d56195829a1626f"><param name="ImageNumber" value="11"></OBJECT>
-            </UL>
           <LI><OBJECT type="text/sitemap"><param name="Name" value="DEBUG_PORT"><param name="Local" value="d3/d3d/retarget_8c.html#ad7725bd9f76ca4bbdfdeb470ac223138"><param name="ImageNumber" value="11"></OBJECT>
           <LI><OBJECT type="text/sitemap"><param name="Name" value="_ttywrch"><param name="Local" value="d3/d3d/retarget_8c.html#a1647e9479b4be5731d79c81af76826c5"><param name="ImageNumber" value="11"></OBJECT>
           <LI><OBJECT type="text/sitemap"><param name="Name" value="ferror"><param name="Local" value="d3/d3d/retarget_8c.html#a4a98383bb54291c2abede7aa28acf597"><param name="ImageNumber" value="11"></OBJECT>
