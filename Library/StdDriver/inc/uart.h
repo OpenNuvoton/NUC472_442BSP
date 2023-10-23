@@ -81,8 +81,19 @@ extern "C"
 /* UART_FUNC_SEL constants definitions                                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
 #define UART_FUNCSEL_UART  (0x0 << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set UART Function  (Default) */
+#define UART_FUNCSEL_LIN   (0x1 << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set LIN Function             */
 #define UART_FUNCSEL_IrDA  (0x2 << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set IrDA Function            */
 #define UART_FUNCSEL_RS485 (0x3 << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set RS485 Function           */
+
+/*---------------------------------------------------------------------------------------------------------*/
+/* UART_LINCTL constants definitions                                                                       */
+/*---------------------------------------------------------------------------------------------------------*/
+#define UART_LINCTL_BRKFL(x)    (((x)-1) << UART_LINCTL_BRKFL_Pos)  /*!< UART_LINCTL setting to set LIN Break Field Length, x = 10 ~ 15, default value is 12 \hideinitializer */
+#define UART_LINCTL_BSL(x)      (((x)-1) << UART_LINCTL_BSL_Pos)    /*!< UART_LINCTL setting to set LIN Break/Sync Delimiter Length, x = 1 ~ 4 \hideinitializer */
+#define UART_LINCTL_HSEL_BREAK             (0x0UL << UART_LINCTL_HSEL_Pos)    /*!< UART_LINCTL setting to set LIN Header Select to break field \hideinitializer */
+#define UART_LINCTL_HSEL_BREAK_SYNC        (0x1UL << UART_LINCTL_HSEL_Pos)    /*!< UART_LINCTL setting to set LIN Header Select to break field and sync field \hideinitializer */
+#define UART_LINCTL_HSEL_BREAK_SYNC_ID     (0x2UL << UART_LINCTL_HSEL_Pos)    /*!< UART_LINCTL setting to set LIN Header Select to break field, sync field and ID field \hideinitializer */
+#define UART_LINCTL_PID(x)      ((x) << UART_LINCTL_PID_Pos)       /*!< UART_LINCTL setting to set LIN PID value \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* UART BAUDRATE MODE constants definitions                                                                       */
