@@ -16,6 +16,8 @@
 signed char mouse_table[] = {-16, -16, -16, 0, 16, 16, 16, 0};
 uint8_t mouse_idx = 0;
 uint8_t move_len, mouse_mode=1;
+uint8_t au8LED_Status[8];
+uint32_t LED_STATUS = 0;
 
 uint8_t volatile g_u8EPAReady = 0;
 uint8_t volatile g_u8EPBReady = 0;
@@ -74,7 +76,7 @@ void USBD_IRQHandler(void)
             {
                 if (g_usbd_ShortPacket == 1)
                 {
-                    USBD->EP[EPA].EPRSPCTL = USBD->EP[EPA].EPRSPCTL & 0x10 | USB_EP_RSPCTL_SHORTTXEN;    // packet end
+                    USBD->EP[EPA].EPRSPCTL = (USBD->EP[EPA].EPRSPCTL & 0x10) | USB_EP_RSPCTL_SHORTTXEN;    // packet end
                     g_usbd_ShortPacket = 0;
                 }
             }
@@ -374,12 +376,25 @@ void HID_ClassRequest(void)
         {
         case SET_REPORT:
         {
-            if (((gUsbCmd.wValue >> 8) & 0xff) == 3)
-            {
-                /* Request Type = Feature */
+            if (((gUsbCmd.wValue >> 8) & 0xff) == 3) {  /* Request Type = Feature */
+                /* Status stage */
                 USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_STSDONEIF_Msk);
                 USBD_SET_CEP_STATE(USB_CEPCTL_NAKCLR);
                 USBD_ENABLE_CEP_INT(USBD_CEPINTEN_STSDONEIEN_Msk);
+            }
+            else if(((gUsbCmd.wValue >> 8) & 0xff) == 2) {    /* Request Type = Output */
+                USBD_CtrlOut(au8LED_Status, (gUsbCmd.wLength & 0xff));
+                USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_RXPKIF_Msk);
+                USBD_ENABLE_CEP_INT(USBD_CEPINTEN_RXPKIEN_Msk);
+
+                /* Status stage */
+                USBD_CLR_CEP_INT_FLAG(USBD_CEPINTSTS_STSDONEIF_Msk);
+                USBD_SET_CEP_STATE(USB_CEPCTL_NAKCLR);
+                USBD_ENABLE_CEP_INT(USBD_CEPINTEN_STSDONEIEN_Msk);
+            } else {
+                // Stall
+                /* Setup error, stall the device */
+                USBD_SET_CEP_STATE(USBD_CEPCTL_STALLEN_Msk);
             }
             break;
         }
@@ -476,6 +491,41 @@ void HID_UpdateKeyboardData(void)
         USBD->EP[EPB].EPRSPCTL = USB_EP_RSPCTL_SHORTTXEN;
         USBD_ENABLE_EP_INT(EPB, USBD_EPINTEN_INTKIEN_Msk);
     }
+
+    if(au8LED_Status[0] != LED_STATUS)
+    {
+        if((au8LED_Status[0] & HID_LED_ALL) != (LED_STATUS & HID_LED_ALL))
+        {
+            if(au8LED_Status[0] & HID_LED_NumLock)
+               printf("NumLock ON, ");
+
+            else
+               printf("NumLock OFF, ");
+
+            if(au8LED_Status[0] & HID_LED_CapsLock)
+               printf("CapsLock ON, ");
+
+            else
+               printf("CapsLock OFF, ");
+
+            if(au8LED_Status[0] & HID_LED_ScrollLock)
+               printf("ScrollLock ON, ");
+
+            else
+               printf("ScrollLock OFF, ");
+
+            if(au8LED_Status[0] & HID_LED_Compose)
+               printf("Compose ON, ");
+
+            else
+               printf("Compose OFF, ");
+
+            if(au8LED_Status[0] & HID_LED_Kana)
+               printf("Kana ON\n");
+
+            else
+               printf("Kana OFF\n");
+        }
+        LED_STATUS = au8LED_Status[0];
+    }
 }
-
-

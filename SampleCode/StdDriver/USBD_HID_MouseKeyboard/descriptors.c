@@ -48,7 +48,7 @@ uint8_t HID_MouseReportDescriptor[] __attribute__((aligned(4))) =
     0x95, 0x03,             /* Report Count(0x3) */
     0x81, 0x06,             /* Input(1 byte wheel) */
     0xC0,               /* End Collection */
-    0xC0,           /* End Collection */
+    0xC0            /* End Collection */
 };
 
 
@@ -90,7 +90,7 @@ uint8_t HID_KeyboardReportDescriptor[]  __attribute__((aligned(4))) =
     0x19, 0x00,         /* Usage Minimum(0x0) */
     0x29, 0x65,         /* Usage Maximum(0x65) */
     0x81, 0x00,         /* Input (Data) */
-    0xC0,           /* End Collection */
+    0xC0            /* End Collection */
 };
 
 
