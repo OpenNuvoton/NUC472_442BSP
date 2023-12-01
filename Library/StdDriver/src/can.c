@@ -761,10 +761,8 @@ int32_t CAN_SetMultiRxMsg(CAN_T *tCAN, uint32_t u32MsgNum, uint32_t u32MsgCount,
     uint32_t u32TimeOutCount = SystemCoreClock; // 1 second timeout
     uint32_t u32EOB_Flag = 0;
 
-    for(i= 1; i < u32MsgCount; i++)
+    for(i= 1; i <= u32MsgCount; i++)
     {
-        u32MsgNum += (i - 1);
-
         if(i == u32MsgCount) u32EOB_Flag = 1;
 
         while(CAN_SetRxMsgObj(tCAN, u32MsgNum, u32IDType, u32ID, u32EOB_Flag) == FALSE)
@@ -775,6 +773,8 @@ int32_t CAN_SetMultiRxMsg(CAN_T *tCAN, uint32_t u32MsgNum, uint32_t u32MsgCount,
             }
             u32TimeOutCount--;
         }
+
+        u32MsgNum++;
     }
 
     return TRUE;
