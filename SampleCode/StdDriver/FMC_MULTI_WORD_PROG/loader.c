@@ -94,10 +94,9 @@ void UART0_Init(void)
 
 
 #ifdef __ARMCC_VERSION
-__asm __set_SP(uint32_t _sp)
+void __set_SP(uint32_t _sp)
 {
-    MSR MSP, r0
-    BX lr
+    __set_MSP(_sp);
 }
 #endif
 
@@ -140,7 +139,7 @@ int main()
     printf("Press any key...\n");
     getchar();
 
-#ifdef __GNUC__                        /* for GNU C compiler */
+#if defined (__GNUC__) && !defined(__ARMCC_VERSION)  /* for GNU C compiler */
     asm("msr msp, %0" : : "r" (MP_SUB_RO_ADDR));
 #else
     __set_SP(*(uint32_t *)MP_SUB_RO_ADDR);

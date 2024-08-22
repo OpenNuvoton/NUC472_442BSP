@@ -17,7 +17,7 @@ uint8_t volatile g_u8EPAReady = 0;
 uint32_t g_u32EpAMaxPacketSize;
 uint32_t g_u32EpBMaxPacketSize;
 
-__align(4) uint8_t usb_rcvbuf[64];
+uint8_t usb_rcvbuf[64] __attribute__ ((aligned(4)));
 uint8_t bUsbDataReady;
 
 void USBD_IRQHandler(void)

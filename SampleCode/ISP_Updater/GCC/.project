@@ -84,6 +84,16 @@
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/main.c</locationURI>
 		</link>
+		<link>
+			<name>User/startup_NUC472_442.S</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/startup_NUC472_442.S</locationURI>
+		</link>
+		<link>
+			<name>CMSIS/CMSIS/GCC</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/Library/Device/Nuvoton/NUC472_442/Source/GCC</locationURI>
+		</link>
 	</linkedResources>
 	<filteredResources>
 		<filter>
@@ -114,7 +124,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1534904726194</id>
+			<id>1723784614887</id>
 			<name>Library/Library</name>
 			<type>5</type>
 			<matcher>
@@ -123,7 +133,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1534904726202</id>
+			<id>1723784614897</id>
 			<name>Library/Library</name>
 			<type>5</type>
 			<matcher>
@@ -132,21 +142,21 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1534904726209</id>
-			<name>Library/Library</name>
-			<type>5</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-name-matches-false-false-retarget.c</arguments>
-			</matcher>
-		</filter>
-		<filter>
-			<id>1534904726216</id>
+			<id>1723784614908</id>
 			<name>Library/Library</name>
 			<type>5</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
 				<arguments>1.0-name-matches-false-false-sys.c</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1723784614918</id>
+			<name>Library/Library</name>
+			<type>5</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-retarget_isp.c</arguments>
 			</matcher>
 		</filter>
 		<filter>
@@ -165,6 +175,42 @@
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
 				<arguments>1.0-name-matches-false-false-lw_umass.c</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1723772334443</id>
+			<name>CMSIS/CMSIS/GCC</name>
+			<type>5</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-_syscalls.c</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1723772334461</id>
+			<name>CMSIS/CMSIS/GCC</name>
+			<type>5</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-semihosting.h</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1723772334472</id>
+			<name>CMSIS/CMSIS/GCC</name>
+			<type>5</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-startup_NUC472_442_isp.S</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1723772334483</id>
+			<name>CMSIS/CMSIS/GCC</name>
+			<type>5</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-gcc_arm.ld</arguments>
 			</matcher>
 		</filter>
 	</filteredResources>

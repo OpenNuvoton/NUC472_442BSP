@@ -1,14 +1,14 @@
 ;/******************************************************************************
 ; * @file     startup_NUC472_442.s
-; * @version  V1.00
+; * @version  V2.00
 ; * $Revision: 11 $
-; * $Date: 16/06/07 2:34p $ 
+; * $Date: 16/06/07 2:34p $
 ; * @brief    CMSIS ARM Cortex-M4 Core Device Startup File
 ; *
 ; * @note
 ; * SPDX-License-Identifier: Apache-2.0
-; * Copyright (C) 2013 Nuvoton Technology Corp. All rights reserved.
-;*****************************************************************************/  
+; * Copyright (C) 2024 Nuvoton Technology Corp. All rights reserved.
+;*****************************************************************************/
 
         MODULE  ?cstartup
 
@@ -18,7 +18,7 @@
         SECTION .intvec:CODE:NOROOT(2)
 
         EXTERN  __iar_program_start
-        EXTERN  HardFault_Handler
+        EXTERN  ProcessHardFault
         EXTERN  SystemInit
         PUBLIC  __vector_table
         PUBLIC  __vector_table_0x1c
@@ -51,11 +51,11 @@ __vector_table_0x1c
         ; External Interrupts
         DCD     BOD_IRQHandler            ; 0: Brown Out detection
         DCD     IRC_IRQHandler            ; 1: Internal RC
-        DCD     PWRWU_IRQHandler          ; 2: Power Down Wake Up 
+        DCD     PWRWU_IRQHandler          ; 2: Power Down Wake Up
         DCD     Default_Handler           ; 3: Reserved.
         DCD     CLKF_IRQHandler           ; 4: CLKF
         DCD     Default_Handler           ; 5: Reserved.
-        DCD     RTC_IRQHandler            ; 6: Real Time Clock 
+        DCD     RTC_IRQHandler            ; 6: Real Time Clock
         DCD     TAMPER_IRQHandler         ; 7: Tamper detection
         DCD     EINT0_IRQHandler          ; 8: External Input 0
         DCD     EINT1_IRQHandler          ; 9: External Input 1
@@ -64,7 +64,7 @@ __vector_table_0x1c
         DCD     EINT4_IRQHandler          ; 12: External Input 4
         DCD     EINT5_IRQHandler          ; 13: External Input 5
         DCD     EINT6_IRQHandler          ; 14: External Input 6
-        DCD     EINT7_IRQHandler          ; 15: External Input 7 
+        DCD     EINT7_IRQHandler          ; 15: External Input 7
         DCD     GPA_IRQHandler            ; 16: GPIO Port A
         DCD     GPB_IRQHandler            ; 17: GPIO Port B
         DCD     GPC_IRQHandler            ; 18: GPIO Port C
@@ -208,7 +208,7 @@ __Vectors_Size  EQU   __Vectors_End - __Vectors
 Reset_Handler
         LDR     R0, =SystemInit
         BLX     R0
-        
+
         LDR     R0, =0x40000100
         ; Unlock Register
         LDR     R1, =0x59
@@ -236,9 +236,23 @@ Lock
         ; Lock register
         MOVS    R1, #0
         STR     R1, [R0]
-        
+
         LDR     R0, =__iar_program_start
         BX      R0
+
+        PUBWEAK HardFault_Handler
+HardFault_Handler\
+
+        MOV     R0, LR
+        MRS     R1, MSP
+        MRS     R2, PSP
+        LDR     R3, =ProcessHardFault
+        BLX     R3
+        BX      R0
+
+          PUBWEAK ProcessHardFaultx
+ProcessHardFaultx\
+        B       .
 
         PUBWEAK NMI_Handler
         SECTION .text:CODE:REORDER:NOROOT(1)
@@ -316,15 +330,15 @@ SysTick_Handler
         PUBWEAK EADC2_IRQHandler
         PUBWEAK EADC3_IRQHandler
         PUBWEAK ACMP_IRQHandler
-        PUBWEAK OPA0_IRQHandler           
-        PUBWEAK OPA1_IRQHandler           
-        PUBWEAK ICAP0_IRQHandler         
-        PUBWEAK ICAP1_IRQHandler          
+        PUBWEAK OPA0_IRQHandler
+        PUBWEAK OPA1_IRQHandler
+        PUBWEAK ICAP0_IRQHandler
+        PUBWEAK ICAP1_IRQHandler
         PUBWEAK PWM0CH0_IRQHandler
         PUBWEAK PWM0CH1_IRQHandler
         PUBWEAK PWM0CH2_IRQHandler
         PUBWEAK PWM0CH3_IRQHandler
-        PUBWEAK PWM0CH4_IRQHandler 
+        PUBWEAK PWM0CH4_IRQHandler
         PUBWEAK PWM0CH5_IRQHandler
         PUBWEAK PWM0_BRK_IRQHandler
         PUBWEAK QEI0_IRQHandler
@@ -333,15 +347,15 @@ SysTick_Handler
         PUBWEAK PWM1CH2_IRQHandler
         PUBWEAK PWM1CH3_IRQHandler
         PUBWEAK PWM1CH4_IRQHandler
-        PUBWEAK PWM1CH5_IRQHandler 
+        PUBWEAK PWM1CH5_IRQHandler
         PUBWEAK PWM1_BRK_IRQHandler
-        PUBWEAK QEI1_IRQHandler 
-        PUBWEAK EPWM0_IRQHandler 
-        PUBWEAK EPWM0BRK_IRQHandler 
+        PUBWEAK QEI1_IRQHandler
+        PUBWEAK EPWM0_IRQHandler
+        PUBWEAK EPWM0BRK_IRQHandler
         PUBWEAK EPWM1_IRQHandler
         PUBWEAK EPWM1BRK_IRQHandler
         PUBWEAK USBD_IRQHandler
-        PUBWEAK USBH_IRQHandler 
+        PUBWEAK USBH_IRQHandler
         PUBWEAK USB_OTG_IRQHandler
         PUBWEAK EMAC_TX_IRQHandler
         PUBWEAK EMAC_RX_IRQHandler
@@ -349,34 +363,34 @@ SysTick_Handler
         PUBWEAK SPI1_IRQHandler
         PUBWEAK SPI2_IRQHandler
         PUBWEAK SPI3_IRQHandler
-        PUBWEAK UART0_IRQHandler 
+        PUBWEAK UART0_IRQHandler
         PUBWEAK UART1_IRQHandler
         PUBWEAK UART2_IRQHandler
         PUBWEAK UART3_IRQHandler
         PUBWEAK UART4_IRQHandler
         PUBWEAK UART5_IRQHandler
-        PUBWEAK I2C0_IRQHandler 
+        PUBWEAK I2C0_IRQHandler
         PUBWEAK I2C1_IRQHandler
-        PUBWEAK I2C2_IRQHandler 
-        PUBWEAK I2C3_IRQHandler 
+        PUBWEAK I2C2_IRQHandler
+        PUBWEAK I2C3_IRQHandler
         PUBWEAK I2C4_IRQHandler
-        PUBWEAK SC0_IRQHandler 
-        PUBWEAK SC1_IRQHandler  
-        PUBWEAK SC2_IRQHandler 
-        PUBWEAK SC3_IRQHandler 
-        PUBWEAK SC4_IRQHandler  
-        PUBWEAK SC5_IRQHandler 
-        PUBWEAK CAN0_IRQHandler 
-        PUBWEAK CAN1_IRQHandler 
-        PUBWEAK I2S0_IRQHandler 
+        PUBWEAK SC0_IRQHandler
+        PUBWEAK SC1_IRQHandler
+        PUBWEAK SC2_IRQHandler
+        PUBWEAK SC3_IRQHandler
+        PUBWEAK SC4_IRQHandler
+        PUBWEAK SC5_IRQHandler
+        PUBWEAK CAN0_IRQHandler
+        PUBWEAK CAN1_IRQHandler
+        PUBWEAK I2S0_IRQHandler
         PUBWEAK I2S1_IRQHandler
-        PUBWEAK SD_IRQHandler  
+        PUBWEAK SD_IRQHandler
         PUBWEAK PS2D_IRQHandler
         PUBWEAK CAP_IRQHandler
         PUBWEAK CRYPTO_IRQHandler
         PUBWEAK CRC_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1)
-        
+
 BOD_IRQHandler
 IRC_IRQHandler
 PWRWU_IRQHandler
@@ -413,15 +427,15 @@ EADC1_IRQHandler
 EADC2_IRQHandler
 EADC3_IRQHandler
 ACMP_IRQHandler
-OPA0_IRQHandler           
-OPA1_IRQHandler           
-ICAP0_IRQHandler         
-ICAP1_IRQHandler          
+OPA0_IRQHandler
+OPA1_IRQHandler
+ICAP0_IRQHandler
+ICAP1_IRQHandler
 PWM0CH0_IRQHandler
 PWM0CH1_IRQHandler
 PWM0CH2_IRQHandler
 PWM0CH3_IRQHandler
-PWM0CH4_IRQHandler 
+PWM0CH4_IRQHandler
 PWM0CH5_IRQHandler
 PWM0_BRK_IRQHandler
 QEI0_IRQHandler
@@ -430,15 +444,15 @@ PWM1CH1_IRQHandler
 PWM1CH2_IRQHandler
 PWM1CH3_IRQHandler
 PWM1CH4_IRQHandler
-PWM1CH5_IRQHandler 
+PWM1CH5_IRQHandler
 PWM1_BRK_IRQHandler
-QEI1_IRQHandler 
-EPWM0_IRQHandler 
-EPWM0BRK_IRQHandler 
+QEI1_IRQHandler
+EPWM0_IRQHandler
+EPWM0BRK_IRQHandler
 EPWM1_IRQHandler
 EPWM1BRK_IRQHandler
 USBD_IRQHandler
-USBH_IRQHandler 
+USBH_IRQHandler
 USB_OTG_IRQHandler
 EMAC_TX_IRQHandler
 EMAC_RX_IRQHandler
@@ -446,37 +460,65 @@ SPI0_IRQHandler
 SPI1_IRQHandler
 SPI2_IRQHandler
 SPI3_IRQHandler
-UART0_IRQHandler 
+UART0_IRQHandler
 UART1_IRQHandler
 UART2_IRQHandler
 UART3_IRQHandler
 UART4_IRQHandler
 UART5_IRQHandler
-I2C0_IRQHandler 
+I2C0_IRQHandler
 I2C1_IRQHandler
-I2C2_IRQHandler 
-I2C3_IRQHandler 
+I2C2_IRQHandler
+I2C3_IRQHandler
 I2C4_IRQHandler
-SC0_IRQHandler 
-SC1_IRQHandler  
-SC2_IRQHandler 
-SC3_IRQHandler 
-SC4_IRQHandler  
-SC5_IRQHandler 
-CAN0_IRQHandler 
-CAN1_IRQHandler 
-I2S0_IRQHandler 
+SC0_IRQHandler
+SC1_IRQHandler
+SC2_IRQHandler
+SC3_IRQHandler
+SC4_IRQHandler
+SC5_IRQHandler
+CAN0_IRQHandler
+CAN1_IRQHandler
+I2S0_IRQHandler
 I2S1_IRQHandler
-SD_IRQHandler  
+SD_IRQHandler
 PS2D_IRQHandler
 CAP_IRQHandler
 CRYPTO_IRQHandler
 CRC_IRQHandler
 Default_Handler
-        B Default_Handler    
-        
+        B Default_Handler
 
-         
-         
+
+;void SH_ICE(void)
+    PUBLIC    SH_ICE
+SH_ICE
+    CMP   R2,#0
+    BEQ   SH_End
+    STR   R0,[R2]   ; Save the return value to *pn32Out_R0
+
+;void SH_End(void)
+    PUBLIC    SH_End
+SH_End
+    MOVS   R0,#1    ; Set return value to 1
+    BX     lr       ; Return
+
+
+;int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
+    PUBLIC    SH_DoCommand
+SH_DoCommand
+    BKPT   0xAB             ; This instruction will cause ICE trap or system HardFault
+    B      SH_ICE
+SH_HardFault                ; Captured by HardFault
+    MOVS   R0,#0            ; Set return value to 0
+    BX     lr               ; Return
+
+
+    PUBLIC    __PC
+__PC
+        MOV     r0, lr
+        BLX     lr
+
+
         END
-;/*** (C) COPYRIGHT 2013 Nuvoton Technology Corp. ***/
+;/*** (C) COPYRIGHT 2024 Nuvoton Technology Corp. ***/

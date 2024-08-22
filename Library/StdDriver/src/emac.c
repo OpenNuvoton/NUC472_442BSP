@@ -90,15 +90,15 @@ int32_t g_EMAC_i32ErrCode = 0;       /*!< EMAC global error code */
 
 // Tx Frame Descriptor Status
 #define EMAC_TXFD_TXINTR 0x0001  ///< Interrupt on Transmit
-#define EMAC_TXFD_DEF    0x0002  ///< Transmit deferred 
-#define EMAC_TXFD_TXCP   0x0008  ///< Transmission Completion 
+#define EMAC_TXFD_DEF    0x0002  ///< Transmit deferred
+#define EMAC_TXFD_TXCP   0x0008  ///< Transmission Completion
 #define EMAC_TXFD_EXDEF  0x0010  ///< Exceed Deferral
 #define EMAC_TXFD_NCS    0x0020  ///< No Carrier Sense Error
-#define EMAC_TXFD_TXABT  0x0040  ///< Transmission Abort 
-#define EMAC_TXFD_LC     0x0080  ///< Late Collision 
+#define EMAC_TXFD_TXABT  0x0040  ///< Transmission Abort
+#define EMAC_TXFD_LC     0x0080  ///< Late Collision
 #define EMAC_TXFD_TXHA   0x0100  ///< Transmission halted
 #define EMAC_TXFD_PAU    0x0200  ///< Paused
-#define EMAC_TXFD_SQE    0x0400  ///< SQE error 
+#define EMAC_TXFD_SQE    0x0400  ///< SQE error
 #define EMAC_TXFD_TTSAS  0x0800  ///< Time Stamp available
 
 /*@}*/ /* end of group NUC472_442_EMAC_EXPORTED_CONSTANTS */
@@ -554,10 +554,13 @@ uint32_t EMAC_RecvPkt(uint8_t *pu8Data, uint32_t *pu32Size)
             else
             {
                 // Save Error status if necessary
-                if (status & EMAC_RXFD_RP);
-                if (status & EMAC_RXFD_ALIE);
-                if (status & EMAC_RXFD_PTLE);
-                if (status & EMAC_RXFD_CRCE);
+                if (status & EMAC_RXFD_RP) {}
+
+                if (status & EMAC_RXFD_ALIE) {}
+
+                if (status & EMAC_RXFD_PTLE) {}
+
+                if (status & EMAC_RXFD_CRCE) {}
             }
         }
     }
@@ -623,10 +626,13 @@ uint32_t EMAC_RecvPktTS(uint8_t *pu8Data, uint32_t *pu32Size, uint32_t *pu32Sec,
             else
             {
                 // Save Error status if necessary
-                if (status & EMAC_RXFD_RP);
-                if (status & EMAC_RXFD_ALIE);
-                if (status & EMAC_RXFD_PTLE);
-                if (status & EMAC_RXFD_CRCE);
+                if (status & EMAC_RXFD_RP) {}
+
+                if (status & EMAC_RXFD_ALIE) {}
+
+                if (status & EMAC_RXFD_PTLE) {}
+
+                if (status & EMAC_RXFD_CRCE) {}
             }
         }
     }
@@ -752,14 +758,21 @@ uint32_t EMAC_SendPktDone(void)
             else
             {
                 // Do nothing here on error.
-                if (status & EMAC_TXFD_TXABT);
-                if (status & EMAC_TXFD_DEF);
-                if (status & EMAC_TXFD_PAU);
-                if (status & EMAC_TXFD_EXDEF);
-                if (status & EMAC_TXFD_NCS);
-                if (status & EMAC_TXFD_SQE);
-                if (status & EMAC_TXFD_LC);
-                if (status & EMAC_TXFD_TXHA);
+                if (status & EMAC_TXFD_TXABT) {}
+
+                if (status & EMAC_TXFD_DEF) {}
+
+                if (status & EMAC_TXFD_PAU) {}
+
+                if (status & EMAC_TXFD_EXDEF) {}
+
+                if (status & EMAC_TXFD_NCS) {}
+
+                if (status & EMAC_TXFD_SQE) {}
+
+                if (status & EMAC_TXFD_LC) {}
+
+                if (status & EMAC_TXFD_TXHA) {}
             }
 
             // restore descriptor link list and data pointer they will be overwrite if time stamp enabled
@@ -824,14 +837,21 @@ uint32_t EMAC_SendPktDoneTS(uint32_t *pu32Sec, uint32_t *pu32Nsec)
         else
         {
             // Do nothing here on error.
-            if (status & EMAC_TXFD_TXABT);
-            if (status & EMAC_TXFD_DEF);
-            if (status & EMAC_TXFD_PAU);
-            if (status & EMAC_TXFD_EXDEF);
-            if (status & EMAC_TXFD_NCS);
-            if (status & EMAC_TXFD_SQE);
-            if (status & EMAC_TXFD_LC);
-            if (status & EMAC_TXFD_TXHA);
+            if (status & EMAC_TXFD_TXABT) {}
+
+						if (status & EMAC_TXFD_DEF) {}
+
+						if (status & EMAC_TXFD_PAU) {}
+
+						if (status & EMAC_TXFD_EXDEF) {}
+
+						if (status & EMAC_TXFD_NCS) {}
+
+						if (status & EMAC_TXFD_SQE) {}
+
+						if (status & EMAC_TXFD_LC) {}
+
+						if (status & EMAC_TXFD_TXHA) {}
         }
 
         // restore descriptor link list and data pointer they will be overwrite if time stamp enabled

@@ -17,7 +17,7 @@
 #pragma data_alignment=4
 uint8_t  uart_rcvbuf[MAX_PKT_SIZE] = {0};
 #else
-__align(4) uint8_t  uart_rcvbuf[MAX_PKT_SIZE] = {0};
+uint8_t  uart_rcvbuf[MAX_PKT_SIZE] __attribute__ ((aligned(4))) = {0};
 #endif
 
 uint8_t volatile bUartDataReady = 0;
@@ -53,7 +53,7 @@ void UART_T_IRQHandler(void)
     }
 }
 
-extern __align(4) uint8_t response_buff[64];
+extern uint8_t response_buff[64] __attribute__ ((aligned(4)));
 void PutString(void)
 {
     uint32_t i;

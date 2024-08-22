@@ -11,8 +11,10 @@
 #include <stdio.h>
 #include "NUC472_442.h"
 
-# if defined (__GNUC__)
+#if (defined (__GNUC__) && (!(defined(__ARMCC_VERSION))))
 extern void initialise_monitor_handles(void);
+
+void ProcessHardFault() {}
 #endif
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -41,7 +43,7 @@ int main()
 
     SYS_Init();
 
-# if defined (__GNUC__)
+#if (defined (__GNUC__) && (!(defined(__ARMCC_VERSION))))
     initialise_monitor_handles();
 #endif
 

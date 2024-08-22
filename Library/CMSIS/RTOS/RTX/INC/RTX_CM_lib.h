@@ -254,7 +254,7 @@ extern int main (void);
 osThreadDef_t os_thread_def_main = {(os_pthread)main, osPriorityNormal, 1U, 4*OS_MAINSTKSIZE };
 
 
-#if defined (__CC_ARM)
+#if defined (__CC_ARM) || defined (__ARMCC_VERSION)
 
 #ifdef __MICROLIB
 void _main_init (void) __attribute__((section(".ARM.Collect$$$$000000FF")));

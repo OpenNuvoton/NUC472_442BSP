@@ -14,6 +14,10 @@
 
 #include "NUC472_442.h"
 
+#ifndef   __WEAK
+  #define __WEAK                                 __attribute__((weak))
+#endif
+
 /** @addtogroup NUC472_442_Library NUC472/NUC442 Library
   @{
 */
@@ -214,11 +218,11 @@ int32_t SCLIB_SetIFSD(uint32_t num, uint8_t size);
   *         Application can provide its own time extension function. For example, and CCID reader
   *         can use this function to report this status to PC. See CCID rev 1.1 Table 6.2-3
   */
-#if defined (__GNUC__)
+#if defined (__GNUC__) && !defined(__ARMCC_VERSION)
 void SCLIB_RequestTimeExtension () __attribute__ ((weak));
 void SCLIB_RequestTimeExtension(uint32_t u32Protocol);
 #else
-__weak void SCLIB_RequestTimeExtension(uint32_t u32Protocol);
+__WEAK void SCLIB_RequestTimeExtension(uint32_t u32Protocol);
 #endif
 
 /**

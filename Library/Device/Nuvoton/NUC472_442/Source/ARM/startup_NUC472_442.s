@@ -1,14 +1,14 @@
 ;/******************************************************************************
 ; * @file     startup_NUC472_442.s
-; * @version  V1.00
+; * @version  V2.00
 ; * $Revision: 12 $
-; * $Date: 15/09/22 10:25a $ 
+; * $Date: 15/09/22 10:25a $
 ; * @brief    CMSIS ARM Cortex-M4 Core Device Startup File
 ; *
 ; * @note
 ; * SPDX-License-Identifier: Apache-2.0
-; * Copyright (C) 2013 Nuvoton Technology Corp. All rights reserved.
-;*****************************************************************************/  
+; * Copyright (C) 2024 Nuvoton Technology Corp. All rights reserved.
+;*****************************************************************************/
 ;/*
 ;//-------- <<< Use Configuration Wizard in Context Menu >>> ------------------
 ;*/
@@ -72,11 +72,11 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 ; External Interrupts
                 DCD     BOD_IRQHandler            ; 0: Brown Out detection
                 DCD     IRC_IRQHandler            ; 1: Internal RC
-                DCD     PWRWU_IRQHandler          ; 2: Power Down Wake Up 
+                DCD     PWRWU_IRQHandler          ; 2: Power Down Wake Up
                 DCD     SRAMF_IRQHandler          ; 3: Reserved.
                 DCD     CLKF_IRQHandler           ; 4: CLKF
                 DCD     Default_Handler           ; 5: Reserved.
-                DCD     RTC_IRQHandler            ; 6: Real Time Clock 
+                DCD     RTC_IRQHandler            ; 6: Real Time Clock
                 DCD     TAMPER_IRQHandler         ; 7: Tamper detection
                 DCD     EINT0_IRQHandler          ; 8: External Input 0
                 DCD     EINT1_IRQHandler          ; 9: External Input 1
@@ -85,7 +85,7 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     EINT4_IRQHandler          ; 12: External Input 4
                 DCD     EINT5_IRQHandler          ; 13: External Input 5
                 DCD     EINT6_IRQHandler          ; 14: External Input 6
-                DCD     EINT7_IRQHandler          ; 15: External Input 7 
+                DCD     EINT7_IRQHandler          ; 15: External Input 7
                 DCD     GPA_IRQHandler            ; 16: GPIO Port A
                 DCD     GPB_IRQHandler            ; 17: GPIO Port B
                 DCD     GPC_IRQHandler            ; 18: GPIO Port C
@@ -211,7 +211,7 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     PS2D_IRQHandler           ; 138: PS/2 device
                 DCD     CAP_IRQHandler            ; 139: VIN
                 DCD     CRYPTO_IRQHandler         ; 140: CRYPTO
-                DCD     CRC_IRQHandler            ; 141: CRC    
+                DCD     CRC_IRQHandler            ; 141: CRC
 
 __Vectors_End
 
@@ -234,7 +234,7 @@ Reset_Handler   PROC
                 STR     R1, [R0]
                 LDR     R1, =0x88
                 STR     R1, [R0]
-                
+
                 ; Disable branch buffer if VCID is 0
                 LDR     R2, =0x40000020
                 LDR     R1, [R2]
@@ -270,8 +270,15 @@ NMI_Handler     PROC
                 ENDP
 HardFault_Handler\
                 PROC
+                IMPORT  ProcessHardFault
                 EXPORT  HardFault_Handler         [WEAK]
-                B       .
+                ;B       .
+                MOV     R0, LR
+                MRS     R1, MSP
+                MRS     R2, PSP
+                LDR     R3, =ProcessHardFault
+                BLX     R3
+                BX      R0
                 ENDP
 MemManage_Handler\
                 PROC
@@ -315,7 +322,7 @@ Default_Handler PROC
                 EXPORT  PWRWU_IRQHandler          [WEAK]
                 EXPORT  SRAMF_IRQHandler          [WEAK]
                 EXPORT  CLKF_IRQHandler              [WEAK]
-                EXPORT  RTC_IRQHandler            [WEAK]        
+                EXPORT  RTC_IRQHandler            [WEAK]
                 EXPORT  TAMPER_IRQHandler         [WEAK]
                 EXPORT  EINT0_IRQHandler          [WEAK]
                 EXPORT  EINT1_IRQHandler          [WEAK]
@@ -350,7 +357,7 @@ Default_Handler PROC
                 EXPORT  OPA0_IRQHandler           [WEAK]
                 EXPORT  OPA1_IRQHandler           [WEAK]
                 EXPORT  ICAP0_IRQHandler          [WEAK]
-                EXPORT  ICAP1_IRQHandler          [WEAK]          
+                EXPORT  ICAP1_IRQHandler          [WEAK]
                 EXPORT  PWM0CH0_IRQHandler        [WEAK]
                 EXPORT  PWM0CH1_IRQHandler        [WEAK]
                 EXPORT  PWM0CH2_IRQHandler        [WEAK]
@@ -445,15 +452,15 @@ EADC1_IRQHandler
 EADC2_IRQHandler
 EADC3_IRQHandler
 ACMP_IRQHandler
-OPA0_IRQHandler           
-OPA1_IRQHandler           
-ICAP0_IRQHandler         
-ICAP1_IRQHandler          
+OPA0_IRQHandler
+OPA1_IRQHandler
+ICAP0_IRQHandler
+ICAP1_IRQHandler
 PWM0CH0_IRQHandler
 PWM0CH1_IRQHandler
 PWM0CH2_IRQHandler
 PWM0CH3_IRQHandler
-PWM0CH4_IRQHandler 
+PWM0CH4_IRQHandler
 PWM0CH5_IRQHandler
 PWM0_BRK_IRQHandler
 QEI0_IRQHandler
@@ -462,15 +469,15 @@ PWM1CH1_IRQHandler
 PWM1CH2_IRQHandler
 PWM1CH3_IRQHandler
 PWM1CH4_IRQHandler
-PWM1CH5_IRQHandler 
+PWM1CH5_IRQHandler
 PWM1_BRK_IRQHandler
-QEI1_IRQHandler 
-EPWM0_IRQHandler 
-EPWM0BRK_IRQHandler 
+QEI1_IRQHandler
+EPWM0_IRQHandler
+EPWM0BRK_IRQHandler
 EPWM1_IRQHandler
 EPWM1BRK_IRQHandler
 USBD_IRQHandler
-USBH_IRQHandler 
+USBH_IRQHandler
 USB_OTG_IRQHandler
 EMAC_TX_IRQHandler
 EMAC_RX_IRQHandler
@@ -478,28 +485,28 @@ SPI0_IRQHandler
 SPI1_IRQHandler
 SPI2_IRQHandler
 SPI3_IRQHandler
-UART0_IRQHandler 
+UART0_IRQHandler
 UART1_IRQHandler
 UART2_IRQHandler
 UART3_IRQHandler
 UART4_IRQHandler
 UART5_IRQHandler
-I2C0_IRQHandler 
+I2C0_IRQHandler
 I2C1_IRQHandler
-I2C2_IRQHandler 
-I2C3_IRQHandler 
+I2C2_IRQHandler
+I2C3_IRQHandler
 I2C4_IRQHandler
-SC0_IRQHandler 
-SC1_IRQHandler  
-SC2_IRQHandler 
-SC3_IRQHandler 
-SC4_IRQHandler  
-SC5_IRQHandler 
-CAN0_IRQHandler 
-CAN1_IRQHandler 
-I2S0_IRQHandler 
+SC0_IRQHandler
+SC1_IRQHandler
+SC2_IRQHandler
+SC3_IRQHandler
+SC4_IRQHandler
+SC5_IRQHandler
+CAN0_IRQHandler
+CAN1_IRQHandler
+I2S0_IRQHandler
 I2S1_IRQHandler
-SD_IRQHandler  
+SD_IRQHandler
 PS2D_IRQHandler
 CAP_IRQHandler
 CRYPTO_IRQHandler
@@ -537,7 +544,28 @@ __user_initial_stackheap PROC
 
                 ENDIF
 
+;int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
+SH_DoCommand    PROC
 
+                EXPORT      SH_DoCommand
+                IMPORT      SH_Return
+
+                BKPT   0xAB                ; Wait ICE or HardFault
+                LDR    R3, =SH_Return
+                MOV    R4, lr
+                BLX    R3                  ; Call SH_Return. The return value is in R0
+                BX     R4                  ; Return value = R0
+
+                ENDP
+
+__PC            PROC
+                EXPORT      __PC
+
+                MOV     r0, lr
+                BLX     lr
+                ALIGN
+
+                ENDP
 
                 END
-;/*** (C) COPYRIGHT 2013 Nuvoton Technology Corp. ***/
+;/*** (C) COPYRIGHT 2024 Nuvoton Technology Corp. ***/

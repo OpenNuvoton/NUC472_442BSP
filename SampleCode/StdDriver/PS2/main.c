@@ -204,7 +204,7 @@ void PS2D_IRQHandler(void)
 
                     g_cmd[0] = 0;
 
-                    printf("(PS2->STATUS).TXEMPTY is (%0x)\n", ((PS2_GET_STATUS() & PS2_STATUS_TXEMPTY_Msk) >> PS2_STATUS_TXEMPTY_Pos));
+                    printf("(PS2->STATUS).TXEMPTY is (%0x)\n", (uint32_t)(((PS2_GET_STATUS() & PS2_STATUS_TXEMPTY_Msk) >> PS2_STATUS_TXEMPTY_Pos)));
 
                     /* Wait Tx ready */
                     if(PS2_GET_STATUS() & PS2_STATUS_TXEMPTY_Msk)

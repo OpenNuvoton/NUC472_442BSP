@@ -140,7 +140,7 @@
 #include "lwip/api.h"
 #include "lwip/netif.h"
 #include "lwip/tcpip.h"
-#include "ethernetif.h"
+#include "netif/ethernetif.h"
 #include "httpserver-netconn.h"
 
 /* Priorities for the demo application tasks. */

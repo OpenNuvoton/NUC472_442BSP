@@ -19,6 +19,8 @@
 uint32_t Pclk0;
 uint32_t Pclk1;
 
+void ProcessHardFault(void) {}
+void SH_Return(void) {}
 
 void SYS_Init(void)
 {

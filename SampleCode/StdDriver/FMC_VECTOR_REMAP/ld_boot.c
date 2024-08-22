@@ -19,10 +19,9 @@ uint32_t PllClock = PLL_CLOCK;
 
 
 #ifdef __ARMCC_VERSION
-__asm __set_SP(uint32_t _sp)
+void __set_SP(uint32_t _sp)
 {
-    MSR MSP, r0
-    BX lr
+    __set_MSP(_sp);
 }
 #endif
 
@@ -183,7 +182,7 @@ int32_t main (void)
         case '0':
             u32Data = FMC_Read(ISP_CODE_ENTRY);
             func =  (FUNC_PTR *)FMC_Read(ISP_CODE_ENTRY+4);
-#ifdef __GNUC__
+#if defined (__GNUC__) && !defined(__ARMCC_VERSION)
             PutString("branch_to ISP program in APROM.\n");
             PutString("Please make sure isp.bin is in APROM.\n");
 #else
@@ -195,7 +194,7 @@ int32_t main (void)
             while (!UART_IS_TX_EMPTY(UART0));
 
             FMC_SetVectorPageAddr(ISP_CODE_BASE);
-#ifdef __GNUC__                        /* for GNU C compiler */
+#if defined (__GNUC__) && !defined(__ARMCC_VERSION)  /* for GNU C compiler */
             asm("msr msp, %0" : : "r" (u32Data));
 #else
            __set_SP(u32Data);
@@ -215,7 +214,7 @@ int32_t main (void)
             while (!UART_IS_TX_EMPTY(UART0));
 
             FMC_SetVectorPageAddr(USER_AP_ENTRY);
-#ifdef __GNUC__                        /* for GNU C compiler */
+#if defined (__GNUC__) && !defined(__ARMCC_VERSION)  /* for GNU C compiler */
             asm("msr msp, %0" : : "r" (u32Data));
 #else
            __set_SP(u32Data);

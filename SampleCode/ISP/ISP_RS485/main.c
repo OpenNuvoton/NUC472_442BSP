@@ -20,7 +20,7 @@
 #define REVEIVE_MODE            (0)
 #define TRANSMIT_MODE           (1)
 
-__weak uint32_t CLK_GetPLLClockFreq(void)
+__attribute__((weak)) uint32_t CLK_GetPLLClockFreq(void)
 {
     return PLL_CLOCK;
 }
@@ -138,3 +138,12 @@ _APROM:
     /* Trap the CPU */
     while (1);
 }
+
+/*---------------------------------------------------------------------------------------------------------*/
+/*  Empty functions for reduce code size to fit  into LDROM & solve the functions are not be defined.      */
+/*---------------------------------------------------------------------------------------------------------*/
+void ProcessHardFault()
+{}
+
+void SH_Return()
+{}

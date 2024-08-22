@@ -415,7 +415,7 @@
 
 
 /* Misc */
-#ifdef __GNUC__
+#if defined ( __GNUC__ ) && !(__CC_ARM) && !(__ICCARM__) && !(__ARMCC_VERSION)
 #define LWIP_TIMEVAL_PRIVATE            0
 #else
 #define LWIP_TIMEVAL_PRIVATE            1
