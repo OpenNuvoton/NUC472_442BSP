@@ -292,7 +292,7 @@ static __INLINE void USBD_SetEpStall(uint32_t u32Ep)
         USBD_SET_CEP_STATE(USB_CEPCTL_STALL);
     else
     {
-        USBD->EP[u32Ep].EPRSPCTL = USBD->EP[u32Ep].EPRSPCTL & 0xf7 | USB_EP_RSPCTL_HALT;
+        USBD->EP[u32Ep].EPRSPCTL = (USBD->EP[u32Ep].EPRSPCTL & 0xf7) | USB_EP_RSPCTL_HALT;
     }
 }
 
@@ -316,7 +316,7 @@ static __INLINE void USBD_SetStall(uint32_t u32EpNum)
         {
             if (((USBD->EP[i].EPCFG & 0xf0) >> 4) == u32EpNum)
             {
-                USBD->EP[i].EPRSPCTL = USBD->EP[i].EPRSPCTL & 0xf7 | USB_EP_RSPCTL_HALT;
+                USBD->EP[i].EPRSPCTL = (USBD->EP[i].EPRSPCTL & 0xf7) | USB_EP_RSPCTL_HALT;
             }
         }
     }

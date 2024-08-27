@@ -1127,7 +1127,7 @@ static void  iso_td_fill(uint32_t info, void *data, URB_T *urb, int index)
     info = (info & 0xFF1FFFFF) | (3 << 21);  /* delay 3 frame */
 #endif
 
-    td->hwPSW[0] = ((uint32_t)data + urb->iso_frame_desc[index * ISO_FRAME_COUNT].offset) & 0x0FFF | 0xE000;
+    td->hwPSW[0] = (((uint32_t)data + urb->iso_frame_desc[index * ISO_FRAME_COUNT].offset) & 0x0FFF) | 0xE000;
     for (i = 0; i < ISO_FRAME_COUNT / 2; i++)
     {
         td->hwPSW[i] = (((uint32_t)data + urb->iso_frame_desc[index * ISO_FRAME_COUNT + i * 2].offset) & 0x0FFF) |

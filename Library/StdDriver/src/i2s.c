@@ -212,7 +212,7 @@ void I2S_DisableMCLK(I2S_T *i2s)
   */
 void I2S_SetFIFO(I2S_T *i2s, uint32_t u32TxThreshold, uint32_t u32RxThreshold)
 {
-    i2s->CTL = (i2s->CTL & ~(I2S_CTL_TXTH_Msk | I2S_CTL_RXTH_Msk) |
+    i2s->CTL = ((i2s->CTL & ~(I2S_CTL_TXTH_Msk | I2S_CTL_RXTH_Msk)) |
                 (u32TxThreshold << I2S_CTL_TXTH_Pos) |
                 (u32RxThreshold << I2S_CTL_RXTH_Pos));
 }

@@ -859,7 +859,7 @@ void RTC_SetTickPeriod(uint32_t u32TickSelection)
 {
     RTC_WaitAccessEnable();
 
-    RTC->TICK = RTC->TICK & ~RTC_TICK_TICKSEL_Msk | u32TickSelection;
+    RTC->TICK = (RTC->TICK & ~RTC_TICK_TICKSEL_Msk) | u32TickSelection;
 }
 
 /**
