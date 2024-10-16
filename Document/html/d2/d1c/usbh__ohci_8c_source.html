@@ -19,7 +19,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="../../m4.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">NUC472_NUC442_BSP<span id="projectnumber">&#160;V3.03.005</span>
+   <div id="projectname">NUC472_NUC442_BSP<span id="projectnumber">&#160;V3.04.000</span>
    </div>
    <div id="projectbrief">The Board Support Package for NUC472/NUC442</div>
   </td>
@@ -1167,7 +1167,7 @@ $(function() {
 <div class="line"><a id="l01127" name="l01127"></a><span class="lineno"> 1127</span>    info = (info &amp; 0xFF1FFFFF) | (3 &lt;&lt; 21);  <span class="comment">/* delay 3 frame */</span></div>
 <div class="line"><a id="l01128" name="l01128"></a><span class="lineno"> 1128</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l01129" name="l01129"></a><span class="lineno"> 1129</span> </div>
-<div class="line"><a id="l01130" name="l01130"></a><span class="lineno"> 1130</span>    td-&gt;hwPSW[0] = ((uint32_t)data + urb-&gt;<a class="code hl_variable" href="../../db/d3f/group___n_u_c472__442___u_s_b_h___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gab8382bc8b8f83c03f13060a5d7dabb61">iso_frame_desc</a>[index * <a class="code hl_define" href="../../de/d6a/group___n_u_c472__442___u_s_b_h___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga59865c54b96c73b3d98408fc76cae616">ISO_FRAME_COUNT</a>].offset) &amp; 0x0FFF | 0xE000;</div>
+<div class="line"><a id="l01130" name="l01130"></a><span class="lineno"> 1130</span>    td-&gt;hwPSW[0] = (((uint32_t)data + urb-&gt;<a class="code hl_variable" href="../../db/d3f/group___n_u_c472__442___u_s_b_h___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gab8382bc8b8f83c03f13060a5d7dabb61">iso_frame_desc</a>[index * <a class="code hl_define" href="../../de/d6a/group___n_u_c472__442___u_s_b_h___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga59865c54b96c73b3d98408fc76cae616">ISO_FRAME_COUNT</a>].offset) &amp; 0x0FFF) | 0xE000;</div>
 <div class="line"><a id="l01131" name="l01131"></a><span class="lineno"> 1131</span>    <span class="keywordflow">for</span> (i = 0; i &lt; <a class="code hl_define" href="../../de/d6a/group___n_u_c472__442___u_s_b_h___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga59865c54b96c73b3d98408fc76cae616">ISO_FRAME_COUNT</a> / 2; i++)</div>
 <div class="line"><a id="l01132" name="l01132"></a><span class="lineno"> 1132</span>    {</div>
 <div class="line"><a id="l01133" name="l01133"></a><span class="lineno"> 1133</span>        td-&gt;hwPSW[i] = (((uint32_t)data + urb-&gt;<a class="code hl_variable" href="../../db/d3f/group___n_u_c472__442___u_s_b_h___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gab8382bc8b8f83c03f13060a5d7dabb61">iso_frame_desc</a>[index * <a class="code hl_define" href="../../de/d6a/group___n_u_c472__442___u_s_b_h___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga59865c54b96c73b3d98408fc76cae616">ISO_FRAME_COUNT</a> + i * 2].offset) &amp; 0x0FFF) |</div>
@@ -2477,7 +2477,7 @@ $(function() {
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Apr 19 2024 17:09:09 for NUC472_NUC442_BSP by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
+Generated on Tue Oct 15 2024 18:22:59 for NUC472_NUC442_BSP by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
 </small></address>
 </body>
 </html>

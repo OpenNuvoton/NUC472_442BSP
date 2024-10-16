@@ -19,7 +19,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="../../m4.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">NUC472_NUC442_BSP<span id="projectnumber">&#160;V3.03.005</span>
+   <div id="projectname">NUC472_NUC442_BSP<span id="projectnumber">&#160;V3.04.000</span>
    </div>
    <div id="projectbrief">The Board Support Package for NUC472/NUC442</div>
   </td>
@@ -256,7 +256,7 @@ $(function() {
 <div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>        <a class="code hl_define" href="../../dd/d68/group___n_u_c472__442___u_s_b_d___e_x_p_o_r_t_e_d___m_a_c_r_o_s.html#gac03b766237f22def8f7746c16b0b0c25">USBD_SET_CEP_STATE</a>(<a class="code hl_define" href="../../da/d67/group___n_u_c472__442___u_s_b_d___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga80af8dd8a6b4c6f35a79194cbdc4be02">USB_CEPCTL_STALL</a>);</div>
 <div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>    <span class="keywordflow">else</span></div>
 <div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    {</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>        <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gaa4d0bb7007c58f544db6f34c4effa9aa">USBD</a>-&gt;EP[u32Ep].EPRSPCTL = <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gaa4d0bb7007c58f544db6f34c4effa9aa">USBD</a>-&gt;EP[u32Ep].EPRSPCTL &amp; 0xf7 | <a class="code hl_define" href="../../da/d67/group___n_u_c472__442___u_s_b_d___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga50f958e187b4cf08b03c1c1d79025781">USB_EP_RSPCTL_HALT</a>;</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>        <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gaa4d0bb7007c58f544db6f34c4effa9aa">USBD</a>-&gt;EP[u32Ep].EPRSPCTL = (<a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gaa4d0bb7007c58f544db6f34c4effa9aa">USBD</a>-&gt;EP[u32Ep].EPRSPCTL &amp; 0xf7) | <a class="code hl_define" href="../../da/d67/group___n_u_c472__442___u_s_b_d___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga50f958e187b4cf08b03c1c1d79025781">USB_EP_RSPCTL_HALT</a>;</div>
 <div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>    }</div>
 <div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>}</div>
 <div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span> </div>
@@ -272,7 +272,7 @@ $(function() {
 <div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>        {</div>
 <div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>            <span class="keywordflow">if</span> (((<a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gaa4d0bb7007c58f544db6f34c4effa9aa">USBD</a>-&gt;EP[i].EPCFG &amp; 0xf0) &gt;&gt; 4) == u32EpNum)</div>
 <div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>            {</div>
-<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>                <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gaa4d0bb7007c58f544db6f34c4effa9aa">USBD</a>-&gt;EP[i].EPRSPCTL = <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gaa4d0bb7007c58f544db6f34c4effa9aa">USBD</a>-&gt;EP[i].EPRSPCTL &amp; 0xf7 | <a class="code hl_define" href="../../da/d67/group___n_u_c472__442___u_s_b_d___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga50f958e187b4cf08b03c1c1d79025781">USB_EP_RSPCTL_HALT</a>;</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>                <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gaa4d0bb7007c58f544db6f34c4effa9aa">USBD</a>-&gt;EP[i].EPRSPCTL = (<a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gaa4d0bb7007c58f544db6f34c4effa9aa">USBD</a>-&gt;EP[i].EPRSPCTL &amp; 0xf7) | <a class="code hl_define" href="../../da/d67/group___n_u_c472__442___u_s_b_d___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga50f958e187b4cf08b03c1c1d79025781">USB_EP_RSPCTL_HALT</a>;</div>
 <div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>            }</div>
 <div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>        }</div>
 <div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>    }</div>
@@ -398,7 +398,7 @@ $(function() {
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Apr 19 2024 17:09:08 for NUC472_NUC442_BSP by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
+Generated on Tue Oct 15 2024 18:22:58 for NUC472_NUC442_BSP by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
 </small></address>
 </body>
 </html>
