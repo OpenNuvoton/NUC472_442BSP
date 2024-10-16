@@ -19,7 +19,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="../../m4.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">NUC472_NUC442_BSP<span id="projectnumber">&#160;V3.03.005</span>
+   <div id="projectname">NUC472_NUC442_BSP<span id="projectnumber">&#160;V3.04.000</span>
    </div>
    <div id="projectbrief">The Board Support Package for NUC472/NUC442</div>
   </td>
@@ -469,327 +469,347 @@ $(function() {
 <div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span>            <span class="keywordflow">else</span></div>
 <div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span>            {</div>
 <div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span>                <span class="comment">// Save Error status if necessary</span></div>
-<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_RP);</div>
-<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_ALIE);</div>
-<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_PTLE);</div>
-<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_CRCE);</div>
-<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span>            }</div>
-<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span>        }</div>
-<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span>    }</div>
-<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span>    <span class="keywordflow">return</span>(u32Count);</div>
-<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span>}</div>
-<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span> </div>
-<div class="line"><a id="l00581" name="l00581"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga836ca37712be00395831ddad5213af9b">  581</a></span>uint32_t <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga836ca37712be00395831ddad5213af9b">EMAC_RecvPktTS</a>(uint8_t *pu8Data, uint32_t *pu32Size, uint32_t *pu32Sec, uint32_t *pu32Nsec)</div>
-<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span>{</div>
-<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span>    EMAC_DESCRIPTOR_T *desc;</div>
-<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span>    uint32_t status, reg;</div>
-<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>    uint32_t u32Count = 0;</div>
-<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span> </div>
-<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span>    <span class="comment">// Clear Rx interrupt flags</span></div>
-<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span>    reg = <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;INTSTS;</div>
-<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;INTSTS = reg &amp; 0xFFFF; <span class="comment">// Clear all Rx related interrupt status</span></div>
-<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span> </div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>    <span class="keywordflow">if</span> (reg &amp; <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a0f94ebc54ce6a35b58bb676424917a98">EMAC_INTSTS_RXBEIF_Msk</a>)</div>
-<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>    {</div>
-<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>        <span class="comment">// Bus error occurred, this is usually a bad sign about software bug and will occur again...</span></div>
-<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>        printf(<span class="stringliteral">&quot;RX bus error\n&quot;</span>);</div>
-<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>        <span class="keywordflow">return</span> (uint32_t)<a class="code hl_define" href="../../d8/de0/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga43323f98224153e71a89f7cae6b45b9a">EMAC_BUS_ERR</a>;</div>
-<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>    }</div>
-<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>    <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>    {</div>
-<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span> </div>
-<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>        <span class="comment">// Get Rx Frame Descriptor</span></div>
-<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>        desc = (EMAC_DESCRIPTOR_T *)u32CurrentRxDesc;</div>
+<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_RP) {}</div>
+<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span> </div>
+<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_ALIE) {}</div>
+<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span> </div>
+<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_PTLE) {}</div>
+<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span> </div>
+<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_CRCE) {}</div>
+<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span>            }</div>
+<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span>        }</div>
+<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span>    }</div>
+<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span>    <span class="keywordflow">return</span>(u32Count);</div>
+<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span>}</div>
+<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span> </div>
+<div class="line"><a id="l00584" name="l00584"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga836ca37712be00395831ddad5213af9b">  584</a></span>uint32_t <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga836ca37712be00395831ddad5213af9b">EMAC_RecvPktTS</a>(uint8_t *pu8Data, uint32_t *pu32Size, uint32_t *pu32Sec, uint32_t *pu32Nsec)</div>
+<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>{</div>
+<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span>    EMAC_DESCRIPTOR_T *desc;</div>
+<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span>    uint32_t status, reg;</div>
+<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span>    uint32_t u32Count = 0;</div>
+<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span> </div>
+<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span>    <span class="comment">// Clear Rx interrupt flags</span></div>
+<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>    reg = <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;INTSTS;</div>
+<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;INTSTS = reg &amp; 0xFFFF; <span class="comment">// Clear all Rx related interrupt status</span></div>
+<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span> </div>
+<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>    <span class="keywordflow">if</span> (reg &amp; <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a0f94ebc54ce6a35b58bb676424917a98">EMAC_INTSTS_RXBEIF_Msk</a>)</div>
+<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>    {</div>
+<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>        <span class="comment">// Bus error occurred, this is usually a bad sign about software bug and will occur again...</span></div>
+<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>        printf(<span class="stringliteral">&quot;RX bus error\n&quot;</span>);</div>
+<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>        <span class="keywordflow">return</span> (uint32_t)<a class="code hl_define" href="../../d8/de0/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga43323f98224153e71a89f7cae6b45b9a">EMAC_BUS_ERR</a>;</div>
+<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>    }</div>
+<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>    {</div>
 <div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span> </div>
-<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>        <span class="comment">// If we reach last recv Rx descriptor, leave the loop</span></div>
-<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>        <span class="keywordflow">if</span>(<a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;CRXDSA == (uint32_t)desc)</div>
-<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>            <span class="keywordflow">return</span>(0);</div>
-<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span>        <span class="keywordflow">if</span> ((desc-&gt;u32Status1 | EMAC_DESC_OWN_EMAC) != EMAC_DESC_OWN_EMAC)   <span class="comment">// ownership=CPU</span></div>
-<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>        {</div>
-<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span> </div>
-<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span>            status = desc-&gt;u32Status1 &gt;&gt; 16;</div>
-<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span> </div>
-<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span>            <span class="comment">// If Rx frame is good, process received frame</span></div>
-<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span>            <span class="keywordflow">if</span>(status &amp; EMAC_RXFD_RXGD)</div>
-<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span>            {</div>
-<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span>                <span class="comment">// lower 16 bit in descriptor status1 stores the Rx packet length</span></div>
-<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>                *pu32Size = desc-&gt;u32Status1 &amp; 0xffff;</div>
-<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span>                memcpy(pu8Data, (uint8_t *)desc-&gt;u32Backup1, *pu32Size);</div>
-<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span> </div>
-<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>                *pu32Sec = desc-&gt;u32Next; <span class="comment">// second stores in descriptor&#39;s NEXT field</span></div>
-<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span>                *pu32Nsec = EMAC_Subsec2Nsec(desc-&gt;u32Data); <span class="comment">// Sub nano second store in DATA field</span></div>
+<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>        <span class="comment">// Get Rx Frame Descriptor</span></div>
+<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>        desc = (EMAC_DESCRIPTOR_T *)u32CurrentRxDesc;</div>
+<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span> </div>
+<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span>        <span class="comment">// If we reach last recv Rx descriptor, leave the loop</span></div>
+<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>        <span class="keywordflow">if</span>(<a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;CRXDSA == (uint32_t)desc)</div>
+<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span>            <span class="keywordflow">return</span>(0);</div>
+<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span>        <span class="keywordflow">if</span> ((desc-&gt;u32Status1 | EMAC_DESC_OWN_EMAC) != EMAC_DESC_OWN_EMAC)   <span class="comment">// ownership=CPU</span></div>
+<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span>        {</div>
+<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span> </div>
+<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span>            status = desc-&gt;u32Status1 &gt;&gt; 16;</div>
+<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span> </div>
+<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span>            <span class="comment">// If Rx frame is good, process received frame</span></div>
+<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>            <span class="keywordflow">if</span>(status &amp; EMAC_RXFD_RXGD)</div>
+<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span>            {</div>
+<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span>                <span class="comment">// lower 16 bit in descriptor status1 stores the Rx packet length</span></div>
+<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>                *pu32Size = desc-&gt;u32Status1 &amp; 0xffff;</div>
+<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span>                memcpy(pu8Data, (uint8_t *)desc-&gt;u32Backup1, *pu32Size);</div>
 <div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span> </div>
-<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>                u32Count = 1;</div>
-<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>            }</div>
-<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span>            <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>            {</div>
-<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span>                <span class="comment">// Save Error status if necessary</span></div>
-<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_RP);</div>
-<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_ALIE);</div>
-<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_PTLE);</div>
-<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_CRCE);</div>
-<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span>            }</div>
-<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span>        }</div>
-<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span>    }</div>
-<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span>    <span class="keywordflow">return</span>(u32Count);</div>
-<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span>}</div>
-<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span> </div>
-<div class="line"><a id="l00643" name="l00643"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga51bb2c9f6a02e6eb5062ff27327c83b8">  643</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga51bb2c9f6a02e6eb5062ff27327c83b8">EMAC_RecvPktDone</a>(<span class="keywordtype">void</span>)</div>
-<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span>{</div>
-<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span>    EMAC_DESCRIPTOR_T *desc;</div>
-<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span>    <span class="comment">// Get Rx Frame Descriptor</span></div>
-<div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span>    desc = (EMAC_DESCRIPTOR_T *)u32CurrentRxDesc;</div>
-<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span> </div>
-<div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span>    <span class="comment">// restore descriptor link list and data pointer they will be overwrite if time stamp enabled</span></div>
-<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span>    desc-&gt;u32Data = desc-&gt;u32Backup1;</div>
-<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span>    desc-&gt;u32Next = desc-&gt;u32Backup2;</div>
-<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span> </div>
-<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span>    <span class="comment">// Change ownership to DMA for next use</span></div>
-<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span>    desc-&gt;u32Status1 |= EMAC_DESC_OWN_EMAC;</div>
-<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span> </div>
-<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span>    <span class="comment">// Get Next Frame Descriptor pointer to process</span></div>
-<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span>    desc = (EMAC_DESCRIPTOR_T *)desc-&gt;u32Next;</div>
+<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>                *pu32Sec = desc-&gt;u32Next; <span class="comment">// second stores in descriptor&#39;s NEXT field</span></div>
+<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>                *pu32Nsec = EMAC_Subsec2Nsec(desc-&gt;u32Data); <span class="comment">// Sub nano second store in DATA field</span></div>
+<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span> </div>
+<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>                u32Count = 1;</div>
+<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span>            }</div>
+<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>            <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>            {</div>
+<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>                <span class="comment">// Save Error status if necessary</span></div>
+<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_RP) {}</div>
+<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span> </div>
+<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_ALIE) {}</div>
+<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span> </div>
+<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_PTLE) {}</div>
+<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span> </div>
+<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span>                <span class="keywordflow">if</span> (status &amp; EMAC_RXFD_CRCE) {}</div>
+<div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span>            }</div>
+<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span>        }</div>
+<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>    }</div>
+<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span>    <span class="keywordflow">return</span>(u32Count);</div>
+<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span>}</div>
+<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span> </div>
+<div class="line"><a id="l00649" name="l00649"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga51bb2c9f6a02e6eb5062ff27327c83b8">  649</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga51bb2c9f6a02e6eb5062ff27327c83b8">EMAC_RecvPktDone</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span>{</div>
+<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span>    EMAC_DESCRIPTOR_T *desc;</div>
+<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span>    <span class="comment">// Get Rx Frame Descriptor</span></div>
+<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span>    desc = (EMAC_DESCRIPTOR_T *)u32CurrentRxDesc;</div>
+<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span> </div>
+<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span>    <span class="comment">// restore descriptor link list and data pointer they will be overwrite if time stamp enabled</span></div>
+<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span>    desc-&gt;u32Data = desc-&gt;u32Backup1;</div>
+<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span>    desc-&gt;u32Next = desc-&gt;u32Backup2;</div>
 <div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span> </div>
-<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span>    <span class="comment">// Save last processed Rx descriptor</span></div>
-<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>    u32CurrentRxDesc = (uint32_t)desc;</div>
+<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span>    <span class="comment">// Change ownership to DMA for next use</span></div>
+<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>    desc-&gt;u32Status1 |= EMAC_DESC_OWN_EMAC;</div>
 <div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span> </div>
-<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>    EMAC_TRIGGER_RX();</div>
-<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>}</div>
+<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>    <span class="comment">// Get Next Frame Descriptor pointer to process</span></div>
+<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>    desc = (EMAC_DESCRIPTOR_T *)desc-&gt;u32Next;</div>
 <div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span> </div>
-<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span><span class="comment">// Transmit functions</span></div>
-<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span> </div>
-<div class="line"><a id="l00676" name="l00676"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaba8050cd6786a26457db0b4fe6dac81a">  676</a></span>uint32_t <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaba8050cd6786a26457db0b4fe6dac81a">EMAC_SendPkt</a>(uint8_t *pu8Data, uint32_t u32Size)</div>
-<div class="line"><a id="l00677" name="l00677"></a><span class="lineno">  677</span>{</div>
-<div class="line"><a id="l00678" name="l00678"></a><span class="lineno">  678</span>    EMAC_DESCRIPTOR_T *desc;</div>
-<div class="line"><a id="l00679" name="l00679"></a><span class="lineno">  679</span>    uint32_t status;</div>
-<div class="line"><a id="l00680" name="l00680"></a><span class="lineno">  680</span> </div>
-<div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span>    <span class="comment">// Get Tx frame descriptor &amp; data pointer</span></div>
-<div class="line"><a id="l00682" name="l00682"></a><span class="lineno">  682</span>    desc = (EMAC_DESCRIPTOR_T *)u32NextTxDesc;</div>
-<div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span> </div>
-<div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span>    status = desc-&gt;u32Status1;</div>
-<div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span> </div>
-<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span>    <span class="comment">// Check descriptor ownership</span></div>
-<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span>    <span class="keywordflow">if</span>((status &amp; EMAC_DESC_OWN_EMAC))</div>
-<div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span>        <span class="keywordflow">return</span>(0);</div>
+<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span>    <span class="comment">// Save last processed Rx descriptor</span></div>
+<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span>    u32CurrentRxDesc = (uint32_t)desc;</div>
+<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span> </div>
+<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span>    EMAC_TRIGGER_RX();</div>
+<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span>}</div>
+<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span> </div>
+<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span><span class="comment">// Transmit functions</span></div>
+<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span> </div>
+<div class="line"><a id="l00682" name="l00682"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaba8050cd6786a26457db0b4fe6dac81a">  682</a></span>uint32_t <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaba8050cd6786a26457db0b4fe6dac81a">EMAC_SendPkt</a>(uint8_t *pu8Data, uint32_t u32Size)</div>
+<div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span>{</div>
+<div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span>    EMAC_DESCRIPTOR_T *desc;</div>
+<div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span>    uint32_t status;</div>
+<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span> </div>
+<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span>    <span class="comment">// Get Tx frame descriptor &amp; data pointer</span></div>
+<div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span>    desc = (EMAC_DESCRIPTOR_T *)u32NextTxDesc;</div>
 <div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span> </div>
-<div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span>    memcpy((uint8_t *)desc-&gt;u32Data, pu8Data, u32Size);</div>
+<div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span>    status = desc-&gt;u32Status1;</div>
 <div class="line"><a id="l00691" name="l00691"></a><span class="lineno">  691</span> </div>
-<div class="line"><a id="l00692" name="l00692"></a><span class="lineno">  692</span>    <span class="comment">// Set Tx descriptor transmit byte count</span></div>
-<div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span>    desc-&gt;u32Status2 = u32Size;</div>
-<div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span> </div>
-<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span>    <span class="comment">// Change descriptor ownership to EMAC</span></div>
-<div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span>    desc-&gt;u32Status1 |= EMAC_DESC_OWN_EMAC;</div>
+<div class="line"><a id="l00692" name="l00692"></a><span class="lineno">  692</span>    <span class="comment">// Check descriptor ownership</span></div>
+<div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span>    <span class="keywordflow">if</span>((status &amp; EMAC_DESC_OWN_EMAC))</div>
+<div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span>        <span class="keywordflow">return</span>(0);</div>
+<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span> </div>
+<div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span>    memcpy((uint8_t *)desc-&gt;u32Data, pu8Data, u32Size);</div>
 <div class="line"><a id="l00697" name="l00697"></a><span class="lineno">  697</span> </div>
-<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span>    <span class="comment">// Get next Tx descriptor</span></div>
-<div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span>    u32NextTxDesc = (uint32_t)(desc-&gt;u32Next);</div>
+<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span>    <span class="comment">// Set Tx descriptor transmit byte count</span></div>
+<div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span>    desc-&gt;u32Status2 = u32Size;</div>
 <div class="line"><a id="l00700" name="l00700"></a><span class="lineno">  700</span> </div>
-<div class="line"><a id="l00701" name="l00701"></a><span class="lineno">  701</span>    <span class="comment">// Trigger EMAC to send the packet</span></div>
-<div class="line"><a id="l00702" name="l00702"></a><span class="lineno">  702</span>    EMAC_TRIGGER_TX();</div>
+<div class="line"><a id="l00701" name="l00701"></a><span class="lineno">  701</span>    <span class="comment">// Change descriptor ownership to EMAC</span></div>
+<div class="line"><a id="l00702" name="l00702"></a><span class="lineno">  702</span>    desc-&gt;u32Status1 |= EMAC_DESC_OWN_EMAC;</div>
 <div class="line"><a id="l00703" name="l00703"></a><span class="lineno">  703</span> </div>
-<div class="line"><a id="l00704" name="l00704"></a><span class="lineno">  704</span>    <span class="keywordflow">return</span>(1);</div>
-<div class="line"><a id="l00705" name="l00705"></a><span class="lineno">  705</span>}</div>
+<div class="line"><a id="l00704" name="l00704"></a><span class="lineno">  704</span>    <span class="comment">// Get next Tx descriptor</span></div>
+<div class="line"><a id="l00705" name="l00705"></a><span class="lineno">  705</span>    u32NextTxDesc = (uint32_t)(desc-&gt;u32Next);</div>
 <div class="line"><a id="l00706" name="l00706"></a><span class="lineno">  706</span> </div>
-<div class="line"><a id="l00707" name="l00707"></a><span class="lineno">  707</span> </div>
-<div class="line"><a id="l00717" name="l00717"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga6cb9578e855cee7d8e5dcbfd95ac879b">  717</a></span>uint32_t <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga6cb9578e855cee7d8e5dcbfd95ac879b">EMAC_SendPktDone</a>(<span class="keywordtype">void</span>)</div>
-<div class="line"><a id="l00718" name="l00718"></a><span class="lineno">  718</span>{</div>
-<div class="line"><a id="l00719" name="l00719"></a><span class="lineno">  719</span>    EMAC_DESCRIPTOR_T *desc;</div>
-<div class="line"><a id="l00720" name="l00720"></a><span class="lineno">  720</span>    uint32_t status, reg;</div>
-<div class="line"><a id="l00721" name="l00721"></a><span class="lineno">  721</span>    uint32_t last_tx_desc;</div>
-<div class="line"><a id="l00722" name="l00722"></a><span class="lineno">  722</span>    uint32_t u32Count = 0;</div>
-<div class="line"><a id="l00723" name="l00723"></a><span class="lineno">  723</span> </div>
-<div class="line"><a id="l00724" name="l00724"></a><span class="lineno">  724</span>    reg = <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;INTSTS;</div>
-<div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>    <span class="comment">// Clear Tx interrupt flags</span></div>
-<div class="line"><a id="l00726" name="l00726"></a><span class="lineno">  726</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;INTSTS = reg &amp; (0xFFFF0000 &amp; ~EMAC_INTSTS_TSALMIF_Msk);</div>
-<div class="line"><a id="l00727" name="l00727"></a><span class="lineno">  727</span> </div>
-<div class="line"><a id="l00728" name="l00728"></a><span class="lineno">  728</span> </div>
-<div class="line"><a id="l00729" name="l00729"></a><span class="lineno">  729</span>    <span class="keywordflow">if</span> (reg &amp; <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a54153d368232282864eb6b67b46b9312">EMAC_INTSTS_TXBEIF_Msk</a>)</div>
-<div class="line"><a id="l00730" name="l00730"></a><span class="lineno">  730</span>    {</div>
-<div class="line"><a id="l00731" name="l00731"></a><span class="lineno">  731</span>        <span class="comment">// Bus error occurred, this is usually a bad sign about software bug and will occur again...</span></div>
-<div class="line"><a id="l00732" name="l00732"></a><span class="lineno">  732</span>        printf(<span class="stringliteral">&quot;TX bus error\n&quot;</span>);</div>
-<div class="line"><a id="l00733" name="l00733"></a><span class="lineno">  733</span>        <span class="keywordflow">return</span> (uint32_t)<a class="code hl_define" href="../../d8/de0/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga43323f98224153e71a89f7cae6b45b9a">EMAC_BUS_ERR</a>;</div>
-<div class="line"><a id="l00734" name="l00734"></a><span class="lineno">  734</span>    }</div>
-<div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00707" name="l00707"></a><span class="lineno">  707</span>    <span class="comment">// Trigger EMAC to send the packet</span></div>
+<div class="line"><a id="l00708" name="l00708"></a><span class="lineno">  708</span>    EMAC_TRIGGER_TX();</div>
+<div class="line"><a id="l00709" name="l00709"></a><span class="lineno">  709</span> </div>
+<div class="line"><a id="l00710" name="l00710"></a><span class="lineno">  710</span>    <span class="keywordflow">return</span>(1);</div>
+<div class="line"><a id="l00711" name="l00711"></a><span class="lineno">  711</span>}</div>
+<div class="line"><a id="l00712" name="l00712"></a><span class="lineno">  712</span> </div>
+<div class="line"><a id="l00713" name="l00713"></a><span class="lineno">  713</span> </div>
+<div class="line"><a id="l00723" name="l00723"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga6cb9578e855cee7d8e5dcbfd95ac879b">  723</a></span>uint32_t <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga6cb9578e855cee7d8e5dcbfd95ac879b">EMAC_SendPktDone</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l00724" name="l00724"></a><span class="lineno">  724</span>{</div>
+<div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>    EMAC_DESCRIPTOR_T *desc;</div>
+<div class="line"><a id="l00726" name="l00726"></a><span class="lineno">  726</span>    uint32_t status, reg;</div>
+<div class="line"><a id="l00727" name="l00727"></a><span class="lineno">  727</span>    uint32_t last_tx_desc;</div>
+<div class="line"><a id="l00728" name="l00728"></a><span class="lineno">  728</span>    uint32_t u32Count = 0;</div>
+<div class="line"><a id="l00729" name="l00729"></a><span class="lineno">  729</span> </div>
+<div class="line"><a id="l00730" name="l00730"></a><span class="lineno">  730</span>    reg = <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;INTSTS;</div>
+<div class="line"><a id="l00731" name="l00731"></a><span class="lineno">  731</span>    <span class="comment">// Clear Tx interrupt flags</span></div>
+<div class="line"><a id="l00732" name="l00732"></a><span class="lineno">  732</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;INTSTS = reg &amp; (0xFFFF0000 &amp; ~EMAC_INTSTS_TSALMIF_Msk);</div>
+<div class="line"><a id="l00733" name="l00733"></a><span class="lineno">  733</span> </div>
+<div class="line"><a id="l00734" name="l00734"></a><span class="lineno">  734</span> </div>
+<div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span>    <span class="keywordflow">if</span> (reg &amp; <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a54153d368232282864eb6b67b46b9312">EMAC_INTSTS_TXBEIF_Msk</a>)</div>
 <div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span>    {</div>
-<div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span>        <span class="comment">// Process the descriptor(s).</span></div>
-<div class="line"><a id="l00738" name="l00738"></a><span class="lineno">  738</span>        last_tx_desc = <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;CTXDSA ;</div>
-<div class="line"><a id="l00739" name="l00739"></a><span class="lineno">  739</span>        <span class="comment">// Get our first descriptor to process</span></div>
-<div class="line"><a id="l00740" name="l00740"></a><span class="lineno">  740</span>        desc = (EMAC_DESCRIPTOR_T *) u32CurrentTxDesc;</div>
-<div class="line"><a id="l00741" name="l00741"></a><span class="lineno">  741</span>        <span class="keywordflow">do</span></div>
-<div class="line"><a id="l00742" name="l00742"></a><span class="lineno">  742</span>        {</div>
-<div class="line"><a id="l00743" name="l00743"></a><span class="lineno">  743</span>            <span class="comment">// Descriptor ownership is still EMAC, so this packet haven&#39;t been send.</span></div>
-<div class="line"><a id="l00744" name="l00744"></a><span class="lineno">  744</span>            <span class="keywordflow">if</span>(desc-&gt;u32Status1 &amp; EMAC_DESC_OWN_EMAC)</div>
-<div class="line"><a id="l00745" name="l00745"></a><span class="lineno">  745</span>                <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00746" name="l00746"></a><span class="lineno">  746</span>            <span class="comment">// Get Tx status stored in descriptor</span></div>
-<div class="line"><a id="l00747" name="l00747"></a><span class="lineno">  747</span>            status = desc-&gt;u32Status2 &gt;&gt; 16;</div>
-<div class="line"><a id="l00748" name="l00748"></a><span class="lineno">  748</span>            <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_TXCP)</div>
-<div class="line"><a id="l00749" name="l00749"></a><span class="lineno">  749</span>            {</div>
-<div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span>                u32Count++;</div>
-<div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span>            }</div>
-<div class="line"><a id="l00752" name="l00752"></a><span class="lineno">  752</span>            <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span>            {</div>
-<div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span>                <span class="comment">// Do nothing here on error.</span></div>
-<div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_TXABT);</div>
-<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_DEF);</div>
-<div class="line"><a id="l00757" name="l00757"></a><span class="lineno">  757</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_PAU);</div>
-<div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_EXDEF);</div>
-<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_NCS);</div>
-<div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_SQE);</div>
-<div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_LC);</div>
-<div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_TXHA);</div>
-<div class="line"><a id="l00763" name="l00763"></a><span class="lineno">  763</span>            }</div>
+<div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span>        <span class="comment">// Bus error occurred, this is usually a bad sign about software bug and will occur again...</span></div>
+<div class="line"><a id="l00738" name="l00738"></a><span class="lineno">  738</span>        printf(<span class="stringliteral">&quot;TX bus error\n&quot;</span>);</div>
+<div class="line"><a id="l00739" name="l00739"></a><span class="lineno">  739</span>        <span class="keywordflow">return</span> (uint32_t)<a class="code hl_define" href="../../d8/de0/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga43323f98224153e71a89f7cae6b45b9a">EMAC_BUS_ERR</a>;</div>
+<div class="line"><a id="l00740" name="l00740"></a><span class="lineno">  740</span>    }</div>
+<div class="line"><a id="l00741" name="l00741"></a><span class="lineno">  741</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00742" name="l00742"></a><span class="lineno">  742</span>    {</div>
+<div class="line"><a id="l00743" name="l00743"></a><span class="lineno">  743</span>        <span class="comment">// Process the descriptor(s).</span></div>
+<div class="line"><a id="l00744" name="l00744"></a><span class="lineno">  744</span>        last_tx_desc = <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;CTXDSA ;</div>
+<div class="line"><a id="l00745" name="l00745"></a><span class="lineno">  745</span>        <span class="comment">// Get our first descriptor to process</span></div>
+<div class="line"><a id="l00746" name="l00746"></a><span class="lineno">  746</span>        desc = (EMAC_DESCRIPTOR_T *) u32CurrentTxDesc;</div>
+<div class="line"><a id="l00747" name="l00747"></a><span class="lineno">  747</span>        <span class="keywordflow">do</span></div>
+<div class="line"><a id="l00748" name="l00748"></a><span class="lineno">  748</span>        {</div>
+<div class="line"><a id="l00749" name="l00749"></a><span class="lineno">  749</span>            <span class="comment">// Descriptor ownership is still EMAC, so this packet haven&#39;t been send.</span></div>
+<div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span>            <span class="keywordflow">if</span>(desc-&gt;u32Status1 &amp; EMAC_DESC_OWN_EMAC)</div>
+<div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span>                <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00752" name="l00752"></a><span class="lineno">  752</span>            <span class="comment">// Get Tx status stored in descriptor</span></div>
+<div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span>            status = desc-&gt;u32Status2 &gt;&gt; 16;</div>
+<div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span>            <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_TXCP)</div>
+<div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span>            {</div>
+<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span>                u32Count++;</div>
+<div class="line"><a id="l00757" name="l00757"></a><span class="lineno">  757</span>            }</div>
+<div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span>            <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span>            {</div>
+<div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span>                <span class="comment">// Do nothing here on error.</span></div>
+<div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_TXABT) {}</div>
+<div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span> </div>
+<div class="line"><a id="l00763" name="l00763"></a><span class="lineno">  763</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_DEF) {}</div>
 <div class="line"><a id="l00764" name="l00764"></a><span class="lineno">  764</span> </div>
-<div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span>            <span class="comment">// restore descriptor link list and data pointer they will be overwrite if time stamp enabled</span></div>
-<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span>            desc-&gt;u32Data = desc-&gt;u32Backup1;</div>
-<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span>            desc-&gt;u32Next = desc-&gt;u32Backup2;</div>
-<div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span>            <span class="comment">// go to next descriptor in link</span></div>
-<div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>            desc = (EMAC_DESCRIPTOR_T *)desc-&gt;u32Next;</div>
-<div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span>        }</div>
-<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span>        <span class="keywordflow">while</span> (last_tx_desc != (uint32_t)desc);      <span class="comment">// If we reach last sent Tx descriptor, leave the loop</span></div>
-<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span>        <span class="comment">// Save last processed Tx descriptor</span></div>
-<div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span>        u32CurrentTxDesc = (uint32_t)desc;</div>
-<div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span>    }</div>
-<div class="line"><a id="l00775" name="l00775"></a><span class="lineno">  775</span>    <span class="keywordflow">return</span>(u32Count);</div>
-<div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span>}</div>
+<div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_PAU) {}</div>
+<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span> </div>
+<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_EXDEF) {}</div>
+<div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span> </div>
+<div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_NCS) {}</div>
+<div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span> </div>
+<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_SQE) {}</div>
+<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span> </div>
+<div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_LC) {}</div>
+<div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span> </div>
+<div class="line"><a id="l00775" name="l00775"></a><span class="lineno">  775</span>                <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_TXHA) {}</div>
+<div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span>            }</div>
 <div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span> </div>
-<div class="line"><a id="l00789" name="l00789"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga1f81ac40537fa5df6fb0e5da41c87ca2">  789</a></span>uint32_t <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga1f81ac40537fa5df6fb0e5da41c87ca2">EMAC_SendPktDoneTS</a>(uint32_t *pu32Sec, uint32_t *pu32Nsec)</div>
-<div class="line"><a id="l00790" name="l00790"></a><span class="lineno">  790</span>{</div>
-<div class="line"><a id="l00791" name="l00791"></a><span class="lineno">  791</span> </div>
-<div class="line"><a id="l00792" name="l00792"></a><span class="lineno">  792</span>    EMAC_DESCRIPTOR_T *desc;</div>
-<div class="line"><a id="l00793" name="l00793"></a><span class="lineno">  793</span>    uint32_t status, reg;</div>
-<div class="line"><a id="l00794" name="l00794"></a><span class="lineno">  794</span>    uint32_t u32Count = 0;</div>
-<div class="line"><a id="l00795" name="l00795"></a><span class="lineno">  795</span> </div>
-<div class="line"><a id="l00796" name="l00796"></a><span class="lineno">  796</span>    reg = <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;INTSTS;</div>
-<div class="line"><a id="l00797" name="l00797"></a><span class="lineno">  797</span>    <span class="comment">// Clear Tx interrupt flags</span></div>
-<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;INTSTS = reg &amp; (0xFFFF0000 &amp; ~EMAC_INTSTS_TSALMIF_Msk);</div>
-<div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span> </div>
-<div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span> </div>
-<div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span>    <span class="keywordflow">if</span> (reg &amp; <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a54153d368232282864eb6b67b46b9312">EMAC_INTSTS_TXBEIF_Msk</a>)</div>
-<div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span>    {</div>
-<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span>        <span class="comment">// Bus error occurred, this is usually a bad sign about software bug and will occur again...</span></div>
-<div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span>        printf(<span class="stringliteral">&quot;TX bus error\n&quot;</span>);</div>
-<div class="line"><a id="l00805" name="l00805"></a><span class="lineno">  805</span>        <span class="keywordflow">return</span> (uint32_t)<a class="code hl_define" href="../../d8/de0/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga43323f98224153e71a89f7cae6b45b9a">EMAC_BUS_ERR</a>;</div>
-<div class="line"><a id="l00806" name="l00806"></a><span class="lineno">  806</span>    }</div>
-<div class="line"><a id="l00807" name="l00807"></a><span class="lineno">  807</span>    <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00808" name="l00808"></a><span class="lineno">  808</span>    {</div>
-<div class="line"><a id="l00809" name="l00809"></a><span class="lineno">  809</span>        <span class="comment">// Process the descriptor.</span></div>
-<div class="line"><a id="l00810" name="l00810"></a><span class="lineno">  810</span>        <span class="comment">// Get our first descriptor to process</span></div>
-<div class="line"><a id="l00811" name="l00811"></a><span class="lineno">  811</span>        desc = (EMAC_DESCRIPTOR_T *) u32CurrentTxDesc;</div>
+<div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span>            <span class="comment">// restore descriptor link list and data pointer they will be overwrite if time stamp enabled</span></div>
+<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span>            desc-&gt;u32Data = desc-&gt;u32Backup1;</div>
+<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span>            desc-&gt;u32Next = desc-&gt;u32Backup2;</div>
+<div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span>            <span class="comment">// go to next descriptor in link</span></div>
+<div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span>            desc = (EMAC_DESCRIPTOR_T *)desc-&gt;u32Next;</div>
+<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span>        }</div>
+<div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span>        <span class="keywordflow">while</span> (last_tx_desc != (uint32_t)desc);      <span class="comment">// If we reach last sent Tx descriptor, leave the loop</span></div>
+<div class="line"><a id="l00785" name="l00785"></a><span class="lineno">  785</span>        <span class="comment">// Save last processed Tx descriptor</span></div>
+<div class="line"><a id="l00786" name="l00786"></a><span class="lineno">  786</span>        u32CurrentTxDesc = (uint32_t)desc;</div>
+<div class="line"><a id="l00787" name="l00787"></a><span class="lineno">  787</span>    }</div>
+<div class="line"><a id="l00788" name="l00788"></a><span class="lineno">  788</span>    <span class="keywordflow">return</span>(u32Count);</div>
+<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span>}</div>
+<div class="line"><a id="l00790" name="l00790"></a><span class="lineno">  790</span> </div>
+<div class="line"><a id="l00802" name="l00802"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga1f81ac40537fa5df6fb0e5da41c87ca2">  802</a></span>uint32_t <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga1f81ac40537fa5df6fb0e5da41c87ca2">EMAC_SendPktDoneTS</a>(uint32_t *pu32Sec, uint32_t *pu32Nsec)</div>
+<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span>{</div>
+<div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span> </div>
+<div class="line"><a id="l00805" name="l00805"></a><span class="lineno">  805</span>    EMAC_DESCRIPTOR_T *desc;</div>
+<div class="line"><a id="l00806" name="l00806"></a><span class="lineno">  806</span>    uint32_t status, reg;</div>
+<div class="line"><a id="l00807" name="l00807"></a><span class="lineno">  807</span>    uint32_t u32Count = 0;</div>
+<div class="line"><a id="l00808" name="l00808"></a><span class="lineno">  808</span> </div>
+<div class="line"><a id="l00809" name="l00809"></a><span class="lineno">  809</span>    reg = <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;INTSTS;</div>
+<div class="line"><a id="l00810" name="l00810"></a><span class="lineno">  810</span>    <span class="comment">// Clear Tx interrupt flags</span></div>
+<div class="line"><a id="l00811" name="l00811"></a><span class="lineno">  811</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;INTSTS = reg &amp; (0xFFFF0000 &amp; ~EMAC_INTSTS_TSALMIF_Msk);</div>
 <div class="line"><a id="l00812" name="l00812"></a><span class="lineno">  812</span> </div>
-<div class="line"><a id="l00813" name="l00813"></a><span class="lineno">  813</span>        <span class="comment">// Descriptor ownership is still EMAC, so this packet haven&#39;t been send.</span></div>
-<div class="line"><a id="l00814" name="l00814"></a><span class="lineno">  814</span>        <span class="keywordflow">if</span>(desc-&gt;u32Status1 &amp; EMAC_DESC_OWN_EMAC)</div>
-<div class="line"><a id="l00815" name="l00815"></a><span class="lineno">  815</span>            <span class="keywordflow">return</span>(0);</div>
-<div class="line"><a id="l00816" name="l00816"></a><span class="lineno">  816</span>        <span class="comment">// Get Tx status stored in descriptor</span></div>
-<div class="line"><a id="l00817" name="l00817"></a><span class="lineno">  817</span>        status = desc-&gt;u32Status2 &gt;&gt; 16;</div>
-<div class="line"><a id="l00818" name="l00818"></a><span class="lineno">  818</span>        <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_TXCP)</div>
-<div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span>        {</div>
-<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>            u32Count = 1;</div>
-<div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>            *pu32Sec = desc-&gt;u32Next; <span class="comment">// second stores in descriptor&#39;s NEXT field</span></div>
-<div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span>            *pu32Nsec = EMAC_Subsec2Nsec(desc-&gt;u32Data); <span class="comment">// Sub nano second store in DATA field</span></div>
-<div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span>        }</div>
-<div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span>        {</div>
-<div class="line"><a id="l00826" name="l00826"></a><span class="lineno">  826</span>            <span class="comment">// Do nothing here on error.</span></div>
-<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span>            <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_TXABT);</div>
-<div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span>            <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_DEF);</div>
-<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span>            <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_PAU);</div>
-<div class="line"><a id="l00830" name="l00830"></a><span class="lineno">  830</span>            <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_EXDEF);</div>
-<div class="line"><a id="l00831" name="l00831"></a><span class="lineno">  831</span>            <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_NCS);</div>
-<div class="line"><a id="l00832" name="l00832"></a><span class="lineno">  832</span>            <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_SQE);</div>
-<div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span>            <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_LC);</div>
-<div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span>            <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_TXHA);</div>
-<div class="line"><a id="l00835" name="l00835"></a><span class="lineno">  835</span>        }</div>
-<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span> </div>
-<div class="line"><a id="l00837" name="l00837"></a><span class="lineno">  837</span>        <span class="comment">// restore descriptor link list and data pointer they will be overwrite if time stamp enabled</span></div>
-<div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span>        desc-&gt;u32Data = desc-&gt;u32Backup1;</div>
-<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span>        desc-&gt;u32Next = desc-&gt;u32Backup2;</div>
-<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>        <span class="comment">// go to next descriptor in link</span></div>
-<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span>        desc = (EMAC_DESCRIPTOR_T *)desc-&gt;u32Next;</div>
-<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span> </div>
-<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span>        <span class="comment">// Save last processed Tx descriptor</span></div>
-<div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span>        u32CurrentTxDesc = (uint32_t)desc;</div>
-<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>    }</div>
-<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span> </div>
-<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span>    <span class="keywordflow">return</span>(u32Count);</div>
-<div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span>}</div>
+<div class="line"><a id="l00813" name="l00813"></a><span class="lineno">  813</span> </div>
+<div class="line"><a id="l00814" name="l00814"></a><span class="lineno">  814</span>    <span class="keywordflow">if</span> (reg &amp; <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a54153d368232282864eb6b67b46b9312">EMAC_INTSTS_TXBEIF_Msk</a>)</div>
+<div class="line"><a id="l00815" name="l00815"></a><span class="lineno">  815</span>    {</div>
+<div class="line"><a id="l00816" name="l00816"></a><span class="lineno">  816</span>        <span class="comment">// Bus error occurred, this is usually a bad sign about software bug and will occur again...</span></div>
+<div class="line"><a id="l00817" name="l00817"></a><span class="lineno">  817</span>        printf(<span class="stringliteral">&quot;TX bus error\n&quot;</span>);</div>
+<div class="line"><a id="l00818" name="l00818"></a><span class="lineno">  818</span>        <span class="keywordflow">return</span> (uint32_t)<a class="code hl_define" href="../../d8/de0/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga43323f98224153e71a89f7cae6b45b9a">EMAC_BUS_ERR</a>;</div>
+<div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span>    }</div>
+<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>    {</div>
+<div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span>        <span class="comment">// Process the descriptor.</span></div>
+<div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span>        <span class="comment">// Get our first descriptor to process</span></div>
+<div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span>        desc = (EMAC_DESCRIPTOR_T *) u32CurrentTxDesc;</div>
+<div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span> </div>
+<div class="line"><a id="l00826" name="l00826"></a><span class="lineno">  826</span>        <span class="comment">// Descriptor ownership is still EMAC, so this packet haven&#39;t been send.</span></div>
+<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span>        <span class="keywordflow">if</span>(desc-&gt;u32Status1 &amp; EMAC_DESC_OWN_EMAC)</div>
+<div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span>            <span class="keywordflow">return</span>(0);</div>
+<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span>        <span class="comment">// Get Tx status stored in descriptor</span></div>
+<div class="line"><a id="l00830" name="l00830"></a><span class="lineno">  830</span>        status = desc-&gt;u32Status2 &gt;&gt; 16;</div>
+<div class="line"><a id="l00831" name="l00831"></a><span class="lineno">  831</span>        <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_TXCP)</div>
+<div class="line"><a id="l00832" name="l00832"></a><span class="lineno">  832</span>        {</div>
+<div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span>            u32Count = 1;</div>
+<div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span>            *pu32Sec = desc-&gt;u32Next; <span class="comment">// second stores in descriptor&#39;s NEXT field</span></div>
+<div class="line"><a id="l00835" name="l00835"></a><span class="lineno">  835</span>            *pu32Nsec = EMAC_Subsec2Nsec(desc-&gt;u32Data); <span class="comment">// Sub nano second store in DATA field</span></div>
+<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span>        }</div>
+<div class="line"><a id="l00837" name="l00837"></a><span class="lineno">  837</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span>        {</div>
+<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span>            <span class="comment">// Do nothing here on error.</span></div>
+<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>            <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_TXABT) {}</div>
+<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span> </div>
+<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span>      <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_DEF) {}</div>
+<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span> </div>
+<div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span>      <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_PAU) {}</div>
+<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span> </div>
+<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span>      <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_EXDEF) {}</div>
+<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span> </div>
+<div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span>      <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_NCS) {}</div>
 <div class="line"><a id="l00849" name="l00849"></a><span class="lineno">  849</span> </div>
-<div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span><span class="comment">// IEEE 1588 functions</span></div>
-<div class="line"><a id="l00857" name="l00857"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaf44ae41597ba26a0100555afdb2f7ff7">  857</a></span><span class="comment"></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaf44ae41597ba26a0100555afdb2f7ff7">EMAC_EnableTS</a>(uint32_t u32Sec, uint32_t u32Nsec)</div>
-<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span>{</div>
-<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span>    <span class="keywordtype">double</span> f;</div>
-<div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span>    uint32_t reg;</div>
-<div class="line"><a id="l00861" name="l00861"></a><span class="lineno">  861</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL = <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a28b68104c5941fe3262ace68d2617eb3">EMAC_TSCTL_TSEN_Msk</a>;</div>
-<div class="line"><a id="l00862" name="l00862"></a><span class="lineno">  862</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;UPDSEC = u32Sec;   <span class="comment">// Assume current time is 0 sec + 0 nano sec</span></div>
-<div class="line"><a id="l00863" name="l00863"></a><span class="lineno">  863</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;UPDSUBSEC = EMAC_Nsec2Subsec(u32Nsec);</div>
-<div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span> </div>
-<div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span>    <span class="comment">// PTP source clock is 84MHz (Real chip using PLL). Each tick is 11.90ns</span></div>
-<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span>    <span class="comment">// Assume we want to set each tick to 100ns.</span></div>
-<div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span>    <span class="comment">// Increase register = (100 * 2^31) / (10^9) = 214.71 =~ 215 = 0xD7</span></div>
-<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span>    <span class="comment">// Addend register = 2^32 * tick_freq / (84MHz), where tick_freq = (2^31 / 215) MHz</span></div>
-<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span>    <span class="comment">// From above equation, addend register = 2^63 / (84M * 215) ~= 510707200 = 0x1E70C600</span></div>
-<div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span>    <span class="comment">// So:</span></div>
-<div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span>    <span class="comment">//  EMAC-&gt;TSIR = 0xD7;</span></div>
-<div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span>    <span class="comment">//  EMAC-&gt;TSAR = 0x1E70C600;</span></div>
-<div class="line"><a id="l00873" name="l00873"></a><span class="lineno">  873</span>    f = (100.0 * 2147483648.0) / (1000000000.0) + 0.5;</div>
-<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSINC = (reg = (uint32_t)f);</div>
-<div class="line"><a id="l00875" name="l00875"></a><span class="lineno">  875</span>    f = (double)9223372036854775808.0 / ((<span class="keywordtype">double</span>)(<a class="code hl_function" href="../../dd/d0b/group___n_u_c472__442___c_l_k___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga27ded0f4435751be979927718884488f">CLK_GetHCLKFreq</a>()) * (<span class="keywordtype">double</span>)reg);</div>
-<div class="line"><a id="l00876" name="l00876"></a><span class="lineno">  876</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSADDEND = (uint32_t)f;</div>
-<div class="line"><a id="l00877" name="l00877"></a><span class="lineno">  877</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL |= (<a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#ab7fba3d2bf995859ce2b9c8e7403335f">EMAC_TSCTL_TSUPDATE_Msk</a> | <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a0f54fd2dbe3ae8a0a4ec6dc8d885d880">EMAC_TSCTL_TSIEN_Msk</a> | <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#af2e6a378a12ed2a94960872ccb209706">EMAC_TSCTL_TSMODE_Msk</a>); <span class="comment">// Fine update</span></div>
-<div class="line"><a id="l00878" name="l00878"></a><span class="lineno">  878</span>}</div>
-<div class="line"><a id="l00879" name="l00879"></a><span class="lineno">  879</span> </div>
-<div class="line"><a id="l00885" name="l00885"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga161606c26eccfbac8f04a90be2ffe79b">  885</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga161606c26eccfbac8f04a90be2ffe79b">EMAC_DisableTS</a>(<span class="keywordtype">void</span>)</div>
-<div class="line"><a id="l00886" name="l00886"></a><span class="lineno">  886</span>{</div>
-<div class="line"><a id="l00887" name="l00887"></a><span class="lineno">  887</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL = 0;</div>
-<div class="line"><a id="l00888" name="l00888"></a><span class="lineno">  888</span>}</div>
-<div class="line"><a id="l00889" name="l00889"></a><span class="lineno">  889</span> </div>
-<div class="line"><a id="l00896" name="l00896"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaa722a730de02b810d6b5087a4b98514c">  896</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaa722a730de02b810d6b5087a4b98514c">EMAC_GetTime</a>(uint32_t *pu32Sec, uint32_t *pu32Nsec)</div>
-<div class="line"><a id="l00897" name="l00897"></a><span class="lineno">  897</span>{</div>
-<div class="line"><a id="l00898" name="l00898"></a><span class="lineno">  898</span>    <span class="comment">// Must read TSLSR firstly. Hardware will preserve TSMSR value at the time TSLSR read.</span></div>
-<div class="line"><a id="l00899" name="l00899"></a><span class="lineno">  899</span>    *pu32Nsec = EMAC_Subsec2Nsec(<a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSSUBSEC);</div>
-<div class="line"><a id="l00900" name="l00900"></a><span class="lineno">  900</span>    *pu32Sec = <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSSEC;</div>
-<div class="line"><a id="l00901" name="l00901"></a><span class="lineno">  901</span>}</div>
-<div class="line"><a id="l00902" name="l00902"></a><span class="lineno">  902</span> </div>
-<div class="line"><a id="l00909" name="l00909"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga062aeaeced8681670d0e81b66a6c259a">  909</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga062aeaeced8681670d0e81b66a6c259a">EMAC_SetTime</a>(uint32_t u32Sec, uint32_t u32Nsec)</div>
-<div class="line"><a id="l00910" name="l00910"></a><span class="lineno">  910</span>{</div>
-<div class="line"><a id="l00911" name="l00911"></a><span class="lineno">  911</span>    <span class="comment">// Disable time stamp counter before update time value (clear EMAC_TSCTL_TSIEN_Msk)</span></div>
-<div class="line"><a id="l00912" name="l00912"></a><span class="lineno">  912</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL = <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a28b68104c5941fe3262ace68d2617eb3">EMAC_TSCTL_TSEN_Msk</a>;</div>
-<div class="line"><a id="l00913" name="l00913"></a><span class="lineno">  913</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;UPDSEC = u32Sec;</div>
-<div class="line"><a id="l00914" name="l00914"></a><span class="lineno">  914</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;UPDSUBSEC = EMAC_Nsec2Subsec(u32Nsec);</div>
-<div class="line"><a id="l00915" name="l00915"></a><span class="lineno">  915</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL |= (<a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a0f54fd2dbe3ae8a0a4ec6dc8d885d880">EMAC_TSCTL_TSIEN_Msk</a> | <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#af2e6a378a12ed2a94960872ccb209706">EMAC_TSCTL_TSMODE_Msk</a>);</div>
-<div class="line"><a id="l00916" name="l00916"></a><span class="lineno">  916</span> </div>
-<div class="line"><a id="l00917" name="l00917"></a><span class="lineno">  917</span>}</div>
-<div class="line"><a id="l00918" name="l00918"></a><span class="lineno">  918</span> </div>
-<div class="line"><a id="l00925" name="l00925"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gae6e4ed47a4010f8b9e8cd351f163fa30">  925</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gae6e4ed47a4010f8b9e8cd351f163fa30">EMAC_EnableAlarm</a>(uint32_t u32Sec, uint32_t u32Nsec)</div>
-<div class="line"><a id="l00926" name="l00926"></a><span class="lineno">  926</span>{</div>
-<div class="line"><a id="l00927" name="l00927"></a><span class="lineno">  927</span> </div>
-<div class="line"><a id="l00928" name="l00928"></a><span class="lineno">  928</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;ALMSEC = u32Sec;</div>
-<div class="line"><a id="l00929" name="l00929"></a><span class="lineno">  929</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;ALMSUBSEC = EMAC_Nsec2Subsec(u32Nsec);</div>
-<div class="line"><a id="l00930" name="l00930"></a><span class="lineno">  930</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL |= <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a80f8f63ca6e4889094ac35052ce2fa3c">EMAC_TSCTL_TSALMEN_Msk</a>;</div>
-<div class="line"><a id="l00931" name="l00931"></a><span class="lineno">  931</span> </div>
-<div class="line"><a id="l00932" name="l00932"></a><span class="lineno">  932</span>}</div>
-<div class="line"><a id="l00933" name="l00933"></a><span class="lineno">  933</span> </div>
-<div class="line"><a id="l00939" name="l00939"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga1e3b6c9c20de487b64d17d43c5eda0a8">  939</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga1e3b6c9c20de487b64d17d43c5eda0a8">EMAC_DisableAlarm</a>(<span class="keywordtype">void</span>)</div>
-<div class="line"><a id="l00940" name="l00940"></a><span class="lineno">  940</span>{</div>
-<div class="line"><a id="l00941" name="l00941"></a><span class="lineno">  941</span> </div>
-<div class="line"><a id="l00942" name="l00942"></a><span class="lineno">  942</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL &amp;= ~EMAC_TSCTL_TSALMEN_Msk;</div>
-<div class="line"><a id="l00943" name="l00943"></a><span class="lineno">  943</span> </div>
-<div class="line"><a id="l00944" name="l00944"></a><span class="lineno">  944</span>}</div>
-<div class="line"><a id="l00945" name="l00945"></a><span class="lineno">  945</span> </div>
-<div class="line"><a id="l00953" name="l00953"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gae5a33c3585eb5abd41119c988fcfa4b5">  953</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gae5a33c3585eb5abd41119c988fcfa4b5">EMAC_UpdateTime</a>(uint32_t u32Neg, uint32_t u32Sec, uint32_t u32Nsec)</div>
-<div class="line"><a id="l00954" name="l00954"></a><span class="lineno">  954</span>{</div>
-<div class="line"><a id="l00955" name="l00955"></a><span class="lineno">  955</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;UPDSEC = u32Sec;</div>
-<div class="line"><a id="l00956" name="l00956"></a><span class="lineno">  956</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;UPDSUBSEC = EMAC_Nsec2Subsec(u32Nsec);</div>
-<div class="line"><a id="l00957" name="l00957"></a><span class="lineno">  957</span>    <span class="keywordflow">if</span>(u32Neg)</div>
-<div class="line"><a id="l00958" name="l00958"></a><span class="lineno">  958</span>        <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;UPDSUBSEC |= <a class="code hl_define" href="../../d4/dfa/group___n_u_c472__442__legacy___constants.html#gadfb09898dca36071e32cb1fbeec479e5">BIT31</a>;   <span class="comment">// Set bit 31 indicates this is a negative value</span></div>
-<div class="line"><a id="l00959" name="l00959"></a><span class="lineno">  959</span> </div>
-<div class="line"><a id="l00960" name="l00960"></a><span class="lineno">  960</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL |= <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#ab7fba3d2bf995859ce2b9c8e7403335f">EMAC_TSCTL_TSUPDATE_Msk</a>;</div>
+<div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span>      <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_SQE) {}</div>
+<div class="line"><a id="l00851" name="l00851"></a><span class="lineno">  851</span> </div>
+<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span>      <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_LC) {}</div>
+<div class="line"><a id="l00853" name="l00853"></a><span class="lineno">  853</span> </div>
+<div class="line"><a id="l00854" name="l00854"></a><span class="lineno">  854</span>      <span class="keywordflow">if</span> (status &amp; EMAC_TXFD_TXHA) {}</div>
+<div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span>        }</div>
+<div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span> </div>
+<div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span>        <span class="comment">// restore descriptor link list and data pointer they will be overwrite if time stamp enabled</span></div>
+<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span>        desc-&gt;u32Data = desc-&gt;u32Backup1;</div>
+<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span>        desc-&gt;u32Next = desc-&gt;u32Backup2;</div>
+<div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span>        <span class="comment">// go to next descriptor in link</span></div>
+<div class="line"><a id="l00861" name="l00861"></a><span class="lineno">  861</span>        desc = (EMAC_DESCRIPTOR_T *)desc-&gt;u32Next;</div>
+<div class="line"><a id="l00862" name="l00862"></a><span class="lineno">  862</span> </div>
+<div class="line"><a id="l00863" name="l00863"></a><span class="lineno">  863</span>        <span class="comment">// Save last processed Tx descriptor</span></div>
+<div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span>        u32CurrentTxDesc = (uint32_t)desc;</div>
+<div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span>    }</div>
+<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span> </div>
+<div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span>    <span class="keywordflow">return</span>(u32Count);</div>
+<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span>}</div>
+<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span> </div>
+<div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span><span class="comment">// IEEE 1588 functions</span></div>
+<div class="line"><a id="l00877" name="l00877"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaf44ae41597ba26a0100555afdb2f7ff7">  877</a></span><span class="comment"></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaf44ae41597ba26a0100555afdb2f7ff7">EMAC_EnableTS</a>(uint32_t u32Sec, uint32_t u32Nsec)</div>
+<div class="line"><a id="l00878" name="l00878"></a><span class="lineno">  878</span>{</div>
+<div class="line"><a id="l00879" name="l00879"></a><span class="lineno">  879</span>    <span class="keywordtype">double</span> f;</div>
+<div class="line"><a id="l00880" name="l00880"></a><span class="lineno">  880</span>    uint32_t reg;</div>
+<div class="line"><a id="l00881" name="l00881"></a><span class="lineno">  881</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL = <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a28b68104c5941fe3262ace68d2617eb3">EMAC_TSCTL_TSEN_Msk</a>;</div>
+<div class="line"><a id="l00882" name="l00882"></a><span class="lineno">  882</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;UPDSEC = u32Sec;   <span class="comment">// Assume current time is 0 sec + 0 nano sec</span></div>
+<div class="line"><a id="l00883" name="l00883"></a><span class="lineno">  883</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;UPDSUBSEC = EMAC_Nsec2Subsec(u32Nsec);</div>
+<div class="line"><a id="l00884" name="l00884"></a><span class="lineno">  884</span> </div>
+<div class="line"><a id="l00885" name="l00885"></a><span class="lineno">  885</span>    <span class="comment">// PTP source clock is 84MHz (Real chip using PLL). Each tick is 11.90ns</span></div>
+<div class="line"><a id="l00886" name="l00886"></a><span class="lineno">  886</span>    <span class="comment">// Assume we want to set each tick to 100ns.</span></div>
+<div class="line"><a id="l00887" name="l00887"></a><span class="lineno">  887</span>    <span class="comment">// Increase register = (100 * 2^31) / (10^9) = 214.71 =~ 215 = 0xD7</span></div>
+<div class="line"><a id="l00888" name="l00888"></a><span class="lineno">  888</span>    <span class="comment">// Addend register = 2^32 * tick_freq / (84MHz), where tick_freq = (2^31 / 215) MHz</span></div>
+<div class="line"><a id="l00889" name="l00889"></a><span class="lineno">  889</span>    <span class="comment">// From above equation, addend register = 2^63 / (84M * 215) ~= 510707200 = 0x1E70C600</span></div>
+<div class="line"><a id="l00890" name="l00890"></a><span class="lineno">  890</span>    <span class="comment">// So:</span></div>
+<div class="line"><a id="l00891" name="l00891"></a><span class="lineno">  891</span>    <span class="comment">//  EMAC-&gt;TSIR = 0xD7;</span></div>
+<div class="line"><a id="l00892" name="l00892"></a><span class="lineno">  892</span>    <span class="comment">//  EMAC-&gt;TSAR = 0x1E70C600;</span></div>
+<div class="line"><a id="l00893" name="l00893"></a><span class="lineno">  893</span>    f = (100.0 * 2147483648.0) / (1000000000.0) + 0.5;</div>
+<div class="line"><a id="l00894" name="l00894"></a><span class="lineno">  894</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSINC = (reg = (uint32_t)f);</div>
+<div class="line"><a id="l00895" name="l00895"></a><span class="lineno">  895</span>    f = (double)9223372036854775808.0 / ((<span class="keywordtype">double</span>)(<a class="code hl_function" href="../../dd/d0b/group___n_u_c472__442___c_l_k___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga27ded0f4435751be979927718884488f">CLK_GetHCLKFreq</a>()) * (<span class="keywordtype">double</span>)reg);</div>
+<div class="line"><a id="l00896" name="l00896"></a><span class="lineno">  896</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSADDEND = (uint32_t)f;</div>
+<div class="line"><a id="l00897" name="l00897"></a><span class="lineno">  897</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL |= (<a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#ab7fba3d2bf995859ce2b9c8e7403335f">EMAC_TSCTL_TSUPDATE_Msk</a> | <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a0f54fd2dbe3ae8a0a4ec6dc8d885d880">EMAC_TSCTL_TSIEN_Msk</a> | <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#af2e6a378a12ed2a94960872ccb209706">EMAC_TSCTL_TSMODE_Msk</a>); <span class="comment">// Fine update</span></div>
+<div class="line"><a id="l00898" name="l00898"></a><span class="lineno">  898</span>}</div>
+<div class="line"><a id="l00899" name="l00899"></a><span class="lineno">  899</span> </div>
+<div class="line"><a id="l00905" name="l00905"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga161606c26eccfbac8f04a90be2ffe79b">  905</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga161606c26eccfbac8f04a90be2ffe79b">EMAC_DisableTS</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l00906" name="l00906"></a><span class="lineno">  906</span>{</div>
+<div class="line"><a id="l00907" name="l00907"></a><span class="lineno">  907</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL = 0;</div>
+<div class="line"><a id="l00908" name="l00908"></a><span class="lineno">  908</span>}</div>
+<div class="line"><a id="l00909" name="l00909"></a><span class="lineno">  909</span> </div>
+<div class="line"><a id="l00916" name="l00916"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaa722a730de02b810d6b5087a4b98514c">  916</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaa722a730de02b810d6b5087a4b98514c">EMAC_GetTime</a>(uint32_t *pu32Sec, uint32_t *pu32Nsec)</div>
+<div class="line"><a id="l00917" name="l00917"></a><span class="lineno">  917</span>{</div>
+<div class="line"><a id="l00918" name="l00918"></a><span class="lineno">  918</span>    <span class="comment">// Must read TSLSR firstly. Hardware will preserve TSMSR value at the time TSLSR read.</span></div>
+<div class="line"><a id="l00919" name="l00919"></a><span class="lineno">  919</span>    *pu32Nsec = EMAC_Subsec2Nsec(<a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSSUBSEC);</div>
+<div class="line"><a id="l00920" name="l00920"></a><span class="lineno">  920</span>    *pu32Sec = <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSSEC;</div>
+<div class="line"><a id="l00921" name="l00921"></a><span class="lineno">  921</span>}</div>
+<div class="line"><a id="l00922" name="l00922"></a><span class="lineno">  922</span> </div>
+<div class="line"><a id="l00929" name="l00929"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga062aeaeced8681670d0e81b66a6c259a">  929</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga062aeaeced8681670d0e81b66a6c259a">EMAC_SetTime</a>(uint32_t u32Sec, uint32_t u32Nsec)</div>
+<div class="line"><a id="l00930" name="l00930"></a><span class="lineno">  930</span>{</div>
+<div class="line"><a id="l00931" name="l00931"></a><span class="lineno">  931</span>    <span class="comment">// Disable time stamp counter before update time value (clear EMAC_TSCTL_TSIEN_Msk)</span></div>
+<div class="line"><a id="l00932" name="l00932"></a><span class="lineno">  932</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL = <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a28b68104c5941fe3262ace68d2617eb3">EMAC_TSCTL_TSEN_Msk</a>;</div>
+<div class="line"><a id="l00933" name="l00933"></a><span class="lineno">  933</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;UPDSEC = u32Sec;</div>
+<div class="line"><a id="l00934" name="l00934"></a><span class="lineno">  934</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;UPDSUBSEC = EMAC_Nsec2Subsec(u32Nsec);</div>
+<div class="line"><a id="l00935" name="l00935"></a><span class="lineno">  935</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL |= (<a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a0f54fd2dbe3ae8a0a4ec6dc8d885d880">EMAC_TSCTL_TSIEN_Msk</a> | <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#af2e6a378a12ed2a94960872ccb209706">EMAC_TSCTL_TSMODE_Msk</a>);</div>
+<div class="line"><a id="l00936" name="l00936"></a><span class="lineno">  936</span> </div>
+<div class="line"><a id="l00937" name="l00937"></a><span class="lineno">  937</span>}</div>
+<div class="line"><a id="l00938" name="l00938"></a><span class="lineno">  938</span> </div>
+<div class="line"><a id="l00945" name="l00945"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gae6e4ed47a4010f8b9e8cd351f163fa30">  945</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gae6e4ed47a4010f8b9e8cd351f163fa30">EMAC_EnableAlarm</a>(uint32_t u32Sec, uint32_t u32Nsec)</div>
+<div class="line"><a id="l00946" name="l00946"></a><span class="lineno">  946</span>{</div>
+<div class="line"><a id="l00947" name="l00947"></a><span class="lineno">  947</span> </div>
+<div class="line"><a id="l00948" name="l00948"></a><span class="lineno">  948</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;ALMSEC = u32Sec;</div>
+<div class="line"><a id="l00949" name="l00949"></a><span class="lineno">  949</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;ALMSUBSEC = EMAC_Nsec2Subsec(u32Nsec);</div>
+<div class="line"><a id="l00950" name="l00950"></a><span class="lineno">  950</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL |= <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#a80f8f63ca6e4889094ac35052ce2fa3c">EMAC_TSCTL_TSALMEN_Msk</a>;</div>
+<div class="line"><a id="l00951" name="l00951"></a><span class="lineno">  951</span> </div>
+<div class="line"><a id="l00952" name="l00952"></a><span class="lineno">  952</span>}</div>
+<div class="line"><a id="l00953" name="l00953"></a><span class="lineno">  953</span> </div>
+<div class="line"><a id="l00959" name="l00959"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga1e3b6c9c20de487b64d17d43c5eda0a8">  959</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga1e3b6c9c20de487b64d17d43c5eda0a8">EMAC_DisableAlarm</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l00960" name="l00960"></a><span class="lineno">  960</span>{</div>
 <div class="line"><a id="l00961" name="l00961"></a><span class="lineno">  961</span> </div>
-<div class="line"><a id="l00962" name="l00962"></a><span class="lineno">  962</span>}</div>
+<div class="line"><a id="l00962" name="l00962"></a><span class="lineno">  962</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL &amp;= ~EMAC_TSCTL_TSALMEN_Msk;</div>
 <div class="line"><a id="l00963" name="l00963"></a><span class="lineno">  963</span> </div>
-<div class="line"><a id="l00964" name="l00964"></a><span class="lineno">  964</span> <span class="comment">/* end of group NUC472_442_EMAC_EXPORTED_FUNCTIONS */</span></div>
-<div class="line"><a id="l00966" name="l00966"></a><span class="lineno">  966</span> <span class="comment">/* end of group NUC472_442_EMAC_Driver */</span></div>
-<div class="line"><a id="l00968" name="l00968"></a><span class="lineno">  968</span> <span class="comment">/* end of group NUC472_442_Device_Driver */</span></div>
-<div class="line"><a id="l00970" name="l00970"></a><span class="lineno">  970</span> </div>
-<div class="line"><a id="l00971" name="l00971"></a><span class="lineno">  971</span><span class="comment">/*** (C) COPYRIGHT 2013 Nuvoton Technology Corp. ***/</span></div>
+<div class="line"><a id="l00964" name="l00964"></a><span class="lineno">  964</span>}</div>
+<div class="line"><a id="l00965" name="l00965"></a><span class="lineno">  965</span> </div>
+<div class="line"><a id="l00973" name="l00973"></a><span class="lineno"><a class="line" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gae5a33c3585eb5abd41119c988fcfa4b5">  973</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gae5a33c3585eb5abd41119c988fcfa4b5">EMAC_UpdateTime</a>(uint32_t u32Neg, uint32_t u32Sec, uint32_t u32Nsec)</div>
+<div class="line"><a id="l00974" name="l00974"></a><span class="lineno">  974</span>{</div>
+<div class="line"><a id="l00975" name="l00975"></a><span class="lineno">  975</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;UPDSEC = u32Sec;</div>
+<div class="line"><a id="l00976" name="l00976"></a><span class="lineno">  976</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;UPDSUBSEC = EMAC_Nsec2Subsec(u32Nsec);</div>
+<div class="line"><a id="l00977" name="l00977"></a><span class="lineno">  977</span>    <span class="keywordflow">if</span>(u32Neg)</div>
+<div class="line"><a id="l00978" name="l00978"></a><span class="lineno">  978</span>        <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;UPDSUBSEC |= <a class="code hl_define" href="../../d4/dfa/group___n_u_c472__442__legacy___constants.html#gadfb09898dca36071e32cb1fbeec479e5">BIT31</a>;   <span class="comment">// Set bit 31 indicates this is a negative value</span></div>
+<div class="line"><a id="l00979" name="l00979"></a><span class="lineno">  979</span> </div>
+<div class="line"><a id="l00980" name="l00980"></a><span class="lineno">  980</span>    <a class="code hl_define" href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a>-&gt;TSCTL |= <a class="code hl_define" href="../../da/d08/_n_u_c472__442_8h.html#ab7fba3d2bf995859ce2b9c8e7403335f">EMAC_TSCTL_TSUPDATE_Msk</a>;</div>
+<div class="line"><a id="l00981" name="l00981"></a><span class="lineno">  981</span> </div>
+<div class="line"><a id="l00982" name="l00982"></a><span class="lineno">  982</span>}</div>
+<div class="line"><a id="l00983" name="l00983"></a><span class="lineno">  983</span> </div>
+<div class="line"><a id="l00984" name="l00984"></a><span class="lineno">  984</span> <span class="comment">/* end of group NUC472_442_EMAC_EXPORTED_FUNCTIONS */</span></div>
+<div class="line"><a id="l00986" name="l00986"></a><span class="lineno">  986</span> <span class="comment">/* end of group NUC472_442_EMAC_Driver */</span></div>
+<div class="line"><a id="l00988" name="l00988"></a><span class="lineno">  988</span> <span class="comment">/* end of group NUC472_442_Device_Driver */</span></div>
+<div class="line"><a id="l00990" name="l00990"></a><span class="lineno">  990</span> </div>
+<div class="line"><a id="l00991" name="l00991"></a><span class="lineno">  991</span><span class="comment">/*** (C) COPYRIGHT 2013 Nuvoton Technology Corp. ***/</span></div>
 <div class="ttc" id="a_n_u_c472__442_8h_html"><div class="ttname"><a href="../../da/d08/_n_u_c472__442_8h.html">NUC472_442.h</a></div><div class="ttdoc">NUC472/NUC442 peripheral access layer header file. This file contains all the peripheral register's d...</div></div>
 <div class="ttc" id="a_n_u_c472__442_8h_html_a01becd1768339e45340150274fc7205f"><div class="ttname"><a href="../../da/d08/_n_u_c472__442_8h.html#a01becd1768339e45340150274fc7205f">EMAC_INTEN_RXBEIEN_Msk</a></div><div class="ttdeci">#define EMAC_INTEN_RXBEIEN_Msk</div><div class="ttdef"><b>Definition:</b> <a href="../../da/d08/_n_u_c472__442_8h_source.html#l13725">NUC472_442.h:13725</a></div></div>
 <div class="ttc" id="a_n_u_c472__442_8h_html_a0f54fd2dbe3ae8a0a4ec6dc8d885d880"><div class="ttname"><a href="../../da/d08/_n_u_c472__442_8h.html#a0f54fd2dbe3ae8a0a4ec6dc8d885d880">EMAC_TSCTL_TSIEN_Msk</a></div><div class="ttdeci">#define EMAC_TSCTL_TSIEN_Msk</div><div class="ttdef"><b>Definition:</b> <a href="../../da/d08/_n_u_c472__442_8h_source.html#l13887">NUC472_442.h:13887</a></div></div>
@@ -827,31 +847,31 @@ $(function() {
 <div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s_html_ga43323f98224153e71a89f7cae6b45b9a"><div class="ttname"><a href="../../d8/de0/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga43323f98224153e71a89f7cae6b45b9a">EMAC_BUS_ERR</a></div><div class="ttdeci">#define EMAC_BUS_ERR</div><div class="ttdef"><b>Definition:</b> <a href="../../d6/d55/emac_8h_source.html#l00039">emac.h:39</a></div></div>
 <div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s_html_gab1fa44bbe9f3035de66360d5ec1fcdbd"><div class="ttname"><a href="../../d8/de0/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#gab1fa44bbe9f3035de66360d5ec1fcdbd">EMAC_RX_DESC_SIZE</a></div><div class="ttdeci">#define EMAC_RX_DESC_SIZE</div><div class="ttdoc">Number of Rx Descriptors, should be 2 at least.</div><div class="ttdef"><b>Definition:</b> <a href="../../d6/d55/emac_8h_source.html#l00035">emac.h:35</a></div></div>
 <div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s_html_gadfe2027bee646d92abe330177f57c62d"><div class="ttname"><a href="../../d8/de0/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#gadfe2027bee646d92abe330177f57c62d">EMAC_TX_DESC_SIZE</a></div><div class="ttdeci">#define EMAC_TX_DESC_SIZE</div><div class="ttdoc">Number of Tx Descriptors, should be 2 at least.</div><div class="ttdef"><b>Definition:</b> <a href="../../d6/d55/emac_8h_source.html#l00036">emac.h:36</a></div></div>
-<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga062aeaeced8681670d0e81b66a6c259a"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga062aeaeced8681670d0e81b66a6c259a">EMAC_SetTime</a></div><div class="ttdeci">void EMAC_SetTime(uint32_t u32Sec, uint32_t u32Nsec)</div><div class="ttdoc">Set current time stamp.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00909">emac.c:909</a></div></div>
-<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga161606c26eccfbac8f04a90be2ffe79b"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga161606c26eccfbac8f04a90be2ffe79b">EMAC_DisableTS</a></div><div class="ttdeci">void EMAC_DisableTS(void)</div><div class="ttdoc">Disable IEEE1588 time stamp function.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00885">emac.c:885</a></div></div>
-<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga1e3b6c9c20de487b64d17d43c5eda0a8"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga1e3b6c9c20de487b64d17d43c5eda0a8">EMAC_DisableAlarm</a></div><div class="ttdeci">void EMAC_DisableAlarm(void)</div><div class="ttdoc">Disable alarm function.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00939">emac.c:939</a></div></div>
-<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga1f81ac40537fa5df6fb0e5da41c87ca2"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga1f81ac40537fa5df6fb0e5da41c87ca2">EMAC_SendPktDoneTS</a></div><div class="ttdeci">uint32_t EMAC_SendPktDoneTS(uint32_t *pu32Sec, uint32_t *pu32Nsec)</div><div class="ttdoc">Clean up process after a packet is sent, and get the time stamp while packet is sent.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00789">emac.c:789</a></div></div>
+<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga062aeaeced8681670d0e81b66a6c259a"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga062aeaeced8681670d0e81b66a6c259a">EMAC_SetTime</a></div><div class="ttdeci">void EMAC_SetTime(uint32_t u32Sec, uint32_t u32Nsec)</div><div class="ttdoc">Set current time stamp.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00929">emac.c:929</a></div></div>
+<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga161606c26eccfbac8f04a90be2ffe79b"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga161606c26eccfbac8f04a90be2ffe79b">EMAC_DisableTS</a></div><div class="ttdeci">void EMAC_DisableTS(void)</div><div class="ttdoc">Disable IEEE1588 time stamp function.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00905">emac.c:905</a></div></div>
+<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga1e3b6c9c20de487b64d17d43c5eda0a8"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga1e3b6c9c20de487b64d17d43c5eda0a8">EMAC_DisableAlarm</a></div><div class="ttdeci">void EMAC_DisableAlarm(void)</div><div class="ttdoc">Disable alarm function.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00959">emac.c:959</a></div></div>
+<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga1f81ac40537fa5df6fb0e5da41c87ca2"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga1f81ac40537fa5df6fb0e5da41c87ca2">EMAC_SendPktDoneTS</a></div><div class="ttdeci">uint32_t EMAC_SendPktDoneTS(uint32_t *pu32Sec, uint32_t *pu32Nsec)</div><div class="ttdoc">Clean up process after a packet is sent, and get the time stamp while packet is sent.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00802">emac.c:802</a></div></div>
 <div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga2836b94959c66bee1309370b32218be6"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga2836b94959c66bee1309370b32218be6">EMAC_Close</a></div><div class="ttdeci">void EMAC_Close(void)</div><div class="ttdoc">This function stop all receive and transmit activity and disable MAC interface.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00456">emac.c:456</a></div></div>
-<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga51bb2c9f6a02e6eb5062ff27327c83b8"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga51bb2c9f6a02e6eb5062ff27327c83b8">EMAC_RecvPktDone</a></div><div class="ttdeci">void EMAC_RecvPktDone(void)</div><div class="ttdoc">Clean up process after a packet is received.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00643">emac.c:643</a></div></div>
+<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga51bb2c9f6a02e6eb5062ff27327c83b8"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga51bb2c9f6a02e6eb5062ff27327c83b8">EMAC_RecvPktDone</a></div><div class="ttdeci">void EMAC_RecvPktDone(void)</div><div class="ttdoc">Clean up process after a packet is received.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00649">emac.c:649</a></div></div>
 <div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga5ddff9f964788b6fe8e1ea84278f3da3"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga5ddff9f964788b6fe8e1ea84278f3da3">EMAC_EnableCamEntry</a></div><div class="ttdeci">void EMAC_EnableCamEntry(uint32_t u32Entry, uint8_t *pu8MacAddr)</div><div class="ttdoc">Fill a CAM entry for MAC address comparison.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00478">emac.c:478</a></div></div>
 <div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga6108ae5f9e743ef95505ffd60425e202"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga6108ae5f9e743ef95505ffd60425e202">EMAC_DisableCamEntry</a></div><div class="ttdeci">void EMAC_DisableCamEntry(uint32_t u32Entry)</div><div class="ttdoc">Disable a specified CAM entry.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00500">emac.c:500</a></div></div>
-<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga6cb9578e855cee7d8e5dcbfd95ac879b"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga6cb9578e855cee7d8e5dcbfd95ac879b">EMAC_SendPktDone</a></div><div class="ttdeci">uint32_t EMAC_SendPktDone(void)</div><div class="ttdoc">Clean up process after packet(s) are sent.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00717">emac.c:717</a></div></div>
+<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga6cb9578e855cee7d8e5dcbfd95ac879b"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga6cb9578e855cee7d8e5dcbfd95ac879b">EMAC_SendPktDone</a></div><div class="ttdeci">uint32_t EMAC_SendPktDone(void)</div><div class="ttdoc">Clean up process after packet(s) are sent.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00723">emac.c:723</a></div></div>
 <div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga75565b63b7326b9abf8f88201f8a5e87"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga75565b63b7326b9abf8f88201f8a5e87">EMAC_SetMacAddr</a></div><div class="ttdeci">void EMAC_SetMacAddr(uint8_t *pu8MacAddr)</div><div class="ttdoc">Set the device MAC address.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00466">emac.c:466</a></div></div>
-<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga836ca37712be00395831ddad5213af9b"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga836ca37712be00395831ddad5213af9b">EMAC_RecvPktTS</a></div><div class="ttdeci">uint32_t EMAC_RecvPktTS(uint8_t *pu8Data, uint32_t *pu32Size, uint32_t *pu32Sec, uint32_t *pu32Nsec)</div><div class="ttdoc">Receive an Ethernet packet and the time stamp while it's received.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00581">emac.c:581</a></div></div>
+<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga836ca37712be00395831ddad5213af9b"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga836ca37712be00395831ddad5213af9b">EMAC_RecvPktTS</a></div><div class="ttdeci">uint32_t EMAC_RecvPktTS(uint8_t *pu8Data, uint32_t *pu32Size, uint32_t *pu32Sec, uint32_t *pu32Nsec)</div><div class="ttdoc">Receive an Ethernet packet and the time stamp while it's received.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00584">emac.c:584</a></div></div>
 <div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_ga924abb4b88beb7a8742b560473824352"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga924abb4b88beb7a8742b560473824352">EMAC_Open</a></div><div class="ttdeci">int32_t EMAC_Open(uint8_t *pu8MacAddr)</div><div class="ttdoc">Initialize EMAC interface, including descriptors, MAC address, and PHY.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00417">emac.c:417</a></div></div>
-<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_gaa722a730de02b810d6b5087a4b98514c"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaa722a730de02b810d6b5087a4b98514c">EMAC_GetTime</a></div><div class="ttdeci">void EMAC_GetTime(uint32_t *pu32Sec, uint32_t *pu32Nsec)</div><div class="ttdoc">Get current time stamp.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00896">emac.c:896</a></div></div>
+<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_gaa722a730de02b810d6b5087a4b98514c"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaa722a730de02b810d6b5087a4b98514c">EMAC_GetTime</a></div><div class="ttdeci">void EMAC_GetTime(uint32_t *pu32Sec, uint32_t *pu32Nsec)</div><div class="ttdoc">Get current time stamp.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00916">emac.c:916</a></div></div>
 <div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_gab2c70acac54838afc9ef108fce5df2c4"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gab2c70acac54838afc9ef108fce5df2c4">EMAC_RecvPkt</a></div><div class="ttdeci">uint32_t EMAC_RecvPkt(uint8_t *pu8Data, uint32_t *pu32Size)</div><div class="ttdoc">Receive an Ethernet packet.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00516">emac.c:516</a></div></div>
-<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_gaba8050cd6786a26457db0b4fe6dac81a"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaba8050cd6786a26457db0b4fe6dac81a">EMAC_SendPkt</a></div><div class="ttdeci">uint32_t EMAC_SendPkt(uint8_t *pu8Data, uint32_t u32Size)</div><div class="ttdoc">Send an Ethernet packet.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00676">emac.c:676</a></div></div>
-<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_gae5a33c3585eb5abd41119c988fcfa4b5"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gae5a33c3585eb5abd41119c988fcfa4b5">EMAC_UpdateTime</a></div><div class="ttdeci">void EMAC_UpdateTime(uint32_t u32Neg, uint32_t u32Sec, uint32_t u32Nsec)</div><div class="ttdoc">Add a offset to current time.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00953">emac.c:953</a></div></div>
-<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_gae6e4ed47a4010f8b9e8cd351f163fa30"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gae6e4ed47a4010f8b9e8cd351f163fa30">EMAC_EnableAlarm</a></div><div class="ttdeci">void EMAC_EnableAlarm(uint32_t u32Sec, uint32_t u32Nsec)</div><div class="ttdoc">Enable alarm function and set alarm time.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00925">emac.c:925</a></div></div>
-<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_gaf44ae41597ba26a0100555afdb2f7ff7"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaf44ae41597ba26a0100555afdb2f7ff7">EMAC_EnableTS</a></div><div class="ttdeci">void EMAC_EnableTS(uint32_t u32Sec, uint32_t u32Nsec)</div><div class="ttdoc">Enable IEEE1588 time stamp function and set current time.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00857">emac.c:857</a></div></div>
+<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_gaba8050cd6786a26457db0b4fe6dac81a"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaba8050cd6786a26457db0b4fe6dac81a">EMAC_SendPkt</a></div><div class="ttdeci">uint32_t EMAC_SendPkt(uint8_t *pu8Data, uint32_t u32Size)</div><div class="ttdoc">Send an Ethernet packet.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00682">emac.c:682</a></div></div>
+<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_gae5a33c3585eb5abd41119c988fcfa4b5"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gae5a33c3585eb5abd41119c988fcfa4b5">EMAC_UpdateTime</a></div><div class="ttdeci">void EMAC_UpdateTime(uint32_t u32Neg, uint32_t u32Sec, uint32_t u32Nsec)</div><div class="ttdoc">Add a offset to current time.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00973">emac.c:973</a></div></div>
+<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_gae6e4ed47a4010f8b9e8cd351f163fa30"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gae6e4ed47a4010f8b9e8cd351f163fa30">EMAC_EnableAlarm</a></div><div class="ttdeci">void EMAC_EnableAlarm(uint32_t u32Sec, uint32_t u32Nsec)</div><div class="ttdoc">Enable alarm function and set alarm time.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00945">emac.c:945</a></div></div>
+<div class="ttc" id="agroup___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s_html_gaf44ae41597ba26a0100555afdb2f7ff7"><div class="ttname"><a href="../../d7/d6b/group___n_u_c472__442___e_m_a_c___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gaf44ae41597ba26a0100555afdb2f7ff7">EMAC_EnableTS</a></div><div class="ttdeci">void EMAC_EnableTS(uint32_t u32Sec, uint32_t u32Nsec)</div><div class="ttdoc">Enable IEEE1588 time stamp function and set current time.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/def/emac_8c_source.html#l00877">emac.c:877</a></div></div>
 <div class="ttc" id="agroup___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n_html_gacf7eb4e68245708b80f67e9e9f8d6921"><div class="ttname"><a href="../../de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#gacf7eb4e68245708b80f67e9e9f8d6921">EMAC</a></div><div class="ttdeci">#define EMAC</div><div class="ttdef"><b>Definition:</b> <a href="../../da/d08/_n_u_c472__442_8h_source.html#l28819">NUC472_442.h:28819</a></div></div>
 <div class="ttc" id="agroup___n_u_c472__442__legacy___constants_html_gadfb09898dca36071e32cb1fbeec479e5"><div class="ttname"><a href="../../d4/dfa/group___n_u_c472__442__legacy___constants.html#gadfb09898dca36071e32cb1fbeec479e5">BIT31</a></div><div class="ttdeci">#define BIT31</div><div class="ttdoc">Bit 31 mask of an 32 bit integer.</div><div class="ttdef"><b>Definition:</b> <a href="../../da/d08/_n_u_c472__442_8h_source.html#l29059">NUC472_442.h:29059</a></div></div>
 <div class="ttc" id="asystem___n_u_c472__442_8h_html_aa3cd3e43291e81e795d642b79b6088e6"><div class="ttname"><a href="../../d1/d5e/system___n_u_c472__442_8h.html#aa3cd3e43291e81e795d642b79b6088e6">SystemCoreClock</a></div><div class="ttdeci">uint32_t SystemCoreClock</div><div class="ttdef"><b>Definition:</b> <a href="../../d6/d83/system___n_u_c472__442_8c_source.html#l00017">system_NUC472_442.c:17</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Apr 19 2024 17:09:09 for NUC472_NUC442_BSP by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
+Generated on Tue Oct 15 2024 18:22:58 for NUC472_NUC442_BSP by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
 </small></address>
 </body>
 </html>

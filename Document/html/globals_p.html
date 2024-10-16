@@ -19,7 +19,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="m4.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">NUC472_NUC442_BSP<span id="projectnumber">&#160;V3.03.005</span>
+   <div id="projectname">NUC472_NUC442_BSP<span id="projectnumber">&#160;V3.04.000</span>
    </div>
    <div id="projectbrief">The Board Support Package for NUC472/NUC442</div>
   </td>
@@ -78,8 +78,8 @@ $(function() {
 <li>PB7&#160;:&#160;<a class="el" href="de/d21/group___n_u_c472__442___g_p_i_o___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#gab2169364d166745179c7d0f102f72bee">gpio.h</a></li>
 <li>PB8&#160;:&#160;<a class="el" href="de/d21/group___n_u_c472__442___g_p_i_o___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga1fad9eacd1e316b967150e518a2fe803">gpio.h</a></li>
 <li>PB9&#160;:&#160;<a class="el" href="de/d21/group___n_u_c472__442___g_p_i_o___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga4af39d088e613e19f1fada04cbaacb6f">gpio.h</a></li>
+<li>pc&#160;:&#160;<a class="el" href="dd/d5b/retarget__isp_8c.html#adc29c2ff13d900c2f185ee95427fb06ca0d008574886a382d46ba2616c506af41">retarget_isp.c</a></li>
 <li>PC&#160;:&#160;<a class="el" href="de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#ga600721f0222b857dc8a3ae59e5077347">NUC472_442.h</a></li>
-<li>pc&#160;:&#160;<a class="el" href="d3/d3d/retarget_8c.html#adc29c2ff13d900c2f185ee95427fb06ca0d008574886a382d46ba2616c506af41">retarget.c</a></li>
 <li>PC0&#160;:&#160;<a class="el" href="de/d21/group___n_u_c472__442___g_p_i_o___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#gaf6d16c78de095cc5cd9348cf5b3a23a0">gpio.h</a></li>
 <li>PC1&#160;:&#160;<a class="el" href="de/d21/group___n_u_c472__442___g_p_i_o___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga80c1809d8f85e2e225704dcf89434202">gpio.h</a></li>
 <li>PC10&#160;:&#160;<a class="el" href="de/d21/group___n_u_c472__442___g_p_i_o___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga8b9f52e9ec0dc6e84685b56f36df69b1">gpio.h</a></li>
@@ -371,6 +371,7 @@ $(function() {
 <li>PRNG_SEED_CONT&#160;:&#160;<a class="el" href="de/d5a/group___n_u_c472__442___c_r_y_p_t_o___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#ga7db7fdecf4b4ec558b897bdcaa0f9685">crypto.h</a></li>
 <li>PRNG_SEED_RELOAD&#160;:&#160;<a class="el" href="de/d5a/group___n_u_c472__442___c_r_y_p_t_o___e_x_p_o_r_t_e_d___c_o_n_s_t_a_n_t_s.html#gac7769a2496b182a34dc45493d9ae4dea">crypto.h</a></li>
 <li>PRNG_Start()&#160;:&#160;<a class="el" href="d4/d01/group___n_u_c472__442___c_r_y_p_t_o___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga5ac325ec767067efe21430fd1eb30cf2">crypto.h</a></li>
+<li>ProcessHardFault()&#160;:&#160;<a class="el" href="d3/d3d/retarget_8c.html#a69017a2c8cbfc3ecffc133bcc60e6217">retarget.c</a></li>
 <li>PS2&#160;:&#160;<a class="el" href="de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#ga2b2100555b24ec95d4205e8a3a5d1d42">NUC472_442.h</a></li>
 <li>PS2_CLEAR_TX_FIFO()&#160;:&#160;<a class="el" href="d1/d26/group___n_u_c472__442___p_s2___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#gae0fbc8d9d1781e888c518dca26c00817">ps2.h</a></li>
 <li>PS2_Close()&#160;:&#160;<a class="el" href="d1/d26/group___n_u_c472__442___p_s2___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga766aa94cac5ee7b0678b2cfc0d122967">ps2.h</a></li>
@@ -448,7 +449,7 @@ $(function() {
 <li>PS2_Write()&#160;:&#160;<a class="el" href="d1/d26/group___n_u_c472__442___p_s2___e_x_p_o_r_t_e_d___f_u_n_c_t_i_o_n_s.html#ga67ce8824495fe42373f60df18f8ccfb8">ps2.h</a></li>
 <li>PS2D_BASE&#160;:&#160;<a class="el" href="d4/dca/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___m_e_m___m_a_p.html#ga25e494e56fe81064197331eadb16c667">NUC472_442.h</a></li>
 <li>PS2D_IRQn&#160;:&#160;<a class="el" href="d4/d72/group___n_u_c472__442___c_m_s_i_s.html#gga666eb0caeb12ec0e281415592ae89083a19562e6b196187a59c06a0da3bf6382e">NUC472_442.h</a></li>
-<li>psr&#160;:&#160;<a class="el" href="d3/d3d/retarget_8c.html#adc29c2ff13d900c2f185ee95427fb06cafd586543cfec6b0f210fe63e60296dcd">retarget.c</a></li>
+<li>psr&#160;:&#160;<a class="el" href="dd/d5b/retarget__isp_8c.html#adc29c2ff13d900c2f185ee95427fb06cafd586543cfec6b0f210fe63e60296dcd">retarget_isp.c</a></li>
 <li>PWM0&#160;:&#160;<a class="el" href="de/d78/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___d_e_c_l_a_r_a_t_i_o_n.html#ga7a4ad06a2bcb1065209a117ea09bbfbf">NUC472_442.h</a></li>
 <li>PWM0_BASE&#160;:&#160;<a class="el" href="d4/dca/group___n_u_c472__442___p_e_r_i_p_h_e_r_a_l___m_e_m___m_a_p.html#gafd4cf3319d145ce948188816693d06d6">NUC472_442.h</a></li>
 <li>PWM0_BRK_IRQn&#160;:&#160;<a class="el" href="d4/d72/group___n_u_c472__442___c_m_s_i_s.html#gga666eb0caeb12ec0e281415592ae89083adb427c44347080d2878b4bc94bd9cfcb">NUC472_442.h</a></li>
@@ -789,7 +790,7 @@ $(function() {
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Apr 19 2024 17:09:15 for NUC472_NUC442_BSP by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
+Generated on Tue Oct 15 2024 18:23:04 for NUC472_NUC442_BSP by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
 </small></address>
 </body>
 </html>
